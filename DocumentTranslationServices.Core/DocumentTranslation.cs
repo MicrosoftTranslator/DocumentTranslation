@@ -84,13 +84,13 @@ namespace DocumentTranslationServices.Core
             //Create the containers
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
 
-            BlobContainerClient sourceContainer = new(StorageConnectionString, containerNameBase + "source");
+            BlobContainerClient sourceContainer = new(StorageConnectionString, containerNameBase + "src");
             var sourceContainerTask = sourceContainer.CreateIfNotExistsAsync();
             this.ContainerClient_source = sourceContainer;
-            BlobContainerClient targetContainer = new(StorageConnectionString, containerNameBase + "target");
+            BlobContainerClient targetContainer = new(StorageConnectionString, containerNameBase + "tgt");
             _ = targetContainer.CreateIfNotExistsAsync();
             this.ContainerClient_target = targetContainer;
-            BlobContainerClient glossaryContainer = new(StorageConnectionString, containerNameBase + "glossary");
+            BlobContainerClient glossaryContainer = new(StorageConnectionString, containerNameBase + "gls");
             _ = glossaryContainer.CreateIfNotExistsAsync();
             this.ContainerClient_glossary = glossaryContainer;
 
@@ -114,9 +114,9 @@ namespace DocumentTranslationServices.Core
             Debug.WriteLine("Upload complete. {0} files uploaded.", uploads.Count);
 
             //Translate the container content
-            Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.Now + TimeSpan.FromHours(1));
-            Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.Now + TimeSpan.FromHours(1));
-            Uri sasUriGlossary = glossaryContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.Now + TimeSpan.FromHours(1));
+            Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            Uri sasUriGlossary = glossaryContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
             DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
             DocumentTranslationTarget documentTranslationTarget = new() { language = tolanguage, targetUrl = sasUriTarget.ToString() };
             List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
@@ -208,7 +208,7 @@ namespace DocumentTranslationServices.Core
             string result = await response.Content.ReadAsStringAsync();
             StatusResponse statusResponse = JsonSerializer.Deserialize<StatusResponse>(result, new JsonSerializerOptions { IncludeFields = true });
             Debug.WriteLine("CheckStatus: Status: " + statusResponse.status);
-            Debug.WriteLine("Status Result: {0}", result.ToString());
+            Debug.WriteLine("Status Result: "+ result.ToString());
             return statusResponse;
         }
 
@@ -253,6 +253,7 @@ namespace DocumentTranslationServices.Core
         public string createdDateTimeUtc;
         public string lastActionDateTimeUtc;
         public string status;
+        public Error error;
         public Summary summary;
     }
     public class Summary
@@ -266,6 +267,19 @@ namespace DocumentTranslationServices.Core
         public int totalCharacterCharged;
     }
 
+    public class Error
+    {
+        public string code;
+        public string message;
+        public string target;
+        public InnerError innerError;
+    }
+
+    public class InnerError
+    {
+        public string code;
+        public string message;
+    }
     
     public class DocumentTranslationInput
     {

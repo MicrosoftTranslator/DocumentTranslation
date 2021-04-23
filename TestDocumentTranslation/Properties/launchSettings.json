@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TestDocumentTranslation": {
+      "commandName": "Project",
+      "commandLineArgs": "d:\\testdocs\\ShortText.txt fr"
+    }
+  }
+}
