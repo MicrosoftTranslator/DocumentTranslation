@@ -98,17 +98,28 @@ namespace DocumentTranslationServices.Core
             Debug.WriteLine("Source container created");
 
             //Upload documents
+            if((filestotranslate.Count ==1)
+                && (File.GetAttributes(filestotranslate[0]) == FileAttributes.Directory))
+            {
+                foreach(var file in Directory.EnumerateFiles(filestotranslate[0]))
+                {
+                    filestotranslate.Add(file);
+                }
+                filestotranslate.RemoveAt(0);
+            }
+
             List<Task> uploads = new();
             using System.Threading.SemaphoreSlim semaphore = new(100); 
             foreach (var filename in filestotranslate)
             {
                 await semaphore.WaitAsync();
                 using FileStream fileStream = File.OpenRead(filename);
-                _ = sourceContainer.DeleteBlobIfExistsAsync(Normalize(filename));
-                var task = sourceContainer.UploadBlobAsync(Normalize(filename), fileStream);
-                uploads.Add(task);
+                BlobClient blobClient = new(StorageConnectionString, ContainerClient_source.Name, Normalize(filename));
+                uploads.Add(blobClient.UploadAsync(fileStream, true));
                 semaphore.Release();
+                Debug.WriteLine(String.Format("File {0} uploaded.", filename));
             }
+            Debug.WriteLine("Awaiting upload task completion.");
             await Task.WhenAll(uploads);
             semaphore.Dispose();
             Debug.WriteLine("Upload complete. {0} files uploaded.", uploads.Count);
@@ -147,7 +158,9 @@ namespace DocumentTranslationServices.Core
             while ((statusResult.status != "Succeeded") && (!statusResult.status.Contains("Failed")));
             if (statusResult.status == "Succeeded")
             {
-                await DownloadTheTranslations("c:\\temp\\");
+                string directoryName = Path.GetDirectoryName(filestotranslate[0]);
+                DirectoryInfo directory =  Directory.CreateDirectory(directoryName+"."+tolanguage);
+                await DownloadTheTranslations(directory.FullName);
             }
             await DeleteTheContainers();
             Debug.WriteLine("Run: Exiting.");
@@ -165,9 +178,9 @@ namespace DocumentTranslationServices.Core
             await foreach (var blobItem in ContainerClient_target.GetBlobsAsync())
             {
                 await semaphore.WaitAsync();
-                BlobClient blobClient = new BlobClient(StorageConnectionString, ContainerClient_target.Name, blobItem.Name);
+                BlobClient blobClient = new(StorageConnectionString, ContainerClient_target.Name, blobItem.Name);
                 BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
-                using (FileStream downloadFileStream = File.OpenWrite(targetFolder + blobItem.Name))
+                using (FileStream downloadFileStream = File.OpenWrite(targetFolder + Path.DirectorySeparatorChar + blobItem.Name))
                 {
                     Task download = blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
                     downloads.Add(download);
@@ -184,17 +197,46 @@ namespace DocumentTranslationServices.Core
         }
 
         /// <summary>
-        /// Delete the containers
+        /// Delete the containers. This deletes all containers that start with "doctr" and and with "src", "tgt" or "gls", in this storage account.
+        /// In order to clean up from abandoned runs.
         /// </summary>
         /// <returns>Task</returns>
-        private async Task DeleteTheContainers()
+        private async Task DeleteTheContainers(bool CleanUpAll = false)
         {
-            ContainerClient_source.DeleteAsync();
-            ContainerClient_target.DeleteAsync();
-            ContainerClient_glossary.DeleteAsync();
+            List<Task> deletionTasks = new();
+            if (CleanUpAll)
+            {
+                BlobServiceClient blobServiceClient = new(StorageConnectionString);
+                var resultSegment = blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.None, BlobContainerStates.None, "doctr").AsPages();
+                await foreach (Azure.Page<BlobContainerItem> containerPage in resultSegment)
+                {
+                    foreach (var containerItem in containerPage.Values)
+                    {
+                        BlobContainerClient client = new BlobContainerClient(StorageConnectionString, containerItem.Name);
+                        if (containerItem.Name.EndsWith("src")
+                            || (containerItem.Name.EndsWith("tgt"))
+                            || (containerItem.Name.EndsWith("gls")))
+                        {
+                            deletionTasks.Add(client.DeleteAsync());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                deletionTasks.Add(ContainerClient_source.DeleteAsync());
+                deletionTasks.Add(ContainerClient_target.DeleteAsync());
+                deletionTasks.Add(ContainerClient_glossary.DeleteAsync());
+            }
+            await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
         }
 
+        /// <summary>
+        /// Retrieve the status of the translation progress.
+        /// </summary>
+        /// <param name="processingLocation"></param>
+        /// <returns></returns>
         private async Task<StatusResponse> CheckStatus(string processingLocation)
         {
             using HttpClient client = new();
@@ -236,8 +278,10 @@ namespace DocumentTranslationServices.Core
 
             if (response.IsSuccessStatusCode)
             {
-                IEnumerable<string> values;
-                if (response.Headers.TryGetValues("Operation-Location", out values)) return values.First();
+                if (response.Headers.TryGetValues("Operation-Location", out IEnumerable<string> values))
+                {
+                    return values.First();
+                }
             }
             return null;
         }
