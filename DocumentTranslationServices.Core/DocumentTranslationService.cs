@@ -13,7 +13,7 @@ using Azure.Storage.Blobs.Models;
 
 namespace DocumentTranslationServices.Core
 {
-    public class DocumentTranslation
+    public class DocumentTranslationService
     {
         #region Properties
         /// <summary>
@@ -57,7 +57,7 @@ namespace DocumentTranslationServices.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        public DocumentTranslation(string SubscriptionKey, string AzureResourceName, string StorageConnectionString)
+        public DocumentTranslationService(string SubscriptionKey, string AzureResourceName, string StorageConnectionString)
         {
             this.SubscriptionKey = SubscriptionKey;
             this.AzureResourceName = AzureResourceName;
@@ -160,9 +160,9 @@ namespace DocumentTranslationServices.Core
             {
                 string directoryName = Path.GetDirectoryName(filestotranslate[0]);
                 DirectoryInfo directory =  Directory.CreateDirectory(directoryName+"."+tolanguage);
-                await DownloadTheTranslations(directory.FullName);
+                await DownloadTranslations(directory.FullName);
             }
-            await DeleteTheContainers();
+            await DeleteContainers();
             Debug.WriteLine("Run: Exiting.");
         }
 
@@ -171,7 +171,7 @@ namespace DocumentTranslationServices.Core
             return Path.GetFileName(filename);
         }
 
-        private async Task DownloadTheTranslations(string targetFolder)
+        private async Task DownloadTranslations(string targetFolder)
         {
             System.Threading.SemaphoreSlim semaphore = new(100);
             List<Task> downloads = new();
@@ -197,11 +197,11 @@ namespace DocumentTranslationServices.Core
         }
 
         /// <summary>
-        /// Delete the containers. This deletes all containers that start with "doctr" and and with "src", "tgt" or "gls", in this storage account.
-        /// In order to clean up from abandoned runs.
+        /// Delete the containers created by this instance.
         /// </summary>
-        /// <returns>Task</returns>
-        private async Task DeleteTheContainers(bool CleanUpAll = false)
+        /// <param name="CleanUpAll">Optional: If set, delete all containers following the naming scheme. Use with caution: This will impact other users of the same Azure storage account.</param>
+        /// <returns>The task only</returns>
+        private async Task DeleteContainers(bool CleanUpAll = false)
         {
             List<Task> deletionTasks = new();
             if (CleanUpAll)

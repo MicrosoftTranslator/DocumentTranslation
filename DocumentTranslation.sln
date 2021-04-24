@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationServices.Core", "DocumentTranslationServices.Core\DocumentTranslationServices.Core.csproj", "{00DF591A-11E2-407B-B686-38FC96D4D509}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "DocumentTranslationServices.Core\DocumentTranslationService.csproj", "{00DF591A-11E2-407B-B686-38FC96D4D509}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDocumentTranslation", "TestDocumentTranslation\TestDocumentTranslation.csproj", "{FEE35A76-74A5-4321-AFC2-961AA1B29636}"
 EndProject

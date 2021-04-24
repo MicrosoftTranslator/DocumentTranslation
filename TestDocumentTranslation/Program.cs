@@ -66,7 +66,7 @@ namespace TestDocumentTranslation
 
             string toLanguage = args[1];
 
-            DocumentTranslation documentTranslation = new(subscriptionKey, azureResourceName, storageConnectionString);
+            DocumentTranslationService documentTranslation = new(subscriptionKey, azureResourceName, storageConnectionString);
             if (documentTranslation is null)
             {
                 Console.WriteLine("ERROR: Unable to initialize.");

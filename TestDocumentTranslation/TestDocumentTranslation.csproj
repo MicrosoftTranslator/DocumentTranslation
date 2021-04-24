@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DocumentTranslationServices.Core\DocumentTranslationServices.Core.csproj" />
+    <ProjectReference Include="..\DocumentTranslationServices.Core\DocumentTranslationService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
