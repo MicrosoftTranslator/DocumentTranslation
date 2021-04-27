@@ -63,7 +63,6 @@ namespace TestDocumentTranslation
                 return -3;
             }
 
-
             string toLanguage = args[1];
 
             DocumentTranslationService documentTranslation = new(subscriptionKey, azureResourceName, storageConnectionString);
@@ -72,18 +71,20 @@ namespace TestDocumentTranslation
                 Console.WriteLine("ERROR: Unable to initialize.");
                 return 0;
             }
-            documentTranslation.DocumentTranslationStatus += DocumentTranslation_OnStatusUpdate;
-            
-            Task task = documentTranslation.Run(files, toLanguage);
+
+            DocumentTranslationBusiness translationBusiness = new(documentTranslation);
+            translationBusiness.StatusUpdate += DocumentTranslation_OnStatusUpdate;
+            Task task = translationBusiness.Run(files, toLanguage);
             Console.WriteLine("Translation starting...");
             await task;
             Console.WriteLine("Translation is complete.");
+            translationBusiness.StatusUpdate -= DocumentTranslation_OnStatusUpdate;
             return 0;
         }
 
         private static void DocumentTranslation_OnStatusUpdate(object sender, StatusResponse e)
         {
-            Console.WriteLine("Time: {0}\tStatus: {1}\tTotal: {2}\tTranslatedCharacters{3}", e.lastActionDateTimeUtc, e.status, e.summary.total, e.summary.totalCharacterCharged);
+            Console.WriteLine("Time: {0}\tStatus: {1}\tTotal: {2}\tTranslatedCharacters: {3}", e.lastActionDateTimeUtc, e.status, e.summary.total, e.summary.totalCharacterCharged);
         }
     }
 }
