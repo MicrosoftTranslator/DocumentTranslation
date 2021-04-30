@@ -3,13 +3,16 @@ using System.IO;
 using DocumentTranslationServices.Core;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace TestDocumentTranslation
 {
-    class Program
+    partial class Program
     {
         static async Task<int> Main(string[] args)
         {
+            using IHost host = CreateHostBuilder(args).Build();
+
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
@@ -71,6 +74,21 @@ namespace TestDocumentTranslation
                 Console.WriteLine("ERROR: Unable to initialize.");
                 return 0;
             }
+            documentTranslation.OnInitializeComplete += DocumentTranslation_OnInitializeComplete;
+            await documentTranslation.Initialize();
+
+            foreach(var format in documentTranslation.FileFormats.value)
+            {
+                Console.WriteLine($"File format: {format.format}");
+            }
+            foreach (var format in documentTranslation.GlossaryFormats.value)
+            {
+                Console.WriteLine($"Glossary format: {format.format}");
+            }
+            foreach (var lang in documentTranslation.Languages)
+            {
+                Console.WriteLine($"Language: {lang.Key}\t{lang.Value.Name}");
+            }
 
             DocumentTranslationBusiness translationBusiness = new(documentTranslation);
             translationBusiness.StatusUpdate += DocumentTranslation_OnStatusUpdate;
@@ -78,13 +96,36 @@ namespace TestDocumentTranslation
             Console.WriteLine("Translation starting...");
             await task;
             Console.WriteLine("Translation is complete.");
-            translationBusiness.StatusUpdate -= DocumentTranslation_OnStatusUpdate;
             return 0;
+        }
+
+        private static void DocumentTranslation_OnInitializeComplete(object sender, EventArgs e)
+        {
+            Console.WriteLine("Initialized.");
         }
 
         private static void DocumentTranslation_OnStatusUpdate(object sender, StatusResponse e)
         {
-            Console.WriteLine("Time: {0}\tStatus: {1}\tTotal: {2}\tTranslatedCharacters: {3}", e.lastActionDateTimeUtc, e.status, e.summary.total, e.summary.totalCharacterCharged);
+            Console.WriteLine($"Time: {e.lastActionDateTimeUtc}\tStatus: {e.status}\tSuccessfully translated: {e.summary.success}\tCharacters charged: {e.summary.totalCharacterCharged}");
         }
+
+        static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, configuration) =>
+            {
+                configuration.Sources.Clear();
+
+                IHostEnvironment env = hostingContext.HostingEnvironment;
+
+                configuration
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
+
+                IConfigurationRoot configurationRoot = configuration.Build();
+
+                TransientFaultHandlingOptions options = new();
+                configurationRoot.GetSection(nameof(TransientFaultHandlingOptions))
+                                 .Bind(options);
+            });
     }
 }

@@ -136,7 +136,7 @@ namespace DocumentTranslationServices.Core
                 if (statusResult.lastActionDateTimeUtc != lastActionTime)
                 {
                     //Raise the update event
-                    StatusUpdate(this, statusResult);
+                    if (StatusUpdate is not null) StatusUpdate(this, statusResult);
                     lastActionTime = statusResult.lastActionDateTimeUtc;
                 }
             }
@@ -157,13 +157,10 @@ namespace DocumentTranslationServices.Core
                     await semaphore.WaitAsync();
                     BlobClient blobClient = new(TranslationService.StorageConnectionString, TranslationService.ContainerClientTarget.Name, blobItem.Name);
                     BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
-                    using (FileStream downloadFileStream = File.OpenWrite(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name))
-                    {
-                        Task download = blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
-                        downloads.Add(download);
-                        Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
-                        downloadFileStream.Close();
-                    }
+                    FileStream downloadFileStream = File.OpenWrite(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
+                    Task download = blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
+                    downloads.Add(download);
+                    Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
                     semaphore.Release();
                 }
             }
@@ -216,16 +213,6 @@ namespace DocumentTranslationServices.Core
             return Path.GetFileName(filename);
         }
 
-    }
-
-    public class TranslationStatusEventArgs : EventArgs
-    {
-        public TranslationStatusEventArgs(StatusResponse statusResponse)
-        {
-            Status = statusResponse;
-        }
-
-        public StatusResponse Status { get; set; }
     }
 }
 

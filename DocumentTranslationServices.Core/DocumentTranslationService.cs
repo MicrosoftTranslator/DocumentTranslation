@@ -1,19 +1,16 @@
 ﻿using Azure.Storage.Blobs;
-using Azure.Storage.Sas;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Net.Http;
 using System.Text;
 using System.Linq;
-using Azure.Storage.Blobs.Models;
 
 namespace DocumentTranslationServices.Core
 {
-    public class DocumentTranslationService
+    public partial class DocumentTranslationService
     {
         #region Properties
         /// <summary>
@@ -43,7 +40,7 @@ namespace DocumentTranslationServices.Core
         /// The base URL template for making translation requests.
         /// {0} is the name of the Translator resource.
         /// </summary>
-        private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0-preview.1/batches";
+        private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0-preview.1";
         #endregion Constants
         #region Methods
 
@@ -55,6 +52,18 @@ namespace DocumentTranslationServices.Core
             this.SubscriptionKey = SubscriptionKey;
             this.AzureResourceName = AzureResourceName;
             this.StorageConnectionString = StorageConnectionString;
+        }
+
+        public event EventHandler OnInitializeComplete;
+
+        public async Task Initialize()
+        {
+            List<Task> tasks = new();
+            tasks.Add(GetFormatsAsync());
+            tasks.Add(GetGlossaryFormatsAsync());
+            tasks.Add(GetLanguagesAsync());
+            await Task.WhenAll(tasks);
+            if (OnInitializeComplete is not null) OnInitializeComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -87,13 +96,13 @@ namespace DocumentTranslationServices.Core
 
             string requestJson = JsonSerializer.Serialize(documentTranslationRequest, new JsonSerializerOptions() { IncludeFields = true });
             Debug.WriteLine("SubmitTranslationRequest: RequestJson: " + requestJson);
-            using HttpRequestMessage request = new();
+            HttpRequestMessage request = new();
             request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate);
+            request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate + "/batches");
             request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
             request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            using HttpClient client = new();
+            HttpClient client = new();
             HttpResponseMessage response = await client.SendAsync(request);
             Debug.WriteLine("Translation Request response code: " + response.StatusCode);
 
@@ -109,66 +118,5 @@ namespace DocumentTranslationServices.Core
 
         #endregion Methods
     }
-
-    #region Helperclasses
-
-    public class StatusResponse
-    {
-        public string id;
-        public string createdDateTimeUtc;
-        public string lastActionDateTimeUtc;
-        public string status;
-        public Error error;
-        public Summary summary;
-    }
-    public class Summary
-    {
-        public int total;
-        public int failed;
-        public int success;
-        public int inProgress;
-        public int notYetStarted;
-        public int cancelled;
-        public int totalCharacterCharged;
-    }
-
-    public class Error
-    {
-        public string code;
-        public string message;
-        public string target;
-        public InnerError innerError;
-    }
-
-    public class InnerError
-    {
-        public string code;
-        public string message;
-    }
-
-    public class DocumentTranslationInput
-    {
-        public string storageType;
-        public DocumentTranslationSource source;
-        public List<DocumentTranslationTarget> targets;
-    }
-
-    public class DocumentTranslationSource
-    {
-        public string SourceUrl;
-    }
-
-    public class DocumentTranslationTarget
-    {
-        public string language;
-        public string targetUrl;
-    }
-
-    public class DocumentTranslationRequest
-    {
-        public List<DocumentTranslationInput> inputs;
-    }
-
-    #endregion Helperclasses
 }
 
