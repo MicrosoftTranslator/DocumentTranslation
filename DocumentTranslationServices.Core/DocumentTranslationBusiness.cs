@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     public class DocumentTranslationBusiness
     {
@@ -20,6 +20,8 @@ namespace DocumentTranslationServices.Core
 
         public event EventHandler<StatusResponse> StatusUpdate;
 
+        public event EventHandler OnDownloadComplete;
+
         #endregion Properties
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace DocumentTranslationServices.Core
             TranslationService = documentTranslationService;
         }
 
-        public async Task Run(string[] filestotranslate, string tolanguage)
+        public async Task RunAsync(string[] filestotranslate, string tolanguage)
         {
             List<string> list = new();
             foreach (string file in filestotranslate)
@@ -46,8 +48,9 @@ namespace DocumentTranslationServices.Core
         /// </summary>
         /// <param name="filestotranslate">A list of files to translate. Can be a single file or a single directory.</param>
         /// <param name="tolanguage">A single target language</param>
+        /// <param name="glossaryfiles">The glossary files</param>
         /// <returns></returns>
-        public async Task RunAsync(List<string> filestotranslate, string tolanguage, string glossaryfile = null)
+        public async Task RunAsync(List<string> filestotranslate, string tolanguage, List<string> glossaryfiles = null)
         {
             //Create the containers
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
@@ -60,14 +63,12 @@ namespace DocumentTranslationServices.Core
             TranslationService.ContainerClientTarget = targetContainer;
             Glossary glossary = new(TranslationService);
             this.glossary = glossary;
-            if (!String.IsNullOrEmpty(glossaryfile))
+            if (glossaryfiles is null)
             {
-                glossary.GlossaryFile = glossaryfile;
+                glossary.GlossaryFiles = glossaryfiles;
                 await glossary.CreateContainerAsync(TranslationService.StorageConnectionString, containerNameBase);
             }
 
-            await sourceContainerTask;
-            Debug.WriteLine("Source container created");
 
             //Upload documents
             if ((filestotranslate.Count == 1)
@@ -79,6 +80,18 @@ namespace DocumentTranslationServices.Core
                 }
                 filestotranslate.RemoveAt(0);
             }
+            List<string> discards = new();
+            (filestotranslate, discards) = FilterByExtension(filestotranslate, TranslationService.Extensions);
+            if (discards is not null)
+            {
+                foreach (string fileName in discards)
+                {
+                    Debug.WriteLine($"Discarded due to invalid file format for translation: {fileName}");
+                }
+            }
+
+            await sourceContainerTask;
+            Debug.WriteLine("Source container created");
 
             List<Task> uploadTasks = new();
             using (System.Threading.SemaphoreSlim semaphore = new(100))
@@ -166,6 +179,7 @@ namespace DocumentTranslationServices.Core
             }
             await Task.WhenAll(downloads);
             Debug.WriteLine("Download complete.");
+            if (OnDownloadComplete is not null) OnDownloadComplete(this, EventArgs.Empty);
             await DeleteContainers();
             Debug.WriteLine("Run: Exiting.");
         }
@@ -211,6 +225,26 @@ namespace DocumentTranslationServices.Core
         public static string Normalize(string filename)
         {
             return Path.GetFileName(filename);
+        }
+
+        /// <summary>
+        /// Filters the list of files to the ones matching the extension.
+        /// </summary>
+        /// <param name="fileNames">List of files to filter.</param>
+        /// <param name="validExtensions">Hash of valid extensions.</param>
+        /// <param name="discarded">The files that were discarded</param>
+        /// <returns>Tuple of the filtered list and the discards.</returns>
+        public static (List<string>, List<string>) FilterByExtension(List<string> fileNames, HashSet<string> validExtensions)
+        {
+            if (fileNames is null) return (null, null);
+            List<string> validNames = new();
+            List<string> discardedNames = new();
+            foreach(string filename in fileNames)
+            {
+                if (validExtensions.Contains(Path.GetExtension(filename).ToLowerInvariant())) validNames.Add(filename);
+                else discardedNames.Add(filename);
+            }
+            return (validNames, discardedNames);
         }
 
     }

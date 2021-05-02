@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     public class TranslationStatusEventArgs : EventArgs
     {

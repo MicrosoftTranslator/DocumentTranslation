@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "DocumentTranslationServices.Core\DocumentTranslationService.csproj", "{00DF591A-11E2-407B-B686-38FC96D4D509}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDocumentTranslation", "TestDocumentTranslation\TestDocumentTranslation.csproj", "{FEE35A76-74A5-4321-AFC2-961AA1B29636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doctr", "TestDocumentTranslation\doctr.csproj", "{FEE35A76-74A5-4321-AFC2-961AA1B29636}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9A35F10-42E5-4DA4-B4DF-AF2A0FF5652E}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

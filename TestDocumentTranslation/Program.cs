@@ -1,131 +1,153 @@
 ﻿using System;
 using System.IO;
-using DocumentTranslationServices.Core;
+using DocumentTranslationService.Core;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using McMaster.Extensions.CommandLineUtils;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
-namespace TestDocumentTranslation
+namespace TranslationService.CLI
 {
     partial class Program
     {
-        static async Task<int> Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            using IHost host = CreateHostBuilder(args).Build();
-
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-            string storageConnectionString = configuration.GetConnectionString("StorageConnectionString");
-            if (String.IsNullOrEmpty(storageConnectionString))
+            CommandLineApplication app = new();
+            app.HelpOption(inherited: true);
+            app.Name = "DOCTR";
+            app.Description = "DOCTR: Translate a documents in many different formats with the Azure Translator service.";
+            app.OnExecute(() =>
             {
-                Console.WriteLine("ERROR: StorageConnectionString is missing in appsettings.json.");
-                return -1;
-            }
-            string azureResourceName = configuration["AzureResourceName"];
-            if (String.IsNullOrEmpty(azureResourceName))
-            {
-                Console.WriteLine("ERROR: AzureResourceName is missing in appsettings.json.");
-                return -1;
-            }
-            string subscriptionKey = configuration["SubscriptionKey"];
-            if (String.IsNullOrEmpty(subscriptionKey))
-            {
-                Console.WriteLine("ERROR: SubscriptionKey is missing in appsettings.json.");
-                return -1;
-            }
-
-            if (args.Length != 2)
-            {
-                Console.WriteLine("Syntax: DocumentTranslation.exe <file or Directory> <language to translate to>");
-                return -2;
-            }
-            string givenPath = args[0];
-
-            //Read argument 0 as file or file list from directory.
-            string[] files = new string[1];
-            if (File.GetAttributes(givenPath) == FileAttributes.Directory)
-            {
-                try
-                {
-                    files = Directory.GetFiles(givenPath);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    Console.WriteLine("Directory {0} not found.", givenPath);
-                    return -2;
-                }
-            }
-            else
-            {
-                files[0] = givenPath;
-            }
-            if (files.Length < 1)
-            {
-                Console.WriteLine("Nothing to translate.");
-                return -3;
-            }
-
-            string toLanguage = args[1];
-
-            DocumentTranslationService documentTranslation = new(subscriptionKey, azureResourceName, storageConnectionString);
-            if (documentTranslation is null)
-            {
-                Console.WriteLine("ERROR: Unable to initialize.");
-                return 0;
-            }
-            documentTranslation.OnInitializeComplete += DocumentTranslation_OnInitializeComplete;
-            await documentTranslation.Initialize();
-
-            foreach(var format in documentTranslation.FileFormats.value)
-            {
-                Console.WriteLine($"File format: {format.format}");
-            }
-            foreach (var format in documentTranslation.GlossaryFormats.value)
-            {
-                Console.WriteLine($"Glossary format: {format.format}");
-            }
-            foreach (var lang in documentTranslation.Languages)
-            {
-                Console.WriteLine($"Language: {lang.Key}\t{lang.Value.Name}");
-            }
-
-            DocumentTranslationBusiness translationBusiness = new(documentTranslation);
-            translationBusiness.StatusUpdate += DocumentTranslation_OnStatusUpdate;
-            Task task = translationBusiness.Run(files, toLanguage);
-            Console.WriteLine("Translation starting...");
-            await task;
-            Console.WriteLine("Translation is complete.");
-            return 0;
-        }
-
-        private static void DocumentTranslation_OnInitializeComplete(object sender, EventArgs e)
-        {
-            Console.WriteLine("Initialized.");
-        }
-
-        private static void DocumentTranslation_OnStatusUpdate(object sender, StatusResponse e)
-        {
-            Console.WriteLine($"Time: {e.lastActionDateTimeUtc}\tStatus: {e.status}\tSuccessfully translated: {e.summary.success}\tCharacters charged: {e.summary.totalCharacterCharged}");
-        }
-
-        static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, configuration) =>
-            {
-                configuration.Sources.Clear();
-
-                IHostEnvironment env = hostingContext.HostingEnvironment;
-
-                configuration
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
-
-                IConfigurationRoot configurationRoot = configuration.Build();
-
-                TransientFaultHandlingOptions options = new();
-                configurationRoot.GetSection(nameof(TransientFaultHandlingOptions))
-                                 .Bind(options);
+                app.ShowHelp();
+                return 1;
             });
+
+            app.Command("config", configCmd =>
+            {
+                configCmd.Description = "Configuration settings.";
+                configCmd.Command("set", configSetCmd =>
+                {
+                    var key = configSetCmd.Option("--key <AzureKey>", "Azure key for the Translator resource.", CommandOptionType.SingleValue);
+                    var storage = configSetCmd.Option("--storage <StorageConnectionString>", "Connection string copied from the Azure storage resource.", CommandOptionType.SingleValue);
+                    var name = configSetCmd.Option("--name <ResourceName>", "Name of the Translator resource matching the \"key\".", CommandOptionType.SingleValue);
+                    var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages.", CommandOptionType.SingleValue);
+                    configSetCmd.OnExecuteAsync( async (cancellationToken) =>
+                    {
+                        DocTransAppSettings docTransAppSettings = await AppSettingsSetter.Read(null);
+                        Console.WriteLine($"key {key.Value()}, storage {storage.Value()}, name {name.Value()}, experimental {exp.Value()}");
+                        if (key.HasValue())
+                        {
+                            docTransAppSettings.SubscriptionKey = key.Value();
+                            Console.WriteLine("Subscription key set.");
+                        }
+                        if (storage.HasValue())
+                        {
+                            docTransAppSettings.ConnectionStrings.StorageConnectionString = storage.Value();
+                            Console.WriteLine("Storage Connection String set.");
+                        }
+                        if (name.HasValue())
+                        {
+                            docTransAppSettings.AzureResourceName = name.Value();
+                            Console.WriteLine("Azure resource name set.");
+                        }
+                        if (exp.HasValue())
+                        {
+                            switch (exp.Value().ToLowerInvariant()[0])
+                            {
+                                case 't':
+                                case 'y':
+                                    docTransAppSettings.ShowExperimental = true;
+                                    break;
+                                case 'n':
+                                case 'f':
+                                    docTransAppSettings.ShowExperimental = false;
+                                    Console.WriteLine("Experimental languages enabled.");
+                                    break;
+                                default:
+                                    Console.WriteLine("Experimental flag not recognized. Must be yes, no, true, or false.");
+                                    break;
+                            }
+                        }
+                        await AppSettingsSetter.Write(null, docTransAppSettings);
+                        return 1;
+                    });
+                    configSetCmd.OnValidationError((i) =>
+                    {
+                        configSetCmd.ShowHelp();
+                    });
+                });
+                configCmd.Command("list", configListCmd =>
+                {
+                    configListCmd.Description = "List the configuration settings.";
+                    configListCmd.OnExecute(() =>
+                    {
+
+                    });
+                });
+                configCmd.Command("test", configTestCmd =>
+                {
+                    configTestCmd.OnExecute(() =>
+                    {
+
+                    });
+                });
+                configCmd.OnExecute(() =>
+                {
+                });
+            });
+
+            app.Command("languages", langCmd =>
+                {
+                    langCmd.AddName("langs");
+                    langCmd.AddName("list");
+                    langCmd.Description = "List the langauges available for translation.";
+                    langCmd.OnExecuteAsync(async (cancellationToken) =>
+                    {
+                        DocumentTranslationService.Core.DocumentTranslationService translationService = new(null, null, null);
+                        await translationService.GetLanguagesAsync();
+                        foreach (var language in translationService.Languages.OrderBy(x => x.Key))
+                        {
+                            Console.WriteLine($"{language.Value.LangCode}\t{language.Value.Name}");
+                        }
+                    });
+                });
+
+            app.Command("formats", langCmd =>
+            {
+                langCmd.AddName("format");
+                langCmd.OnExecuteAsync(async (cancellationToken) =>
+                {
+                    string subscriptionKey = string.Empty;
+                    DocumentTranslationService.Core.DocumentTranslationService translationService = new(subscriptionKey, null, null);
+                    await translationService.GetFormatsAsync();
+                    foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
+                    {
+                        Console.Write($"{format.format}\t");
+                        foreach (string ext in format.fileExtensions) Console.Write(ext);
+                        Console.WriteLine();
+                    }
+                });
+            });
+
+
+            int result = 0;
+            try
+            {
+                result = app.Execute(args);
+            }
+            catch (CommandParsingException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return result;
+        }
+
+        private static int Mainbody()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

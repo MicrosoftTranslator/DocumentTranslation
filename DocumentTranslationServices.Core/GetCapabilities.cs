@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     public partial class DocumentTranslationService
     {
@@ -51,13 +51,17 @@ namespace DocumentTranslationServices.Core
                     {
                         foreach (string ext in item.fileExtensions)
                         {
-                            Extensions.Add(ext);
+                            Extensions.Add(ext.ToLowerInvariant());
                         }
                     }
                     if (OnFileFormatsUpdate is not null) OnFileFormatsUpdate(this, EventArgs.Empty);
                     return FileFormats;
                 }
-                else Debug.WriteLine("GetFormatsInternal: Get file formats failed.");
+                else
+                {
+                    Debug.WriteLine("GetFormatsInternal: Get file formats failed.");
+                    await Task.Delay(1000);
+                }
             }
             return null;
         }
@@ -89,14 +93,18 @@ namespace DocumentTranslationServices.Core
                     {
                         foreach (string ext in item.fileExtensions)
                         {
-                            GlossaryExtensions.Add(ext);
+                            GlossaryExtensions.Add(ext.ToLowerInvariant());
                         }
                     }
 
                     if (OnGlossaryFormatsUpdate is not null) OnGlossaryFormatsUpdate(this, EventArgs.Empty);
                     return GlossaryFormats;
                 }
-                else Debug.WriteLine("GetGlossaryFormatsInternal: Get glossary formats failed.");
+                else
+                {
+                    Debug.WriteLine("GetGlossaryFormatsInternal: Get glossary formats failed.");
+                    await Task.Delay(1000);
+                }
             }
             return null;
         }

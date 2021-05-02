@@ -1,15 +1,16 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     public class Glossary
     {
-        public string GlossaryFile { get; set; }
+        public List<string> GlossaryFiles { get; set; }
 
         public BlobContainerClient ContainerClient { get { return containerClient; } }
 
@@ -17,15 +18,26 @@ namespace DocumentTranslationServices.Core
 
         private readonly DocumentTranslationService translationService;
         
-        public Glossary(DocumentTranslationService translationService, string glossaryFile = null)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="translationService"></param>
+        /// <param name="glossaryFiles"></param>
+        public Glossary(DocumentTranslationService translationService, List<string> glossaryFiles = null)
         {
-            GlossaryFile = glossaryFile;
+            GlossaryFiles = glossaryFiles;
             this.translationService = translationService;
         }
 
+        /// <summary>
+        /// Creates the glossary container on Azure storage
+        /// </summary>
+        /// <param name="storageConnectionString">Storage connection string directly from the Azure portal</param>
+        /// <param name="containerNameBase">The naming pattern for the container</param>
+        /// <returns></returns>
         public async Task CreateContainerAsync(string storageConnectionString, string containerNameBase)
         {
-            if (!String.IsNullOrEmpty(GlossaryFile))
+            if (GlossaryFiles is not null)
             {
                 BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
                 var GlossaryContainerTask = glossaryContainer.CreateIfNotExistsAsync();
@@ -34,27 +46,49 @@ namespace DocumentTranslationServices.Core
             }
         }
 
+        /// <summary>
+        /// Upload the glossary files named in the GlossaryFiles property.
+        /// </summary>
+        /// <returns>Task</returns>
+        /// <remarks>Serious optimization possible here. The container should be permanent, and upload only changed files, or no files at all, and still use them.</remarks>
         public async Task UploadAsync()
         {
-            if (!String.IsNullOrEmpty(GlossaryFile))
+            List<string> discards = new();
+            (GlossaryFiles, discards) = DocumentTranslationBusiness.FilterByExtension(GlossaryFiles, translationService.GlossaryExtensions);
+            if (discards is not null)
             {
-                using FileStream fileStream = File.OpenRead(this.GlossaryFile);
-                BlobClient blobClient = new(translationService.StorageConnectionString, translationService.ContainerClientSource.Name, DocumentTranslationBusiness.Normalize(this.GlossaryFile));
-                try
+                foreach (string fileName in discards)
                 {
-                    await blobClient.UploadAsync(fileStream, true);
+                    Debug.WriteLine($"Glossary files ignored: {fileName}");
                 }
-                catch (System.AggregateException e)
+            }
+            System.Threading.SemaphoreSlim semaphore = new(10); //limit the number of concurrent uploads
+            if (GlossaryFiles is not null)
+            {
+                List<Task> uploads = new();
+                foreach (string filename in GlossaryFiles)
                 {
-                    Debug.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
+                    await semaphore.WaitAsync();
+                    using FileStream fileStream = File.OpenRead(filename);
+                    BlobClient blobClient = new(translationService.StorageConnectionString, translationService.ContainerClientSource.Name, DocumentTranslationBusiness.Normalize(filename));
+                    try
+                    {
+                        uploads.Add(blobClient.UploadAsync(fileStream, true));
+                    }
+                    catch (System.AggregateException e)
+                    {
+                        Debug.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
+                    }
+                    semaphore.Release();
+                    Debug.WriteLine(String.Format($"Glossary file {fileStream.Name} uploaded."));
                 }
-                Debug.WriteLine(String.Format($"File {this.GlossaryFile} uploaded."));
+                await Task.WhenAll(uploads);
             }
         }
 
         public Uri GenerateSasUri()
         {
-            if (!String.IsNullOrEmpty(GlossaryFile))
+            if (GlossaryFiles is not null)
             {
                 Uri sasUriGlossary = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
                 return sasUriGlossary;
@@ -64,7 +98,7 @@ namespace DocumentTranslationServices.Core
 
         public async Task DeleteAsync()
         {
-            if (!String.IsNullOrEmpty(GlossaryFile))
+            if (GlossaryFiles is not null)
             {
                 await containerClient.DeleteAsync();
             }

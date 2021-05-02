@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     #region Helperclasses
 

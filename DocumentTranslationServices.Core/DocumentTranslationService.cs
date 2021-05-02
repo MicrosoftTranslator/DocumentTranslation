@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Linq;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
     public partial class DocumentTranslationService
     {
@@ -56,7 +56,7 @@ namespace DocumentTranslationServices.Core
 
         public event EventHandler OnInitializeComplete;
 
-        public async Task Initialize()
+        public async Task InitializeAsync()
         {
             List<Task> tasks = new();
             tasks.Add(GetFormatsAsync());
@@ -96,21 +96,30 @@ namespace DocumentTranslationServices.Core
 
             string requestJson = JsonSerializer.Serialize(documentTranslationRequest, new JsonSerializerOptions() { IncludeFields = true });
             Debug.WriteLine("SubmitTranslationRequest: RequestJson: " + requestJson);
-            HttpRequestMessage request = new();
-            request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate + "/batches");
-            request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
 
-            HttpClient client = new();
-            HttpResponseMessage response = await client.SendAsync(request);
-            Debug.WriteLine("Translation Request response code: " + response.StatusCode);
-
-            if (response.IsSuccessStatusCode)
+            for (int i = 0; i < 3; i++)
             {
-                if (response.Headers.TryGetValues("Operation-Location", out IEnumerable<string> values))
+                HttpRequestMessage request = new();
+                request.Method = HttpMethod.Post;
+                request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate + "/batches");
+                request.Content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+
+                HttpClient client = new();
+                HttpResponseMessage response = await client.SendAsync(request);
+                Debug.WriteLine("Translation Request response code: " + response.StatusCode);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    return values.First();
+                    if (response.Headers.TryGetValues("Operation-Location", out IEnumerable<string> values))
+                    {
+                        return values.First();
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("SubmitTranslationRequest: Failed.");
+                    await Task.Delay(1000);
                 }
             }
             return null;

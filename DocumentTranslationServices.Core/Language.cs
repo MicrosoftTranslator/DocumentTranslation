@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DocumentTranslationServices.Core
+namespace DocumentTranslationService.Core
 {
 
     public partial class DocumentTranslationService

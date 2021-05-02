@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestDocumentTranslation
+namespace TranslationService.CLI
 {
     partial class Program
     {
