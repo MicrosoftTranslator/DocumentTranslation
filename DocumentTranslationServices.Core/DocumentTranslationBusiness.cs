@@ -80,7 +80,7 @@ namespace DocumentTranslationService.Core
                 }
                 filestotranslate.RemoveAt(0);
             }
-            List<string> discards = new();
+            List<string> discards;
             (filestotranslate, discards) = FilterByExtension(filestotranslate, TranslationService.Extensions);
             if (discards is not null)
             {

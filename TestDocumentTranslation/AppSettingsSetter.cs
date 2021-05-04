@@ -16,10 +16,10 @@ namespace TranslationService.CLI
         /// <returns>JSON for appsettings</returns>
         public static string GetJson(DocTransAppSettings settings)
         {
-            return JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true });
+            return JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true });
         }
 
-        public static async Task<DocTransAppSettings> Read(string filename)
+        public static async Task<DocTransAppSettings> Read(string filename = "appsettings.json")
         {
             if (string.IsNullOrEmpty(filename)) filename = "appsettings.json";
             string appsettings;
@@ -29,7 +29,7 @@ namespace TranslationService.CLI
             }
             catch (FileNotFoundException)
             {
-                return null;
+                return new DocTransAppSettings();
             }
             return JsonSerializer.Deserialize<DocTransAppSettings>(appsettings, new JsonSerializerOptions { IncludeFields = true });
         }
@@ -43,14 +43,33 @@ namespace TranslationService.CLI
 
     public class DocTransAppSettings
     {
+        /// <summary>
+        /// Name of the Azure Translator resource
+        /// </summary>
         public string AzureResourceName { get; set; }
+        /// <summary>
+        /// Hold sthe connection strings.
+        /// </summary>
         public Connectionstrings ConnectionStrings { get; set; }
+        /// <summary>
+        /// The subscription key to use.
+        /// </summary>
         public string SubscriptionKey { get; set; }
+        /// <summary>
+        /// Whether to show experimental languages
+        /// </summary>
         public bool ShowExperimental { get; set; }
+        /// <summary>
+        /// The Custom Translator category ID to use. 
+        /// </summary>
+        public string Category { get; set; }
     }
 
     public class Connectionstrings
     {
+        /// <summary>
+        /// Azure storage connection string, copied from the portal.
+        /// </summary>
         public string StorageConnectionString { get; set; }
     }
 }

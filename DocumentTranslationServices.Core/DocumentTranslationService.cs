@@ -59,6 +59,7 @@ namespace DocumentTranslationService.Core
         public async Task InitializeAsync()
         {
             List<Task> tasks = new();
+            if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             tasks.Add(GetFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
             tasks.Add(GetLanguagesAsync());
@@ -91,6 +92,10 @@ namespace DocumentTranslationService.Core
         /// <returns>The status URL</returns>
         public async Task<string> SubmitTranslationRequest(DocumentTranslationInput input)
         {
+            if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
+            if (String.IsNullOrEmpty(SubscriptionKey)) throw new CredentialsException("key");
+            if (String.IsNullOrEmpty(StorageConnectionString)) throw new CredentialsException("storage");
+
             List<DocumentTranslationInput> documentTranslationInputs = new() { input };
             DocumentTranslationRequest documentTranslationRequest = new() { inputs = documentTranslationInputs };
 

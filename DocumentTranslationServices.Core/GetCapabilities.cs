@@ -32,6 +32,7 @@ namespace DocumentTranslationService.Core
 
         private async Task<FileFormatList> GetFormatsInternal()
         {
+            if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             for (int i = 0; i < 3; i++)
             {
                 HttpRequestMessage request = new();
