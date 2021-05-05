@@ -85,6 +85,7 @@ namespace DocumentTranslationService.Core
             }
             if (!TranslationService.Languages.ContainsKey(tolanguage)) throw new ArgumentException("Invalid 'to' language.", nameof(tolanguage));
             #endregion
+
             #region Create the containers
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
 
@@ -170,7 +171,7 @@ namespace DocumentTranslationService.Core
             while (
                   (statusResult.summary.inProgress != 0)
                 ||(statusResult.status=="NotStarted")
-                  );
+                ||(statusResult.summary.notYetStarted !=0 ));
             if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
             if (statusResult.status.Contains("Failed.")) return;
             #endregion
