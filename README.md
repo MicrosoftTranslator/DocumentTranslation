@@ -32,5 +32,5 @@ your choice, or you can use
 
 ##Implementation Details
 ##Contributions
-Please controbute your bug fix, and functionality additions. Submit a pull request. We will review and integrate
+Please contribute your bug fix, and functionality additions. Submit a pull request. We will review and integrate
 quickly - or reject with comments.

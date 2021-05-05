@@ -10,16 +10,30 @@ namespace DocumentTranslationService.Core
 
     public partial class DocumentTranslationService
     {
+        /// <summary>
+        /// Whether to include experimental languages
+        /// </summary>
         public bool ShowExperimental { get => showExperimental; set => showExperimental = value; }
         private bool showExperimental = false;
         private bool lastShowExperimental = false;
 
+        /// <summary>
+        /// Holds the set of languages. If list is empty, call GetLanguagesAsync first. 
+        /// </summary>
         public Dictionary<String, Language> Languages { get; private set; } = new();
 
+        /// <summary>
+        /// Fires when the 'Languages' list finished updating. 
+        /// </summary>
         public event EventHandler OnLanguagesUpdate;
 
         private string lastLanguage;
 
+        /// <summary>
+        /// Read the set of languages form the service and store in the Languages list
+        /// </summary>
+        /// <param name="acceptLanguage">The language you want the langauge list in</param>
+        /// <returns>Task</returns>
         public async Task GetLanguagesAsync(string acceptLanguage = null)
         {
             if (acceptLanguage is null) acceptLanguage = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
@@ -103,6 +117,4 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public bool Bidi { get; set; }
     }
-
-
 }

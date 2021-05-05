@@ -53,7 +53,7 @@ namespace DocumentTranslationService.Core
         /// <remarks>Serious optimization possible here. The container should be permanent, and upload only changed files, or no files at all, and still use them.</remarks>
         public async Task UploadAsync()
         {
-            List<string> discards = new();
+            List<string> discards;
             (GlossaryFiles, discards) = DocumentTranslationBusiness.FilterByExtension(GlossaryFiles, translationService.GlossaryExtensions);
             if (discards is not null)
             {

@@ -2,7 +2,7 @@
   "profiles": {
     "TestDocumentTranslation": {
       "commandName": "Project",
-      "commandLineArgs": "translate d:\\TestDocsSmall --to de --nodelete"
+      "commandLineArgs": "translate d:\\TestDocsSmall --to de"
     }
   }
 }

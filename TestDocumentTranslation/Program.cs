@@ -1,11 +1,7 @@
 ﻿using System;
-using System.IO;
 using DocumentTranslationService.Core;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using McMaster.Extensions.CommandLineUtils;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace TranslationService.CLI
@@ -40,7 +36,7 @@ namespace TranslationService.CLI
                                               "The subscription key to use for this translation. Will not be saved in config settings.",
                                               CommandOptionType.SingleValue);
                 var nodelete = translateCmd.Option("--nodelete",
-                                                   "Do not delete the target folder on the storage account. For debugging only.",
+                                                   "Do not delete the container in the storage account. For debugging purposes only.",
                                                    CommandOptionType.NoValue);
                 translateCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
@@ -233,7 +229,7 @@ namespace TranslationService.CLI
 
         private static void TranslationBusiness_OnDownloadComplete(object sender, EventArgs e)
         {
-            Console.WriteLine("Translation complete.");
+            Console.WriteLine("Translation complete and downloaded.");
         }
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
