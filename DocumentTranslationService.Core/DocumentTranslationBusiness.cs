@@ -125,7 +125,7 @@ namespace DocumentTranslationService.Core
                     {
                         Debug.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
                     }
-                    Debug.WriteLine(String.Format($"File {filename} uploaded."));
+                    Debug.WriteLine($"File {filename} uploaded.");
                 }
             }
             Debug.WriteLine("Awaiting upload task completion.");
@@ -170,8 +170,8 @@ namespace DocumentTranslationService.Core
             }
             while (
                   (statusResult.summary.inProgress != 0)
-                ||(statusResult.status=="NotStarted")
-                ||(statusResult.summary.notYetStarted !=0 ));
+                || (statusResult.status == "NotStarted")
+                || (statusResult.summary.notYetStarted != 0));
             if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
             if (statusResult.status.Contains("Failed.")) return;
             #endregion
