@@ -28,19 +28,43 @@ namespace TranslationService.CLI
                 translateCmd.AddName("trans");
                 translateCmd.AddName("x");
                 translateCmd.Description = "Translate a file or the content of a folder.";
-                var sourceFiles = translateCmd.Argument("source", "Translate from this file or folder").IsRequired(true);
-                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If ommitted, target folder is <sourcefolder>.<language>.").IsRequired(false);
-                var toLang = translateCmd.Option("--to <LanguageCode>", "The language code of the language to translate to. Use 'doctr languages' to see the available languages.", CommandOptionType.MultipleValue).IsRequired(true, "specification of a language to translate to is required.");
-                var fromLang = translateCmd.Option("--from <LanguageCode>", "The language code of the language to translate from. Use 'doctr languages' to see the available languages.", CommandOptionType.SingleOrNoValue).IsRequired(false);
-                var key = translateCmd.Option("--key <SubscriptionKey>", "The subscription key to use for this translation. Will not be saved in config settings.", CommandOptionType.SingleValue).IsRequired(false);
+                var sourceFiles = translateCmd.Argument("source", "Translate this document or folder")
+                                              .IsRequired(true, "A source document or folder is required.");
+                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If ommitted, target folder is <sourcefolder>.<language>.");
+                var toLang = translateCmd.Option("--to <LanguageCode>", "The language code of the language to translate to. Use 'doctr languages' to see the available languages.", CommandOptionType.MultipleValue)
+                                         .IsRequired(true, "Specification of a language to translate to is required.");
+                var fromLang = translateCmd.Option("--from <LanguageCode>",
+                                                   "The language code of the language to translate from. Use 'doctr languages' to see the available languages.",
+                                                   CommandOptionType.SingleOrNoValue);
+                var key = translateCmd.Option("--key <SubscriptionKey>",
+                                              "The subscription key to use for this translation. Will not be saved in config settings.",
+                                              CommandOptionType.SingleValue);
+                var nodelete = translateCmd.Option("--nodelete",
+                                                   "Do not delete the target folder on the storage account. For debugging only.",
+                                                   CommandOptionType.NoValue);
                 translateCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
                     DocTransAppSettings settings = await AppSettingsSetter.Read();
                     if (key.HasValue()) settings.SubscriptionKey = key.Value();
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
-
-                    await translationBusiness.RunAsync(sourceFiles.Values, toLang.Value());
+                    if (nodelete.HasValue()) translationBusiness.Nodelete = true;
+                    translationBusiness.OnStatusUpdate += TranslationBusiness_OnStatusUpdate;
+                    translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
+                    translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
+                    try
+                    {
+                        await translationBusiness.RunAsync(sourceFiles.Values, toLang.Value());
+                    }
+                    catch (System.ArgumentNullException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return;
+                    }
+                    catch (System.ArgumentException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 });
             });
             app.Command("config", configCmd =>
@@ -201,5 +225,25 @@ namespace TranslationService.CLI
             return result;
         }
 
+        private static void TranslationBusiness_OnFilesDiscarded(object sender, System.Collections.Generic.List<string> discardedFilenames)
+        {
+            Console.WriteLine("Following files were excluded due to a file type mismatch:");
+            foreach (string filename in discardedFilenames) Console.WriteLine(filename);
+        }
+
+        private static void TranslationBusiness_OnDownloadComplete(object sender, EventArgs e)
+        {
+            Console.WriteLine("Translation complete.");
+        }
+
+        private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
+        {
+            var time = DateTime.Parse(e.lastActionDateTimeUtc);
+            Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged}");
+            if (e.status.Contains("Failed"))
+            {
+                Console.WriteLine($"{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+            }
+        }
     }
 }

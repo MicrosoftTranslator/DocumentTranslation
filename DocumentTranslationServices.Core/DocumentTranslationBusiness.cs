@@ -18,9 +18,16 @@ namespace DocumentTranslationService.Core
 
         private Glossary glossary;
 
-        public event EventHandler<StatusResponse> StatusUpdate;
+        /// <summary>
+        /// Prevent deletion of storage container. For debugging.
+        /// </summary>
+        public bool Nodelete { get; set; } = false;
+
+        public event EventHandler<StatusResponse> OnStatusUpdate;
 
         public event EventHandler OnDownloadComplete;
+
+        public event EventHandler<List<string>> OnFilesDiscarded;
 
         #endregion Properties
 
@@ -33,16 +40,6 @@ namespace DocumentTranslationService.Core
             TranslationService = documentTranslationService;
         }
 
-        public async Task RunAsync(string[] filestotranslate, string tolanguage)
-        {
-            List<string> list = new();
-            foreach (string file in filestotranslate)
-            {
-                list.Add(file);
-            }
-            await RunAsync(list, tolanguage);
-        }
-
         /// <summary>
         /// Perform a translation of a set of files using the TranslationService passed in the Constructor.
         /// </summary>
@@ -52,7 +49,43 @@ namespace DocumentTranslationService.Core
         /// <returns></returns>
         public async Task RunAsync(List<string> filestotranslate, string tolanguage, List<string> glossaryfiles = null)
         {
-            //Create the containers
+            if (filestotranslate.Count == 0) throw new ArgumentNullException(nameof(filestotranslate), "No files to translate.");
+            Task initialize = TranslationService.InitializeAsync();
+
+            #region Build the list of files to translate
+            List<string> sourcefiles = new();
+            foreach (string filename in filestotranslate)
+            {
+                if (File.GetAttributes(filename) == FileAttributes.Directory)
+                    foreach (var file in Directory.EnumerateFiles(filename))
+                        sourcefiles.Add(file);
+                else sourcefiles.Add(filename);
+            }
+            List<string> discards;
+            await initialize;
+            #endregion
+
+            #region Parameter checking
+            if (TranslationService.Extensions.Count == 0)
+                throw new ArgumentNullException(nameof(TranslationService.Extensions), "List of translatable extensions cannot be null.");
+            (sourcefiles, discards) = FilterByExtension(sourcefiles, TranslationService.Extensions);
+            if (discards is not null)
+            {
+                foreach (string fileName in discards)
+                {
+                    Debug.WriteLine($"Run: Discarded due to invalid file format for translation: {fileName}");
+                }
+                if (OnFilesDiscarded is not null) OnFilesDiscarded(this, discards);
+            }
+            if (sourcefiles.Count == 0)
+            {
+                //There is nothing to translate
+                Debug.WriteLine("Run: Nothing left to translate.");
+                throw new ArgumentNullException(nameof(filestotranslate), "List filtered to nothing.");
+            }
+            if (!TranslationService.Languages.ContainsKey(tolanguage)) throw new ArgumentException("Invalid 'to' language.", nameof(tolanguage));
+            #endregion
+            #region Create the containers
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
 
             BlobContainerClient sourceContainer = new(TranslationService.StorageConnectionString, containerNameBase + "src");
@@ -68,35 +101,16 @@ namespace DocumentTranslationService.Core
                 glossary.GlossaryFiles = glossaryfiles;
                 await glossary.CreateContainerAsync(TranslationService.StorageConnectionString, containerNameBase);
             }
+            #endregion
 
-
-            //Upload documents
-            if ((filestotranslate.Count == 1)
-                && (File.GetAttributes(filestotranslate[0]) == FileAttributes.Directory))
-            {
-                foreach (var file in Directory.EnumerateFiles(filestotranslate[0]))
-                {
-                    filestotranslate.Add(file);
-                }
-                filestotranslate.RemoveAt(0);
-            }
-            List<string> discards;
-            (filestotranslate, discards) = FilterByExtension(filestotranslate, TranslationService.Extensions);
-            if (discards is not null)
-            {
-                foreach (string fileName in discards)
-                {
-                    Debug.WriteLine($"Discarded due to invalid file format for translation: {fileName}");
-                }
-            }
-
+            #region Upload documents
             await sourceContainerTask;
             Debug.WriteLine("Source container created");
 
             List<Task> uploadTasks = new();
             using (System.Threading.SemaphoreSlim semaphore = new(100))
             {
-                foreach (var filename in filestotranslate)
+                foreach (var filename in sourcefiles)
                 {
                     await semaphore.WaitAsync();
                     FileStream fileStream = File.OpenRead(filename);
@@ -116,11 +130,11 @@ namespace DocumentTranslationService.Core
             Debug.WriteLine("Awaiting upload task completion.");
             await Task.WhenAll(uploadTasks);
             Debug.WriteLine("Upload complete. {0} files uploaded.", uploadTasks.Count);
-
             //Upload Glossaries
             await glossary.UploadAsync();
+            #endregion
 
-            //Translate the container content
+            #region Translate the container content
             Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
             await targetContainerTask;
             Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
@@ -149,7 +163,7 @@ namespace DocumentTranslationService.Core
                 if (statusResult.lastActionDateTimeUtc != lastActionTime)
                 {
                     //Raise the update event
-                    if (StatusUpdate is not null) StatusUpdate(this, statusResult);
+                    if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
                     lastActionTime = statusResult.lastActionDateTimeUtc;
                 }
             }
@@ -157,10 +171,13 @@ namespace DocumentTranslationService.Core
                   (statusResult.summary.inProgress != 0)
                 ||(statusResult.status=="NotStarted")
                   );
+            if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
+            if (statusResult.status.Contains("Failed.")) return;
+            #endregion
 
-            //Download the translations
+            #region Download the translations
             //Chance for optimization: Check status on the documents and start download immediately after each document is translated. 
-            string directoryName = Path.GetDirectoryName(filestotranslate[0]);
+            string directoryName = Path.GetDirectoryName(sourcefiles[0]);
             DirectoryInfo directory = Directory.CreateDirectory(directoryName + "." + tolanguage);
             List<Task> downloads = new();
             using (System.Threading.SemaphoreSlim semaphore = new(100))
@@ -168,20 +185,35 @@ namespace DocumentTranslationService.Core
                 await foreach (var blobItem in TranslationService.ContainerClientTarget.GetBlobsAsync())
                 {
                     await semaphore.WaitAsync();
-                    BlobClient blobClient = new(TranslationService.StorageConnectionString, TranslationService.ContainerClientTarget.Name, blobItem.Name);
-                    BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
-                    FileStream downloadFileStream = File.OpenWrite(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
-                    Task download = blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
-                    downloads.Add(download);
-                    Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
+                    downloads.Add(DownloadBlob(directory, blobItem));
                     semaphore.Release();
                 }
             }
             await Task.WhenAll(downloads);
+            #endregion
+
+            #region final
             Debug.WriteLine("Download complete.");
             if (OnDownloadComplete is not null) OnDownloadComplete(this, EventArgs.Empty);
-            await DeleteContainers();
+            if (!Nodelete) await DeleteContainers();
             Debug.WriteLine("Run: Exiting.");
+            #endregion
+        }
+
+        /// <summary>
+        /// Download a single blob item
+        /// </summary>
+        /// <param name="directory">Directory name to prepend to the file name.</param>
+        /// <param name="blobItem">The actual blob</param>
+        /// <returns>Task</returns>
+        private async Task DownloadBlob(DirectoryInfo directory, BlobItem blobItem)
+        {
+            BlobClient blobClient = new(TranslationService.StorageConnectionString, TranslationService.ContainerClientTarget.Name, blobItem.Name);
+            BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
+            FileStream downloadFileStream = File.Create(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
+            await blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
+            downloadFileStream.Close();
+            Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
         }
 
 
