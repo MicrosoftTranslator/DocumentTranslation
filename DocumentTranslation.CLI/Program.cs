@@ -61,14 +61,14 @@ namespace TranslationService.CLI
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
                     translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
-                    Timer timer = new(500) { AutoReset = true };
+                    Timer timer = new(500) { AutoReset = true, Enabled = true };
                     timer.Elapsed += Timer_Elapsed;
-                    Console.WriteLine($"Starting translation to {toLang.Value()}. Press Esc to cancel.");
+                    Console.WriteLine($"Starting translation of {sourceFiles.Value} to {toLang.Value()}. Press Esc to cancel.");
                     string target = null;
                     if (!string.IsNullOrEmpty(targetFolder.Value)) target = targetFolder.Value;
                     try
                     {
-                        await translationBusiness.RunAsync(sourceFiles.Values, toLang.Value(), gls.Values, target);
+                        await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values, tolanguage: toLang.Value(), glossaryfiles: gls.Values, targetFolder: target);
                     }
                     catch (System.ArgumentNullException e)
                     {
@@ -263,6 +263,7 @@ namespace TranslationService.CLI
             {
                 if (Console.ReadKey().Key == ConsoleKey.Escape)
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Canceling...");
                     await TranslationService.CancelRunAsync();
                 }
@@ -284,7 +285,7 @@ namespace TranslationService.CLI
         {
             var time = DateTime.Parse(e.lastActionDateTimeUtc);
             Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
-            if (e.status.Contains("Failed"))
+            if (e.status.Contains("Failed") && e.error is not null)
             {
                 Console.WriteLine($"{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
             }
