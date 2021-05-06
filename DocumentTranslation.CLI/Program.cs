@@ -79,6 +79,7 @@ namespace TranslationService.CLI
                     {
                         Console.WriteLine(e.Message);
                     }
+                    Console.WriteLine($"Target folder: {translationBusiness.TargetFolder}");
                     timer.Stop();
                     timer.Dispose();
                 });
@@ -252,7 +253,7 @@ namespace TranslationService.CLI
 
         private static void TranslationBusiness_OnUploadComplete(object sender, (int count, long sizeInBytes) e)
         {
-            Console.WriteLine($"Translation started: {e.count} documents, {e.sizeInBytes} bytes.");
+            Console.WriteLine($"Submitted: {e.count} documents, {e.sizeInBytes} bytes.");
         }
 
         private static async void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -282,7 +283,7 @@ namespace TranslationService.CLI
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
             var time = DateTime.Parse(e.lastActionDateTimeUtc);
-            Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged}");
+            Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
             if (e.status.Contains("Failed"))
             {
                 Console.WriteLine($"{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");

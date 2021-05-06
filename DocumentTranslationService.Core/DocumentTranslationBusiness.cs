@@ -18,12 +18,15 @@ namespace DocumentTranslationService.Core
         /// Holds the Custom Translator category.
         /// </summary>
         public string Category { get; set; }
-        
+
+        /// <summary>
+        /// Can retrieve the final target folder here
+        /// </summary>
+        public string TargetFolder { get; private set; }
         /// <summary>
         /// Returns the files used as glossary.
         /// </summary>
-        public Glossary Glossary { get { return glossary; } }
-        private Glossary glossary;
+        public Glossary Glossary { get; private set; }
 
         /// <summary>
         /// Prevent deletion of storage container. For debugging.
@@ -120,7 +123,7 @@ namespace DocumentTranslationService.Core
             var targetContainerTask = targetContainer.CreateIfNotExistsAsync();
             TranslationService.ContainerClientTarget = targetContainer;
             Glossary glossary = new(TranslationService);
-            this.glossary = glossary;
+            this.Glossary = glossary;
             if (glossaryfiles is not null)
             {
                 glossary.GlossaryFiles = glossaryfiles;
@@ -164,12 +167,24 @@ namespace DocumentTranslationService.Core
             #endregion
 
             #region Translate the container content
-            Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             await targetContainerTask;
-            Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             Uri sasUriGlossary = glossary.GenerateSasUri();
             DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
-            DocumentTranslationTarget documentTranslationTarget = new() { language = tolanguage, targetUrl = sasUriTarget.ToString() };
+            DocumentTranslationTarget documentTranslationTarget = new(language: tolanguage, targetUrl: sasUriTarget.ToString());
+            if (sasUriGlossary is not null)
+            {
+                ServiceGlossary serviceGlossary = new(sasUriGlossary.AbsoluteUri);
+                List<ServiceGlossary> serviceGlossaries = new();
+                serviceGlossaries.Add(serviceGlossary);
+                documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
+            }
+            if (Category is not null)
+            {
+                documentTranslationTarget.category = Category;
+            }
+
             List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
 
             DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
@@ -221,13 +236,13 @@ namespace DocumentTranslationService.Core
                     await semaphore.WaitAsync();
                     downloads.Add(DownloadBlob(directory, blobItem));
                     count++;
-                    sizeInBytes += (long) blobItem.Properties.ContentLength;
+                    sizeInBytes += (long)blobItem.Properties.ContentLength;
                     semaphore.Release();
                 }
             }
             await Task.WhenAll(downloads);
             #endregion
-
+            this.TargetFolder = directoryName;
             #region final
             Debug.WriteLine("Download complete.");
             if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
@@ -275,7 +290,7 @@ namespace DocumentTranslationService.Core
                             || (containerItem.Name.EndsWith("gls")))
                         {
                             if (containerItem.Properties.LastModified < (DateTimeOffset.UtcNow - TimeSpan.FromDays(10)))
-                            deletionTasks.Add(client.DeleteAsync());
+                                deletionTasks.Add(client.DeleteAsync());
                         }
                     }
                 }
@@ -284,7 +299,7 @@ namespace DocumentTranslationService.Core
             {
                 deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
                 deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
-                deletionTasks.Add(glossary.DeleteAsync());
+                deletionTasks.Add(Glossary.DeleteAsync());
             }
             await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
@@ -307,7 +322,7 @@ namespace DocumentTranslationService.Core
             if (fileNames is null) return (null, null);
             List<string> validNames = new();
             List<string> discardedNames = new();
-            foreach(string filename in fileNames)
+            foreach (string filename in fileNames)
             {
                 if (validExtensions.Contains(Path.GetExtension(filename).ToLowerInvariant())) validNames.Add(filename);
                 else discardedNames.Add(filename);

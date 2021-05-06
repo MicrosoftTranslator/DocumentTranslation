@@ -8,16 +8,20 @@ using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
+    /// <summary>
+    /// Holds the glossary and the functions to maintain it. 
+    /// </summary>
     public class Glossary
     {
-        public List<string> GlossaryFiles { get; set; }
+        public List<string> GlossaryFiles { get => glossaryFiles; set => glossaryFiles = value; }
 
         public BlobContainerClient ContainerClient { get { return containerClient; } }
 
         private BlobContainerClient containerClient;
-
+        private List<string> glossaryFiles;
+        private bool usingGlossary;
         private readonly DocumentTranslationService translationService;
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -25,6 +29,12 @@ namespace DocumentTranslationService.Core
         /// <param name="glossaryFiles"></param>
         public Glossary(DocumentTranslationService translationService, List<string> glossaryFiles = null)
         {
+            if ((glossaryFiles is null) || (glossaryFiles.Count == 0))
+            {
+                usingGlossary = false;
+                return;
+            }
+            else usingGlossary = true;
             GlossaryFiles = glossaryFiles;
             this.translationService = translationService;
         }
@@ -37,7 +47,7 @@ namespace DocumentTranslationService.Core
         /// <returns></returns>
         public async Task CreateContainerAsync(string storageConnectionString, string containerNameBase)
         {
-            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return;
+            if (!usingGlossary) return;
             BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
             var GlossaryContainerTask = glossaryContainer.CreateIfNotExistsAsync();
             this.containerClient = glossaryContainer;
@@ -51,10 +61,9 @@ namespace DocumentTranslationService.Core
         /// <remarks>Serious optimization possible here. The container should be permanent, and upload only changed files, or no files at all, and still use them.</remarks>
         public async Task<(int, long)> UploadAsync()
         {
-            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return (0, 0);
-            List<string> discards;
+            if (!usingGlossary) return (0, 0);
             List<string> selecteds = new();
-            foreach(string filename in GlossaryFiles)
+            foreach (string filename in GlossaryFiles)
             {
                 if (File.GetAttributes(filename) == FileAttributes.Directory)
                     foreach (var file in Directory.EnumerateFiles(filename))
@@ -64,6 +73,7 @@ namespace DocumentTranslationService.Core
                 else selecteds.Add(filename);
             }
 
+            List<string> discards;
             (GlossaryFiles, discards) = DocumentTranslationBusiness.FilterByExtension(selecteds, translationService.GlossaryExtensions);
             if (discards is not null)
             {
@@ -71,6 +81,11 @@ namespace DocumentTranslationService.Core
                 {
                     Debug.WriteLine($"Glossary files ignored: {fileName}");
                 }
+            }
+            if (selecteds.Count == 0)
+            {
+                usingGlossary = false;
+                return (0, 0);
             }
             System.Threading.SemaphoreSlim semaphore = new(10); //limit the number of concurrent uploads
             int fileCounter = 0;
@@ -104,7 +119,7 @@ namespace DocumentTranslationService.Core
         public Uri GenerateSasUri()
         {
             if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return null;
-            Uri sasUriGlossary = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            Uri sasUriGlossary = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             return sasUriGlossary;
         }
 

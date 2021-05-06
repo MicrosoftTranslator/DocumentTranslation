@@ -55,6 +55,35 @@ namespace DocumentTranslationService.Core
     {
         public string language;
         public string targetUrl;
+        public string category;
+        public ServiceGlossary[] glossaries;
+
+        /// <summary>
+        /// Describe the target characteristics
+        /// </summary>
+        /// <param name="language">Language to translate to</param>
+        /// <param name="targetUrl">The Azure storage target SAS URL</param>
+        /// <param name="category">The Customer translator category to use (can be null)</param>
+        /// <param name="glossaries">The glossaries to use (can be null)</param>
+        public DocumentTranslationTarget(string language, string targetUrl)
+        {
+            this.language = language;
+            this.targetUrl = targetUrl;
+        }
+    }
+
+    public class ServiceGlossary
+    {
+        public string format;
+        public string glossaryUrl;
+        public string storageSource;
+
+        public ServiceGlossary(string glossaryUrl, string format = null, string storageSource = "folder")
+        {
+            this.format = format;
+            this.glossaryUrl = glossaryUrl;
+            this.storageSource = storageSource;
+        }
     }
 
     public class DocumentTranslationRequest
