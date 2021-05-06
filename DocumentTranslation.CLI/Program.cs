@@ -218,17 +218,35 @@ namespace TranslationService.CLI
                         return 0;
                     });
                 });
-            app.Command("formats", langCmd =>
+            app.Command("formats", formatsCmd =>
             {
-                langCmd.AddName("format");
-                langCmd.Description = "List the translatable document formats.";
-                langCmd.OnExecuteAsync(async (cancellationToken) =>
+                formatsCmd.AddName("format");
+                formatsCmd.Description = "List the translatable document formats.";
+                formatsCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     await translationService.GetFormatsAsync();
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
+                    {
+                        Console.Write($"{format.format}");
+                        foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");
+                        Console.WriteLine();
+                    }
+                });
+            });
+            app.Command("glossary", glosCmd =>
+            {
+                glosCmd.AddName("glossaryformats");
+                glosCmd.Description = "List the usable glossary formats.";
+                glosCmd.OnExecuteAsync(async (cancellationToken) =>
+                {
+                    DocTransAppSettings settings = new();
+                    settings = await AppSettingsSetter.Read();
+                    DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+                    await translationService.GetGlossaryFormatsAsync();
+                    foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
                         foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");

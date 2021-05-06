@@ -329,7 +329,6 @@ namespace DocumentTranslationService.Core
             }
             return (validNames, discardedNames);
         }
-
     }
 }
 
