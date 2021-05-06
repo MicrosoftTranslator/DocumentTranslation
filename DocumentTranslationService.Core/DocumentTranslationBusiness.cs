@@ -14,8 +14,15 @@ namespace DocumentTranslationService.Core
         #region Properties
         public DocumentTranslationService TranslationService { get; }
 
+        /// <summary>
+        /// Holds the Custom Translator category.
+        /// </summary>
+        public string Category { get; set; }
+        
+        /// <summary>
+        /// Returns the files used as glossary.
+        /// </summary>
         public Glossary Glossary { get { return glossary; } }
-
         private Glossary glossary;
 
         /// <summary>
@@ -23,10 +30,26 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public bool Nodelete { get; set; } = false;
 
+        /// <summary>
+        /// Fires during a translation run when there is an updated status. Approximately once per second. 
+        /// </summary>
         public event EventHandler<StatusResponse> OnStatusUpdate;
 
-        public event EventHandler OnDownloadComplete;
+        /// <summary>
+        /// Fires when the translated files completed downloading. Maybe before the Run method exits, due to necessary cleanup work. 
+        /// Returns count and total size of the download.
+        /// </summary>
+        public event EventHandler<(int, long)> OnDownloadComplete;
 
+        /// <summary>
+        /// Fires when the source files completed uploading.  
+        /// Returns count and total size of the download.
+        /// </summary>
+        public event EventHandler<(int, long)> OnUploadComplete;
+
+        /// <summary>
+        /// Fires if there were files listed to translate that were discarded.
+        /// </summary>
         public event EventHandler<List<string>> OnFilesDiscarded;
 
         #endregion Properties
@@ -38,6 +61,7 @@ namespace DocumentTranslationService.Core
         public DocumentTranslationBusiness(DocumentTranslationService documentTranslationService)
         {
             TranslationService = documentTranslationService;
+            Category = null;
         }
 
         /// <summary>
@@ -47,7 +71,7 @@ namespace DocumentTranslationService.Core
         /// <param name="tolanguage">A single target language</param>
         /// <param name="glossaryfiles">The glossary files</param>
         /// <returns></returns>
-        public async Task RunAsync(List<string> filestotranslate, string tolanguage, List<string> glossaryfiles = null)
+        public async Task RunAsync(List<string> filestotranslate, string tolanguage, List<string> glossaryfiles = null, string targetFolder = null)
         {
             if (filestotranslate.Count == 0) throw new ArgumentNullException(nameof(filestotranslate), "No files to translate.");
             Task initialize = TranslationService.InitializeAsync();
@@ -97,7 +121,7 @@ namespace DocumentTranslationService.Core
             TranslationService.ContainerClientTarget = targetContainer;
             Glossary glossary = new(TranslationService);
             this.glossary = glossary;
-            if (glossaryfiles is null)
+            if (glossaryfiles is not null)
             {
                 glossary.GlossaryFiles = glossaryfiles;
                 await glossary.CreateContainerAsync(TranslationService.StorageConnectionString, containerNameBase);
@@ -107,7 +131,8 @@ namespace DocumentTranslationService.Core
             #region Upload documents
             await sourceContainerTask;
             Debug.WriteLine("Source container created");
-
+            int count = 0;
+            long sizeInBytes = 0;
             List<Task> uploadTasks = new();
             using (System.Threading.SemaphoreSlim semaphore = new(100))
             {
@@ -119,6 +144,8 @@ namespace DocumentTranslationService.Core
                     try
                     {
                         uploadTasks.Add(blobClient.UploadAsync(fileStream, true));
+                        count++;
+                        sizeInBytes += new FileInfo(fileStream.Name).Length;
                         semaphore.Release();
                     }
                     catch (System.AggregateException e)
@@ -130,9 +157,10 @@ namespace DocumentTranslationService.Core
             }
             Debug.WriteLine("Awaiting upload task completion.");
             await Task.WhenAll(uploadTasks);
-            Debug.WriteLine("Upload complete. {0} files uploaded.", uploadTasks.Count);
             //Upload Glossaries
-            await glossary.UploadAsync();
+            var result = await glossary.UploadAsync();
+            if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
+            Debug.WriteLine($"Glossary: {result.Item1} files, {result.Item2} bytes uploaded.");
             #endregion
 
             #region Translate the container content
@@ -171,15 +199,20 @@ namespace DocumentTranslationService.Core
             while (
                   (statusResult.summary.inProgress != 0)
                 || (statusResult.status == "NotStarted")
-                || (statusResult.summary.notYetStarted != 0));
+                || (statusResult.summary.notYetStarted != 0)
+                || (statusResult.status == "Canceled"));
             if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
             if (statusResult.status.Contains("Failed.")) return;
             #endregion
 
             #region Download the translations
             //Chance for optimization: Check status on the documents and start download immediately after each document is translated. 
-            string directoryName = Path.GetDirectoryName(sourcefiles[0]);
-            DirectoryInfo directory = Directory.CreateDirectory(directoryName + "." + tolanguage);
+            string directoryName;
+            if (string.IsNullOrEmpty(targetFolder)) directoryName = Path.GetDirectoryName(sourcefiles[0]) + "." + tolanguage;
+            else directoryName = targetFolder;
+            count = 0;
+            sizeInBytes = 0;
+            DirectoryInfo directory = Directory.CreateDirectory(directoryName);
             List<Task> downloads = new();
             using (System.Threading.SemaphoreSlim semaphore = new(100))
             {
@@ -187,6 +220,8 @@ namespace DocumentTranslationService.Core
                 {
                     await semaphore.WaitAsync();
                     downloads.Add(DownloadBlob(directory, blobItem));
+                    count++;
+                    sizeInBytes += (long) blobItem.Properties.ContentLength;
                     semaphore.Release();
                 }
             }
@@ -195,7 +230,7 @@ namespace DocumentTranslationService.Core
 
             #region final
             Debug.WriteLine("Download complete.");
-            if (OnDownloadComplete is not null) OnDownloadComplete(this, EventArgs.Empty);
+            if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
             if (!Nodelete) await DeleteContainers();
             Debug.WriteLine("Run: Exiting.");
             #endregion

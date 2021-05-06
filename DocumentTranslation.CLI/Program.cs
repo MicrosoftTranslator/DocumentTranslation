@@ -3,17 +3,21 @@ using DocumentTranslationService.Core;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using System.Linq;
+using System.Timers;
 
 namespace TranslationService.CLI
 {
     partial class Program
     {
+        private static DocumentTranslationService.Core.DocumentTranslationService TranslationService;
+
+
         public static async Task<int> Main(string[] args)
         {
             CommandLineApplication app = new();
             app.HelpOption(inherited: true);
             app.Name = "DOCTR";
-            app.Description = "DOCTR: Translate documents in many different formats with the Azure Translator service.";
+            app.Description = "DOCTR: Translate documents with the Azure Translator service.";
             app.OnExecute(() =>
             {
                 app.ShowHelp();
@@ -23,18 +27,24 @@ namespace TranslationService.CLI
             {
                 translateCmd.AddName("trans");
                 translateCmd.AddName("x");
-                translateCmd.Description = "Translate a file or the content of a folder.";
+                translateCmd.Description = "Translate a document or all documents in a folder.";
                 var sourceFiles = translateCmd.Argument("source", "Translate this document or folder")
                                               .IsRequired(true, "A source document or folder is required.");
-                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If ommitted, target folder is <sourcefolder>.<language>.");
-                var toLang = translateCmd.Option("--to <LanguageCode>", "The language code of the language to translate to. Use 'doctr languages' to see the available languages.", CommandOptionType.MultipleValue)
+                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If omitted, target folder is <sourcefolder>.<language>.");
+                var toLang = translateCmd.Option("-t|--to <LanguageCode>", "The language code of the language to translate to. Use 'doctr languages' to see the available languages.", CommandOptionType.MultipleValue)
                                          .IsRequired(true, "Specification of a language to translate to is required.");
-                var fromLang = translateCmd.Option("--from <LanguageCode>",
-                                                   "The language code of the language to translate from. Use 'doctr languages' to see the available languages.",
+                var fromLang = translateCmd.Option("-f|--from <LanguageCode>",
+                                                   "Optional: The language code of the language to translate from. Use 'doctr languages' to see the available languages. If omitted, the language will be auto-detected.",
                                                    CommandOptionType.SingleOrNoValue);
-                var key = translateCmd.Option("--key <SubscriptionKey>",
-                                              "The subscription key to use for this translation. Will not be saved in config settings.",
+                var key = translateCmd.Option("-k|--key <SubscriptionKey>",
+                                              "Optional: The subscription key to use for this translation. Will not be saved in config settings. If omitted, will use the key of the configuration.",
                                               CommandOptionType.SingleValue);
+                var cat = translateCmd.Option("-c|--category",
+                                              "The Custom Translator category to use. Set to 'none' or 'n' to force use of no category.",
+                                              CommandOptionType.SingleValue);
+                var gls = translateCmd.Option("-g|--glossary",
+                                              "Glossary file, files, or folder to use as glossary. Cannot be same as source.",
+                                              CommandOptionType.MultipleValue);
                 var nodelete = translateCmd.Option("--nodelete",
                                                    "Do not delete the container in the storage account. For debugging purposes only.",
                                                    CommandOptionType.NoValue);
@@ -43,14 +53,22 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = await AppSettingsSetter.Read();
                     if (key.HasValue()) settings.SubscriptionKey = key.Value();
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+                    TranslationService = documentTranslationService;
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
                     if (nodelete.HasValue()) translationBusiness.Nodelete = true;
+                    if (cat.HasValue()) translationBusiness.Category = cat.Value();
                     translationBusiness.OnStatusUpdate += TranslationBusiness_OnStatusUpdate;
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
+                    translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
+                    Timer timer = new(500) { AutoReset = true };
+                    timer.Elapsed += Timer_Elapsed;
+                    Console.WriteLine($"Starting translation to {toLang.Value()}. Press Esc to cancel.");
+                    string target = null;
+                    if (!string.IsNullOrEmpty(targetFolder.Value)) target = targetFolder.Value;
                     try
                     {
-                        await translationBusiness.RunAsync(sourceFiles.Values, toLang.Value());
+                        await translationBusiness.RunAsync(sourceFiles.Values, toLang.Value(), gls.Values, target);
                     }
                     catch (System.ArgumentNullException e)
                     {
@@ -61,6 +79,8 @@ namespace TranslationService.CLI
                     {
                         Console.WriteLine(e.Message);
                     }
+                    timer.Stop();
+                    timer.Dispose();
                 });
             });
             app.Command("config", configCmd =>
@@ -99,18 +119,20 @@ namespace TranslationService.CLI
                 });
                 configCmd.Command("set", configSetCmd =>
                 {
-                    var key = configSetCmd.Option("--key <AzureKey>", "Azure key for the Translator resource.", CommandOptionType.SingleValue);
-                    var storage = configSetCmd.Option("--storage <StorageConnectionString>", "Connection string copied from the Azure storage resource.", CommandOptionType.SingleValue);
-                    var name = configSetCmd.Option("--name <ResourceName>", "Name of the Translator resource matching the \"key\".", CommandOptionType.SingleValue);
-                    var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages.", CommandOptionType.SingleValue);
+                    var key = configSetCmd.Option("--key <AzureKey>", "Azure key for the Translator resource. 'clear' to remove.", CommandOptionType.SingleValue);
+                    var storage = configSetCmd.Option("--storage <StorageConnectionString>", "Connection string copied from the Azure storage resource. 'clear' to remove.", CommandOptionType.SingleValue);
+                    var name = configSetCmd.Option("--name <ResourceName>", "Name of the Translator resource matching the \"key\". 'clear' to remove.", CommandOptionType.SingleValue);
+                    var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages. 'clear' to remove.", CommandOptionType.SingleValue);
+                    var cat = configCmd.Option("--category", "Set the Custom Translator category to use for translations. 'clear' to remove.", CommandOptionType.SingleValue);
                     configSetCmd.Description = "Set the values of configuration parameters. Required before using Document Translation.";
                     configSetCmd.OnExecuteAsync(async (cancellationToken) =>
                     {
-                        if (!(key.HasValue() || storage.HasValue() || name.HasValue() || exp.HasValue())) configSetCmd.ShowHelp();
+                        if (!(key.HasValue() || storage.HasValue() || name.HasValue() || exp.HasValue() || cat.HasValue())) configSetCmd.ShowHelp();
                         DocTransAppSettings docTransAppSettings = await AppSettingsSetter.Read(null);
                         if (key.HasValue())
                         {
-                            docTransAppSettings.SubscriptionKey = key.Value();
+                            if (key.Value().ToLowerInvariant() == "clear") docTransAppSettings.SubscriptionKey = string.Empty;
+                            else docTransAppSettings.SubscriptionKey = key.Value();
                             Console.WriteLine($"{app.Name}: Subscription key set.");
                         }
                         if (storage.HasValue())
@@ -125,8 +147,15 @@ namespace TranslationService.CLI
                         }
                         if (name.HasValue())
                         {
-                            docTransAppSettings.AzureResourceName = name.Value();
+                            if (name.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureResourceName = string.Empty;
+                            else docTransAppSettings.AzureResourceName = name.Value();
                             Console.WriteLine($"{app.Name}: Azure resource name set.");
+                        }
+                        if (cat.HasValue())
+                        {
+                            if (cat.Value().ToLowerInvariant() == "clear") docTransAppSettings.Category = string.Empty;
+                            else docTransAppSettings.Category = cat.Value();
+                            Console.WriteLine($"{app.Name}: Custom Translator Category set.");
                         }
                         if (exp.HasValue())
                         {
@@ -221,15 +250,33 @@ namespace TranslationService.CLI
             return result;
         }
 
+        private static void TranslationBusiness_OnUploadComplete(object sender, (int count, long sizeInBytes) e)
+        {
+            Console.WriteLine($"Translation started: {e.count} documents, {e.sizeInBytes} bytes.");
+        }
+
+        private static async void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            //check whether user pressed Escape.
+            if (Console.KeyAvailable)
+            {
+                if (Console.ReadKey().Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine("Canceling...");
+                    await TranslationService.CancelRunAsync();
+                }
+            }
+        }
+
         private static void TranslationBusiness_OnFilesDiscarded(object sender, System.Collections.Generic.List<string> discardedFilenames)
         {
             Console.WriteLine("Following files were excluded due to a file type mismatch:");
             foreach (string filename in discardedFilenames) Console.WriteLine(filename);
         }
 
-        private static void TranslationBusiness_OnDownloadComplete(object sender, EventArgs e)
+        private static void TranslationBusiness_OnDownloadComplete(object Sender, (int count, long sizeInBytes) e)
         {
-            Console.WriteLine("Translation complete and downloaded.");
+            Console.WriteLine($"Translation complete: {e.count} documents, {e.sizeInBytes} bytes.");
         }
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)

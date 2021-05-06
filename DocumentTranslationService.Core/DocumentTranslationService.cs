@@ -85,6 +85,21 @@ namespace DocumentTranslationService.Core
             return statusResponse;
         }
 
+        public async Task<StatusResponse> CancelRunAsync()
+        {
+            using HttpClient client = new();
+            using HttpRequestMessage request = new() { Method = HttpMethod.Delete, RequestUri = new Uri(ProcessingLocation) };
+            request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+            HttpResponseMessage response = await client.SendAsync(request);
+            string result = await response.Content.ReadAsStringAsync();
+            StatusResponse statusResponse = JsonSerializer.Deserialize<StatusResponse>(result, new JsonSerializerOptions { IncludeFields = true });
+            Debug.WriteLine("CancelStatus: Status: " + statusResponse.status);
+            Debug.WriteLine("CancelStatus: inProgress: " + statusResponse.summary.inProgress);
+            Debug.WriteLine("CancelStatus Result: " + result.ToString());
+            return statusResponse;
+        }
+
+
         /// <summary>
         /// Format and submit the translation request to the Document Translation Service. 
         /// </summary>

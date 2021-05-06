@@ -3,6 +3,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>DocumentTranslation.CLI</RootNamespace>
+    <Version>0.0.5</Version>
+    <Authors>Chris Wendt</Authors>
+    <Product>Document Translation</Product>
+    <Description>Translate documents using the Azure Translator service</Description>
+    <Copyright>MIT license</Copyright>
+    <PackageLicenseExpression>MIT License</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MicrosoftTranslator/DocumentTranslation</PackageProjectUrl>
+    <PackageIcon>DocumentTranslatorIcon_100.png</PackageIcon>
+    <RepositoryUrl>https://github.com/MicrosoftTranslator/DocumentTranslation</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageReleaseNotes>Initial pre-release. </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +24,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DocumentTranslationService.Core\DocumentTranslationService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DocumentTranslatorIcon_100.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

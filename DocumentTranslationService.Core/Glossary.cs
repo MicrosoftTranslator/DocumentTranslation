@@ -37,13 +37,11 @@ namespace DocumentTranslationService.Core
         /// <returns></returns>
         public async Task CreateContainerAsync(string storageConnectionString, string containerNameBase)
         {
-            if (GlossaryFiles is not null)
-            {
-                BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
-                var GlossaryContainerTask = glossaryContainer.CreateIfNotExistsAsync();
-                this.containerClient = glossaryContainer;
-                await GlossaryContainerTask;
-            }
+            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return;
+            BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
+            var GlossaryContainerTask = glossaryContainer.CreateIfNotExistsAsync();
+            this.containerClient = glossaryContainer;
+            await GlossaryContainerTask;
         }
 
         /// <summary>
@@ -51,10 +49,22 @@ namespace DocumentTranslationService.Core
         /// </summary>
         /// <returns>Task</returns>
         /// <remarks>Serious optimization possible here. The container should be permanent, and upload only changed files, or no files at all, and still use them.</remarks>
-        public async Task UploadAsync()
+        public async Task<(int, long)> UploadAsync()
         {
+            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return (0, 0);
             List<string> discards;
-            (GlossaryFiles, discards) = DocumentTranslationBusiness.FilterByExtension(GlossaryFiles, translationService.GlossaryExtensions);
+            List<string> selecteds = new();
+            foreach(string filename in GlossaryFiles)
+            {
+                if (File.GetAttributes(filename) == FileAttributes.Directory)
+                    foreach (var file in Directory.EnumerateFiles(filename))
+                    {
+                        selecteds.Add(file);
+                    }
+                else selecteds.Add(filename);
+            }
+
+            (GlossaryFiles, discards) = DocumentTranslationBusiness.FilterByExtension(selecteds, translationService.GlossaryExtensions);
             if (discards is not null)
             {
                 foreach (string fileName in discards)
@@ -63,6 +73,8 @@ namespace DocumentTranslationService.Core
                 }
             }
             System.Threading.SemaphoreSlim semaphore = new(10); //limit the number of concurrent uploads
+            int fileCounter = 0;
+            long uploadSize = 0;
             if (GlossaryFiles is not null)
             {
                 List<Task> uploads = new();
@@ -74,6 +86,8 @@ namespace DocumentTranslationService.Core
                     try
                     {
                         uploads.Add(blobClient.UploadAsync(fileStream, true));
+                        fileCounter++;
+                        uploadSize += new FileInfo(fileStream.Name).Length;
                     }
                     catch (System.AggregateException e)
                     {
@@ -84,24 +98,21 @@ namespace DocumentTranslationService.Core
                 }
                 await Task.WhenAll(uploads);
             }
+            return (fileCounter, uploadSize);
         }
 
         public Uri GenerateSasUri()
         {
-            if (GlossaryFiles is not null)
-            {
-                Uri sasUriGlossary = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
-                return sasUriGlossary;
-            }
-            else return null;
+            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return null;
+            Uri sasUriGlossary = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+            return sasUriGlossary;
         }
 
         public async Task DeleteAsync()
         {
-            if (GlossaryFiles is not null)
-            {
-                await containerClient.DeleteAsync();
-            }
+            if ((GlossaryFiles is null) || (GlossaryFiles.Count == 0)) return;
+            await containerClient.DeleteAsync();
+            return;
         }
     }
 }
