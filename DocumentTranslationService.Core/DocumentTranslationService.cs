@@ -32,7 +32,6 @@ namespace DocumentTranslationService.Core
 
         internal BlobContainerClient ContainerClientSource { get; set; }
         internal BlobContainerClient ContainerClientTarget { get; set; }
-        internal BlobContainerClient ContainerClientGlossary { get; set; }
 
         #endregion Properties
         #region Constants
@@ -138,7 +137,8 @@ namespace DocumentTranslationService.Core
                 }
                 else
                 {
-                    Debug.WriteLine("SubmitTranslationRequest: Failed.");
+                    Debug.WriteLine("Response content: " + await response.Content.ReadAsStringAsync());
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) return null;
                     await Task.Delay(1000);
                 }
             }

@@ -59,12 +59,10 @@ namespace DocumentTranslationService.Core
         public ServiceGlossary[] glossaries;
 
         /// <summary>
-        /// Describe the target characteristics
+        /// Describe the target characteristics. Set category and glossaries to use as properties, if desired.
         /// </summary>
         /// <param name="language">Language to translate to</param>
         /// <param name="targetUrl">The Azure storage target SAS URL</param>
-        /// <param name="category">The Customer translator category to use (can be null)</param>
-        /// <param name="glossaries">The glossaries to use (can be null)</param>
         public DocumentTranslationTarget(string language, string targetUrl)
         {
             this.language = language;
@@ -78,11 +76,11 @@ namespace DocumentTranslationService.Core
         public string glossaryUrl;
         public string storageSource;
 
-        public ServiceGlossary(string glossaryUrl, string format = null, string storageSource = "folder")
+        public ServiceGlossary(string glossaryUrl, string format)
         {
             this.format = format;
             this.glossaryUrl = glossaryUrl;
-            this.storageSource = storageSource;
+            this.storageSource = "AzureBlob";
         }
     }
 

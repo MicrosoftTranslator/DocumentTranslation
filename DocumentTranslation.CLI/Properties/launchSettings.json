@@ -2,7 +2,7 @@
   "profiles": {
     "TestDocumentTranslation": {
       "commandName": "Project",
-      "commandLineArgs": "translate d:\\TestDocsSmall --to ja --category myCategory"
+      "commandLineArgs": "translate d:\\TestDocsSmall --to de --glossary d:\\glossary.tsv"
     }
   }
 }

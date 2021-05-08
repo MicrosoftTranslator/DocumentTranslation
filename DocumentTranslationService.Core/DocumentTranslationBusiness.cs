@@ -122,13 +122,8 @@ namespace DocumentTranslationService.Core
             BlobContainerClient targetContainer = new(TranslationService.StorageConnectionString, containerNameBase + "tgt");
             var targetContainerTask = targetContainer.CreateIfNotExistsAsync();
             TranslationService.ContainerClientTarget = targetContainer;
-            Glossary glossary = new(TranslationService);
+            Glossary glossary = new(TranslationService, glossaryfiles);
             this.Glossary = glossary;
-            if (glossaryfiles is not null)
-            {
-                glossary.GlossaryFiles = glossaryfiles;
-                await glossary.CreateContainerAsync(TranslationService.StorageConnectionString, containerNameBase);
-            }
             #endregion
 
             #region Upload documents
@@ -161,7 +156,7 @@ namespace DocumentTranslationService.Core
             Debug.WriteLine("Awaiting upload task completion.");
             await Task.WhenAll(uploadTasks);
             //Upload Glossaries
-            var result = await glossary.UploadAsync();
+            var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
             if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
             Debug.WriteLine($"Glossary: {result.Item1} files, {result.Item2} bytes uploaded.");
             #endregion
@@ -170,16 +165,13 @@ namespace DocumentTranslationService.Core
             Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             await targetContainerTask;
             Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
-            Uri sasUriGlossary = glossary.GenerateSasUri();
             DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
             DocumentTranslationTarget documentTranslationTarget = new(language: tolanguage, targetUrl: sasUriTarget.ToString());
-            if (sasUriGlossary is not null)
-            {
-                ServiceGlossary serviceGlossary = new(sasUriGlossary.AbsoluteUri);
-                List<ServiceGlossary> serviceGlossaries = new();
-                serviceGlossaries.Add(serviceGlossary);
-                documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
-            }
+            List<ServiceGlossary> serviceGlossaries = new();
+            if (glossary.Glossaries is not null)
+                foreach (var glos in glossary.Glossaries)
+                    serviceGlossaries.Add(glos.Value);
+            documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
             if (Category is not null)
             {
                 documentTranslationTarget.category = Category;
