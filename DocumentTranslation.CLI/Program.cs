@@ -12,7 +12,7 @@ namespace TranslationService.CLI
         private static DocumentTranslationService.Core.DocumentTranslationService TranslationService;
 
 
-        public static async Task<int> Main(string[] args)
+        public static int Main(string[] args)
         {
             CommandLineApplication app = new();
             app.HelpOption(inherited: true);
@@ -52,6 +52,16 @@ namespace TranslationService.CLI
                 {
                     DocTransAppSettings settings = await AppSettingsSetter.Read();
                     if (key.HasValue()) settings.SubscriptionKey = key.Value();
+                    try { AppSettingsSetter.CheckSettings(settings); }
+                    catch (ArgumentException e)
+                    {
+                        var savedcolor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Missing credential: {e.Message}");
+                        Console.ForegroundColor = savedcolor;
+                        Console.WriteLine("Use 'DOCTR config set' to set the credentials.");
+                        return;
+                    };
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     TranslationService = documentTranslationService;
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
@@ -124,7 +134,7 @@ namespace TranslationService.CLI
                     var storage = configSetCmd.Option("--storage <StorageConnectionString>", "Connection string copied from the Azure storage resource. 'clear' to remove.", CommandOptionType.SingleValue);
                     var name = configSetCmd.Option("--name <ResourceName>", "Name of the Translator resource matching the \"key\". 'clear' to remove.", CommandOptionType.SingleValue);
                     var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages. 'clear' to remove.", CommandOptionType.SingleValue);
-                    var cat = configCmd.Option("--category", "Set the Custom Translator category to use for translations. 'clear' to remove.", CommandOptionType.SingleValue);
+                    var cat = configSetCmd.Option("--category", "Set the Custom Translator category to use for translations. 'clear' to remove.", CommandOptionType.SingleValue);
                     configSetCmd.Description = "Set the values of configuration parameters. Required before using Document Translation.";
                     configSetCmd.OnExecuteAsync(async (cancellationToken) =>
                     {
