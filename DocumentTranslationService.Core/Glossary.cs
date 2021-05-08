@@ -26,6 +26,17 @@ namespace DocumentTranslationService.Core
         private readonly DocumentTranslationService translationService;
 
         /// <summary>
+        /// Fires when a file submitted as glossary was not used.
+        /// </summary>
+        public event EventHandler<List<string>> OnGlossaryDiscarded;
+
+        /// <summary>
+        /// Fires when the upload complete.
+        /// Returns the number of files uploaded, and the combined size.
+        /// </summary>
+        public event EventHandler<(int, long)> OnUploadComplete;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="translationService"></param>
@@ -78,7 +89,10 @@ namespace DocumentTranslationService.Core
             }
             if (discards is not null)
                 foreach (string fileName in discards)
+                {
                     Debug.WriteLine($"Glossary files ignored: {fileName}");
+                    if (OnGlossaryDiscarded is not null) OnGlossaryDiscarded(this, discards);
+                }
             //Exit if no files are left
             if (Glossaries.Count == 0)
             {
@@ -111,7 +125,8 @@ namespace DocumentTranslationService.Core
                 Debug.WriteLine(String.Format($"Glossary file {fileStream.Name} uploaded."));
             }
             await Task.WhenAll(uploads);
-            Debug.WriteLine("Glossary upload complete.");
+            Debug.WriteLine($"Glossary: {fileCounter} files, {uploadSize} bytes uploaded.");
+            if (OnUploadComplete is not null) OnUploadComplete(this, (fileCounter, uploadSize));
             return (fileCounter, uploadSize);
         }
 

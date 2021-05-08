@@ -158,7 +158,6 @@ namespace DocumentTranslationService.Core
             //Upload Glossaries
             var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
             if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
-            Debug.WriteLine($"Glossary: {result.Item1} files, {result.Item2} bytes uploaded.");
             #endregion
 
             #region Translate the container content

@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>0.0.6</Version>
+    <PackageProjectUrl>https://github.com/microsofttranslator/documenttranslation</PackageProjectUrl>
+    <NeutralLanguage>English</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

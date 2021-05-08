@@ -1,8 +1,8 @@
-﻿using System;
-using DocumentTranslationService.Core;
-using System.Threading.Tasks;
+﻿using DocumentTranslationService.Core;
 using McMaster.Extensions.CommandLineUtils;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace TranslationService.CLI
