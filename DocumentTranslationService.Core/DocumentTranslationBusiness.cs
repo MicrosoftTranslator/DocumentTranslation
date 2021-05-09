@@ -102,7 +102,7 @@ namespace DocumentTranslationService.Core
                 {
                     Debug.WriteLine($"Run: Discarded due to invalid file format for translation: {fileName}");
                 }
-                if (OnFilesDiscarded is not null) OnFilesDiscarded(this, discards);
+                if ((OnFilesDiscarded is not null) && (discards.Count > 0)) OnFilesDiscarded(this, discards);
             }
             if (sourcefiles.Count == 0)
             {
