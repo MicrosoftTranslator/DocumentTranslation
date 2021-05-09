@@ -23,6 +23,19 @@ namespace TranslationService.CLI
                 app.ShowHelp();
                 return 1;
             });
+            app.Command("clear", clearCmd =>
+            {
+                clearCmd.Description = "Delete containers potentially left over from previous failed runs, in the given storage account, which are older than a week.";
+                clearCmd.OnExecuteAsync(async (cancellationToken) =>
+                {
+                    DocTransAppSettings settings = await AppSettingsSetter.Read();
+                    DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+                    DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
+                    int deletedCount = await translationBusiness.ClearOldContainersAsync();
+                    Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
+                });
+            }
+            );
             app.Command("translate", translateCmd =>
             {
                 translateCmd.AddName("trans");

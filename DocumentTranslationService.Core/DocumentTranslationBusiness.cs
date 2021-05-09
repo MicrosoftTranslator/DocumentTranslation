@@ -258,41 +258,50 @@ namespace DocumentTranslationService.Core
             Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
         }
 
+        /// <summary>
+        ///Delete older containers that may have been around from previous failed or abandoned runs
+        /// </summary>
+        /// <returns>Number of old containers that were deleted</returns>
+        public async Task<int> ClearOldContainersAsync()
+        {
+            int counter = 0;
+            List<Task> deletionTasks = new();
+            BlobServiceClient blobServiceClient = new(TranslationService.StorageConnectionString);
+            var resultSegment = blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.None, BlobContainerStates.None, "doctr").AsPages();
+            await foreach (Azure.Page<BlobContainerItem> containerPage in resultSegment)
+            {
+                foreach (var containerItem in containerPage.Values)
+                {
+                    BlobContainerClient client = new(TranslationService.StorageConnectionString, containerItem.Name);
+                    if (containerItem.Name.EndsWith("src")
+                        || (containerItem.Name.EndsWith("tgt"))
+                        || (containerItem.Name.EndsWith("gls")))
+                    {
+                        if (containerItem.Properties.LastModified < (DateTimeOffset.UtcNow - TimeSpan.FromDays(7)))
+                        {
+                            deletionTasks.Add(client.DeleteAsync());
+                            counter++;
+                        }
+                    }
+                }
+            }
+            await Task.WhenAll(deletionTasks);
+            Debug.WriteLine("Old Containers deleted.");
+            return counter;
+        }
 
         /// <summary>
         /// Delete the containers created by this instance.
         /// </summary>
         /// <param name="CleanUpAll">Optional: If set, delete all containers following the naming scheme that have been last accessed more than 10 days ago.</param>
         /// <returns>The task only</returns>
-        private async Task DeleteContainersAsync(bool clear = false)
+        private async Task DeleteContainersAsync()
         {
             List<Task> deletionTasks = new();
             //delete the containers of this run
             deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
             deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
             deletionTasks.Add(Glossary.DeleteAsync());
-
-            if (clear)
-            {
-                //delete older containers that may have been around from previous runs
-                BlobServiceClient blobServiceClient = new(TranslationService.StorageConnectionString);
-                var resultSegment = blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.None, BlobContainerStates.None, "doctr").AsPages();
-                await foreach (Azure.Page<BlobContainerItem> containerPage in resultSegment)
-                {
-                    foreach (var containerItem in containerPage.Values)
-                    {
-                        BlobContainerClient client = new(TranslationService.StorageConnectionString, containerItem.Name);
-                        if (containerItem.Name.EndsWith("src")
-                            || (containerItem.Name.EndsWith("tgt"))
-                            || (containerItem.Name.EndsWith("gls")))
-                        {
-                            if (containerItem.Properties.LastModified < (DateTimeOffset.UtcNow - TimeSpan.FromDays(7)))
-                                deletionTasks.Add(client.DeleteAsync());
-                        }
-                    }
-                }
-            }
-
             await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
         }

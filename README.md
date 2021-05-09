@@ -56,6 +56,11 @@ Optional parameters to the translate command are
 --category <category ID> | The custom Translator category ID.
 --glossary <file or folder> | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
 
+### Clear
+If a translation run gets interrupted or fails, it may also fail to clean up after itself and leave behind documents in the storage account.
+A repeated run will always use a fresh storage container for its operation. The 'clear' command deletes storage containers from failed or abandoned runs
+for all DOCTR runs that are using the storage account you provided in the settings. In order to not disrupt any other runs of the service,
+it limits the deletion to containers that are older than one week. 
 
 ## Implementation Details
 Written in C#, based on .Net 5. 
@@ -63,11 +68,13 @@ This tool makes use of the Azure Document Translation service. The Azure Documen
 and delivers the translations in another Azure storage container. This tool provides a local interface to that service, allowing you to translate a locally
 rediding file or a folder, and receiving the translation of these documents in a local folder. The tool uploads the local documents, invokes the translation,
 monitors the translation progress, downloads the translated documents to your local machine, and then deletes the containers from the service.
-Each run is independent of each other.  
+Each run is independent of each other by giving the containers it uses a unique name within the common storage account.
 
 Project "doctr" contains the command line processing based on Nate McMaster's Command Line Utilities. All user interaction is handled here.
 Project 'DocumentTranslationService' contains three relevant classes: DocumentTranslationService handles all the interaction with the Azure service. 
 DocumentTranslationBusiness handles the local file operations and business logic. Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
+
+Future optimization includes a shared storage for the glossary, so that multiple clients can refer to a single company-wide glossary. 
 
 ## Contributions
 Please contribute your bug fix, and functionality additions. Submit a pull request. We will review and integrate
@@ -76,4 +83,4 @@ quickly - or reject with comments.
 ## Credits
 The tool uses following Nuget packages:
 - Nate McMaster's Command Line Utilities for the CLI command and options processing. 
-- Azure.STorage.Blobs for the interaction with the Azure storage service. 
+- Azure.Storage.Blobs for the interaction with the Azure storage service. 

@@ -55,6 +55,10 @@ namespace DocumentTranslationService.Core
 
         public event EventHandler OnInitializeComplete;
 
+        /// <summary>
+        /// Fills the properties with values from the service. 
+        /// </summary>
+        /// <returns></returns>
         public async Task InitializeAsync()
         {
             List<Task> tasks = new();
@@ -84,6 +88,10 @@ namespace DocumentTranslationService.Core
             return statusResponse;
         }
 
+        /// <summary>
+        /// Cancels an ongoing translation run. 
+        /// </summary>
+        /// <returns></returns>
         public async Task<StatusResponse> CancelRunAsync()
         {
             using HttpClient client = new();
