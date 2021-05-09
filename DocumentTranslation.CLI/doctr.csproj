@@ -9,7 +9,7 @@
     <Product>Document Translation</Product>
     <Description>Translate documents using the Azure Translator service</Description>
     <Copyright>MIT license</Copyright>
-    <PackageLicenseExpression>MIT License</PackageLicenseExpression>
+    <PackageLicenseExpression></PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/MicrosoftTranslator/DocumentTranslation</PackageProjectUrl>
     <PackageIcon>DocumentTranslatorIcon_100.png</PackageIcon>
     <RepositoryUrl>https://github.com/MicrosoftTranslator/DocumentTranslation</RepositoryUrl>
