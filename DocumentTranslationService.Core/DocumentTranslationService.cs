@@ -70,7 +70,7 @@ namespace DocumentTranslationService.Core
         /// Retrieve the status of the translation progress.
         /// </summary>
         /// <returns></returns>
-        public async Task<StatusResponse> CheckStatus()
+        public async Task<StatusResponse> CheckStatusAsync()
         {
             using HttpClient client = new();
             using HttpRequestMessage request = new() { Method = HttpMethod.Get, RequestUri = new Uri(ProcessingLocation) };
@@ -104,7 +104,7 @@ namespace DocumentTranslationService.Core
         /// </summary>
         /// <param name="input">An object defining the input of what to translate</param>
         /// <returns>The status URL</returns>
-        public async Task<string> SubmitTranslationRequest(DocumentTranslationInput input)
+        public async Task<string> SubmitTranslationRequestAsync(DocumentTranslationInput input)
         {
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             if (String.IsNullOrEmpty(SubscriptionKey)) throw new CredentialsException("key");

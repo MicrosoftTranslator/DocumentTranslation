@@ -130,10 +130,19 @@ namespace DocumentTranslationService.Core
             return (fileCounter, uploadSize);
         }
 
-        public async Task DeleteAsync()
+        public async Task<Azure.Response> DeleteAsync()
         {
-            if (Glossaries is not null) await containerClient.DeleteAsync();
-            return;
+            if (Glossaries is not null)
+            {
+                Azure.Response response;
+                try
+                {
+                    response = await containerClient.DeleteAsync();
+                }
+                catch (Azure.RequestFailedException) { throw; }
+                return response;
+            }
+            return null;
         }
     }
 }

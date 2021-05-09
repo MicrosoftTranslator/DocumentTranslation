@@ -180,7 +180,7 @@ namespace DocumentTranslationService.Core
 
             DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
 
-            TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequest(input);
+            TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (TranslationService.ProcessingLocation is null)
             {
@@ -194,7 +194,7 @@ namespace DocumentTranslationService.Core
             do
             {
                 await Task.Delay(1000);
-                statusResult = await TranslationService.CheckStatus();
+                statusResult = await TranslationService.CheckStatusAsync();
                 if (statusResult.lastActionDateTimeUtc != lastActionTime)
                 {
                     //Raise the update event
@@ -225,7 +225,7 @@ namespace DocumentTranslationService.Core
                 await foreach (var blobItem in TranslationService.ContainerClientTarget.GetBlobsAsync())
                 {
                     await semaphore.WaitAsync();
-                    downloads.Add(DownloadBlob(directory, blobItem));
+                    downloads.Add(DownloadBlobAsync(directory, blobItem));
                     count++;
                     sizeInBytes += (long)blobItem.Properties.ContentLength;
                     semaphore.Release();
@@ -237,7 +237,7 @@ namespace DocumentTranslationService.Core
             #region final
             Debug.WriteLine("Download complete.");
             if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
-            if (!Nodelete) await DeleteContainers();
+            if (!Nodelete) await DeleteContainersAsync();
             Debug.WriteLine("Run: Exiting.");
             #endregion
         }
@@ -248,7 +248,7 @@ namespace DocumentTranslationService.Core
         /// <param name="directory">Directory name to prepend to the file name.</param>
         /// <param name="blobItem">The actual blob</param>
         /// <returns>Task</returns>
-        private async Task DownloadBlob(DirectoryInfo directory, BlobItem blobItem)
+        private async Task DownloadBlobAsync(DirectoryInfo directory, BlobItem blobItem)
         {
             BlobClient blobClient = new(TranslationService.StorageConnectionString, TranslationService.ContainerClientTarget.Name, blobItem.Name);
             BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
@@ -264,11 +264,17 @@ namespace DocumentTranslationService.Core
         /// </summary>
         /// <param name="CleanUpAll">Optional: If set, delete all containers following the naming scheme that have been last accessed more than 10 days ago.</param>
         /// <returns>The task only</returns>
-        private async Task DeleteContainers(bool CleanUpAll = false)
+        private async Task DeleteContainersAsync(bool clear = false)
         {
             List<Task> deletionTasks = new();
-            if (CleanUpAll)
+            //delete the containers of this run
+            deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
+            deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
+            deletionTasks.Add(Glossary.DeleteAsync());
+
+            if (clear)
             {
+                //delete older containers that may have been around from previous runs
                 BlobServiceClient blobServiceClient = new(TranslationService.StorageConnectionString);
                 var resultSegment = blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.None, BlobContainerStates.None, "doctr").AsPages();
                 await foreach (Azure.Page<BlobContainerItem> containerPage in resultSegment)
@@ -280,18 +286,13 @@ namespace DocumentTranslationService.Core
                             || (containerItem.Name.EndsWith("tgt"))
                             || (containerItem.Name.EndsWith("gls")))
                         {
-                            if (containerItem.Properties.LastModified < (DateTimeOffset.UtcNow - TimeSpan.FromDays(10)))
+                            if (containerItem.Properties.LastModified < (DateTimeOffset.UtcNow - TimeSpan.FromDays(7)))
                                 deletionTasks.Add(client.DeleteAsync());
                         }
                     }
                 }
             }
-            else
-            {
-                deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
-                deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
-                deletionTasks.Add(Glossary.DeleteAsync());
-            }
+
             await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
         }
