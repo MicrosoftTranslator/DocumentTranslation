@@ -29,10 +29,10 @@ You can obtain all of these from the Azure portal.
 
 |Command                     |                                         |
 |----------------------------|-----------------------------------------|
-|'doctr config --set storage &<Storage Connection String&>	| Required |
-|'doctr config --set key &<Subscription key of the Translator resource&>	| Required |
-|'doctr config --set name &<Name of the Azure Translator resource&>	| Required |
-|'doctr config --set category &<Custom Translator category ID&>	| Optional |
+|doctr config --set storage &lt;Storage Connection String&gt;	| Required |
+|doctr config --set key &lt;Subscription key of the Translator resource&gt;	| Required |
+|doctr config --set name &lt;Name of the Azure Translator resource&gt;	| Required |
+|doctr config --set category &lt;Custom Translator category ID&gt;	| Optional |
   
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
@@ -46,15 +46,15 @@ You can inspect the settings using the following commands:
 
 |Command | |
 |-------------------|---------------------|
-|'doctr languages'	| List the available languages. Can be listed before credentials are set. |
-|'doctr formats'		| List the file formats available for translation. Requires credentials key, name and storage to be set. |
-|'doctr glossary'		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set. |
+|doctr languages	| List the available languages. Can be listed before credentials are set. |
+|doctr formats		| List the file formats available for translation. Requires credentials key, name and storage to be set. |
+|doctr glossary		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set. |
 
 
 ### Translate
 |Command | |
 |----|-----|
-|'doctr translate <source folder OR document> [<target folder>] --to <language code>' | Translate a document or the content of a folder to another language.|
+|doctr translate <source folder OR document> [&lt;target folder&gt;] --to <language code>' | Translate a document or the content of a folder to another language.|
 
 If provided, the target folder must be a folder, even if the source document is an individual document. If not provided, the translated document will be placed in a folder
 that has the same name as the source folder, plus '.<language code>'.
