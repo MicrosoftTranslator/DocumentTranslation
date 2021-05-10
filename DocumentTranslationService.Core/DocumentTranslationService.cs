@@ -21,7 +21,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// Your Azure Translator subscription key. Get from properties of the Translator resource
         /// </summary>
-        private string SubscriptionKey { get; } = string.Empty;
+        public string SubscriptionKey { get; } = string.Empty;
 
         /// <summary>
         /// The name of the Azure Translator resource

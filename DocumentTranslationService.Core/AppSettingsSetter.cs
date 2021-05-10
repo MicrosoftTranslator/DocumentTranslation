@@ -7,7 +7,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace TranslationService.CLI
+namespace TranslationService.Core
 {
     /// <summary>
     /// Manage the storage of the application settings
@@ -61,7 +61,7 @@ namespace TranslationService.CLI
         /// Throws an exception to indicate the missing settings value;
         /// </summary>
         /// <param name="settings"></param>
-        internal static void CheckSettings(DocTransAppSettings settings)
+        public static void CheckSettings(DocTransAppSettings settings)
         {
             if (string.IsNullOrEmpty(settings.SubscriptionKey)) throw new ArgumentException("SubscriptionKey");
             if (string.IsNullOrEmpty(settings.ConnectionStrings.StorageConnectionString)) throw new ArgumentException("StorageConnectionString");

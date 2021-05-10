@@ -2,8 +2,8 @@
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
+using TranslationService.Core;
 
 namespace TranslationService.CLI
 {
