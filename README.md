@@ -41,9 +41,9 @@ You can inspect the settings using the following commands:
 
 ### List capabilities
 +-------------------+---------------------+
-'doctr languages'	| List the available languages. Can be listed before credentials are set.
-'doctr formats'		| List the file formats available for translation. Requires credentials key, name and storage to be set.
-'doctr glossary'		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set.
+|'doctr languages'	| List the available languages. Can be listed before credentials are set. |
+|'doctr formats'		| List the file formats available for translation. Requires credentials key, name and storage to be set. |
+|'doctr glossary'		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set. |
 
 ### Translate
 +----+-----+
