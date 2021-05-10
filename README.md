@@ -33,7 +33,7 @@ You can obtain all of these from the Azure portal.
 |doctr config --set key &lt;Subscription key of the Translator resource&gt;	| Required |
 |doctr config --set name &lt;Name of the Azure Translator resource&gt;	| Required |
 |doctr config --set category &lt;Custom Translator category ID&gt;	| Optional |
-|doctr config test | report on the validity of the settings. PASS if OK, FAIL if not.|
+|doctr config test | Report on the validity of the settings. PASS if OK, FAIL if not.|
   
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
