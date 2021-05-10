@@ -19,6 +19,11 @@ namespace DocumentTranslationService.Core
         internal string StorageConnectionString { get; } = string.Empty;
 
         /// <summary>
+        /// Holds the Custom Translator category.
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
         /// Your Azure Translator subscription key. Get from properties of the Translator resource
         /// </summary>
         public string SubscriptionKey { get; } = string.Empty;

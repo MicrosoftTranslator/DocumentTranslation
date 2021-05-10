@@ -21,14 +21,12 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentTranslationService.Core;
-
 #endregion
 
-namespace TextTranslationService.Core
+namespace DocumentTranslationService.Core
 {
 
-    public class TranslationServiceFacade
+    public class TextTranslationService
     {
         #region Fields
 
@@ -38,25 +36,9 @@ namespace TextTranslationService.Core
 
         private const int maxrequestsize = 5000;   //service size is 5000
         private const int maxelements = 100;
-        public string CategoryID { get; set; }
-        public string AppId { get; set; }
-        public string AdvCategoryId { get; set; }
-        public bool UseAdvancedSettings { get; set; }
-        /// <summary>
-        /// Holds the setting whether to use a container offline
-        /// </summary>
-        public bool UseCustomEndpoint { get; set; }
-        /// <summary>
-        /// Holds the value of the custom endpoint, the container
-        /// </summary>
-        public string CustomEndpointUrl { get; set; }
+        private readonly DocumentTranslationService documentTranslationService;
 
-        /// <summary>
-        /// Holds the Azure subscription key
-        /// </summary>
-        public string AzureKey { get; set; }
-
-        private readonly DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
+        private string categoryID;
 
         /// <summary>
         /// End point address for the Translator API
@@ -119,7 +101,7 @@ namespace TextTranslationService.Core
         /// <param name="request">Request object to set the headers for</param>
         private void SetHeaders(HttpRequestMessage request)
         {
-            request.Headers.Add("Ocp-Apim-Subscription-Key", AzureKey);
+            request.Headers.Add("Ocp-Apim-Subscription-Key", documentTranslationService.SubscriptionKey);
             if (!(AzureRegion.ToUpperInvariant() == "GLOBAL")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
         }
 
@@ -160,10 +142,10 @@ namespace TextTranslationService.Core
                 try
                 {
                     string[] teststring = { "Test" };
-                    string remembercategory = CategoryID;
-                    CategoryID = category;
+                    string remembercategory = documentTranslationService.Category;
+                    categoryID = category;
                     Task<string[]> translateTask = TranslateTextAsync(teststring, "en", "he");
-                    CategoryID = remembercategory;
+                    categoryID = remembercategory;
                     await translateTask.ConfigureAwait(false);
                     if (translateTask.Result == null) return false; else return true;
                 }
@@ -181,10 +163,10 @@ namespace TextTranslationService.Core
         /// <summary>
         /// Constructor
         /// </summary>
-        TranslationServiceFacade(DocumentTranslationService.Core.DocumentTranslationService documentTranslationService)
+        TextTranslationService(DocumentTranslationService documentTranslationService)
         {
-            this.AzureKey = documentTranslationService.SubscriptionKey;
             this.documentTranslationService = documentTranslationService;
+            this.categoryID = documentTranslationService.Category;
         }
 
 
@@ -206,7 +188,7 @@ namespace TextTranslationService.Core
             {
                 while (previousboundary <= text.Length)
                 {
-                    int boundary = await LastSentenceBreak(text[previousboundary..], languagecode).ConfigureAwait(false);
+                    int boundary = await LastSentenceBreakAsync(text[previousboundary..], languagecode).ConfigureAwait(false);
                     if (boundary == 0) break;
                     result.Add(text.Substring(previousboundary, boundary));
                     previousboundary += boundary;
@@ -223,7 +205,7 @@ namespace TextTranslationService.Core
         /// <param name="text">The original text</param>
         /// <param name="languagecode">A language code</param>
         /// <returns>The offset of the last sentence break, from the beginning of the text.</returns>
-        private async Task<int> LastSentenceBreak(string text, string languagecode)
+        private async Task<int> LastSentenceBreakAsync(string text, string languagecode)
         {
             int sum = 0;
             List<int> breakSentenceResult = await BreakSentencesInternalAsync(text, languagecode).ConfigureAwait(false);
@@ -388,7 +370,7 @@ namespace TextTranslationService.Core
                     {
                         string[] str = new string[1];
                         str[0] = innertext;
-                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, CategoryID, contentType).ConfigureAwait(false);
+                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, categoryID, contentType).ConfigureAwait(false);
                         linetranslation += innertranslation[0];
                     }
                     resultlist.Add(linetranslation);
@@ -397,7 +379,7 @@ namespace TextTranslationService.Core
             }
             else
             {
-                return await TranslateTextAsyncInternal(texts, from, to, CategoryID, contentType).ConfigureAwait(false);
+                return await TranslateTextAsyncInternal(texts, from, to, categoryID, contentType).ConfigureAwait(false);
             }
         }
 

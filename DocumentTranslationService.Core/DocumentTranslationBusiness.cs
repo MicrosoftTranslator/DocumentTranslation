@@ -15,11 +15,6 @@ namespace DocumentTranslationService.Core
         public DocumentTranslationService TranslationService { get; }
 
         /// <summary>
-        /// Holds the Custom Translator category.
-        /// </summary>
-        public string Category { get; set; }
-
-        /// <summary>
         /// Can retrieve the final target folder here
         /// </summary>
         public string TargetFolder { get; private set; }
@@ -64,7 +59,6 @@ namespace DocumentTranslationService.Core
         public DocumentTranslationBusiness(DocumentTranslationService documentTranslationService)
         {
             TranslationService = documentTranslationService;
-            Category = null;
         }
 
         /// <summary>
@@ -171,9 +165,9 @@ namespace DocumentTranslationService.Core
                 foreach (var glos in glossary.Glossaries)
                     serviceGlossaries.Add(glos.Value);
             documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
-            if (Category is not null)
+            if (TranslationService.Category is not null)
             {
-                documentTranslationTarget.category = Category;
+                documentTranslationTarget.category = TranslationService.Category;
             }
 
             List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };

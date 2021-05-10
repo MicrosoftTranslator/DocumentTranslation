@@ -79,7 +79,7 @@ namespace TranslationService.CLI
                     TranslationService = documentTranslationService;
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
                     if (nodelete.HasValue()) translationBusiness.Nodelete = true;
-                    if (cat.HasValue()) translationBusiness.Category = cat.Value();
+                    if (cat.HasValue()) documentTranslationService.Category = cat.Value();
                     translationBusiness.OnStatusUpdate += TranslationBusiness_OnStatusUpdate;
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
