@@ -26,12 +26,14 @@ The minimum needed credentials are
 - The name of the Translator resource 
 - A storage connection string.
 You can obtain all of these from the Azure portal.
+
 |Command                     |                                         |
 |----------------------------|-----------------------------------------|
 |'doctr config --set storage <Storage Connection String>	| Required |
 |'doctr config --set key <Subscription key of the Translator resource>	| Required |
 |'doctr config --set name <Name of the Azure Translator resource>	| Required |
 |'doctr config --set category <Custom Translator category ID>	| Optional |
+  
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
 You may edit the file by hand, using the editor of your choice. 
