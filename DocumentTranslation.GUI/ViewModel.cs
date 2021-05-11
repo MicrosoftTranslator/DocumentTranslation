@@ -12,6 +12,8 @@ namespace DocumentTranslation.GUI
     {
         internal ObservableCollection<string> toLanguageList = new();
         internal ObservableCollection<string> fromLanguageList = new();
+        internal ObservableCollection<string> myCategoryList = new();
+        internal UISettings UISettings = new();
 
         internal DocumentTranslationService.Core.DocumentTranslationService DocumentTranslationService;
 
@@ -25,19 +27,29 @@ namespace DocumentTranslation.GUI
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
             DocumentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            Task task = documentTranslationService.InitializeAsync();
+            Task task = documentTranslationService.GetLanguagesAsync();
             TextTranslationService textTranslationService = new(documentTranslationService);
+            UISettings = await UISettingsSetter.Read();
+            if (UISettings.MyCategories is not null)
+                foreach (var item in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
+                    myCategoryList.Add(item.MyCategoryName);
+        }
+
+        public async Task Close()
+        {
+            await UISettingsSetter.Write(null, UISettings);
         }
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
             toLanguageList.Clear();
-            fromLanguageList.Clear();
-            foreach (var item in DocumentTranslationService.Languages)
+            var list = DocumentTranslationService.Languages.OrderBy((x) => x.Value.Name);
+            foreach (var item in list)
                 toLanguageList.Add(item.Value.Name);
-            foreach (var item in DocumentTranslationService.Languages)
+            fromLanguageList.Clear();
+            fromLanguageList.Add("Auto-Detect");
+            foreach (var item in list)
                 fromLanguageList.Add(item.Value.Name);
-
         }
     }
 }

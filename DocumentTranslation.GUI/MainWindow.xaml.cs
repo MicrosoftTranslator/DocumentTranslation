@@ -21,7 +21,7 @@ namespace DocumentTranslation.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ViewModel ViewModel;
+        private readonly ViewModel ViewModel;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,13 +29,23 @@ namespace DocumentTranslation.GUI
             ViewModel = viewModel;
             toLanguageBox.ItemsSource = ViewModel.toLanguageList;
             fromLanguageBox.ItemsSource = ViewModel.fromLanguageList;
-
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ViewModel.Initialize();
+            toLanguageBox.SelectedItem = ViewModel.UISettings.lastToLanguage;
+            if (ViewModel.UISettings.lastFromLanguage is not null)
+                fromLanguageBox.SelectedItem = ViewModel.UISettings.lastFromLanguage;
+            else fromLanguageBox.SelectedIndex = 0;
         }
 
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ViewModel.UISettings.lastToLanguage = toLanguageBox.Text;
+            ViewModel.UISettings.lastFromLanguage = fromLanguageBox.Text;
+            ViewModel.UISettings.lastCategory = CategoryBox.Text;
+            await ViewModel.Close();
+        }
     }
 }
