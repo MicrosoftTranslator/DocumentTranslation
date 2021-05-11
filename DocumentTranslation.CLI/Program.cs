@@ -3,7 +3,6 @@ using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Linq;
 using System.Timers;
-using TranslationService.Core;
 
 namespace TranslationService.CLI
 {

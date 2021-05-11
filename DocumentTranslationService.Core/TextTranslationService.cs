@@ -161,9 +161,10 @@ namespace DocumentTranslationService.Core
 
 
         /// <summary>
-        /// Constructor
+        /// Class for text translation
         /// </summary>
-        TextTranslationService(DocumentTranslationService documentTranslationService)
+        /// <param name="documentTranslationService">The document translation service to use</param>
+        public TextTranslationService(DocumentTranslationService documentTranslationService)
         {
             this.documentTranslationService = documentTranslationService;
             this.categoryID = documentTranslationService.Category;

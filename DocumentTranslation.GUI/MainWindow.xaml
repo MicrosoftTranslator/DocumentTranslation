@@ -1,22 +1,22 @@
-﻿<Window x:Class="DocumentTranslation.MainWindow"
+﻿<Window x:Class="DocumentTranslation.GUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DocumentTranslation"
+        xmlns:local="clr-namespace:DocumentTranslation.GUI"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="Document Translation" Height="500" Width="800">
+        Title="DocumentTranslation" Height="450" Width="800">
     <Grid>
         <TabControl x:Name="tabControl">
             <TabItem Header="Translate Text" Width="200">
                 <Grid Background="#FFE5E5E5" >
                     <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
-                        <Button x:Name="translateButton" Content="Translate" Width="100" Click="translateButton_Click"/>
+                        <Button x:Name="translateButton" Content="Translate" Width="100"/>
                         <Button x:Name="allLanguagesButton" Content="List languages" Margin="25,0" Width="100"/>
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35" Height="20" VerticalAlignment="Top">
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" SelectionChanged="fromLanguageBox_SelectionChanged"/>
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150"/>
                         <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" Margin="20,0"  VerticalAlignment="Top" Width="150"/>
                         <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
@@ -44,5 +44,6 @@
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
+
     </Grid>
 </Window>

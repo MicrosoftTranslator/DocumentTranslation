@@ -7,7 +7,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace TranslationService.Core
+namespace DocumentTranslationService.Core
 {
     /// <summary>
     /// Manage the storage of the application settings
