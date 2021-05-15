@@ -16,7 +16,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The "Connection String" of the Azure blob storage resource. Get from properties of Azure storage.
         /// </summary>
-        internal string StorageConnectionString { get; } = string.Empty;
+        public string StorageConnectionString { get; } = string.Empty;
 
         /// <summary>
         /// Holds the Custom Translator category.

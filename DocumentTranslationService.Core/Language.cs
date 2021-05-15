@@ -61,7 +61,7 @@ namespace DocumentTranslationService.Core
                     var langprop = doc.RootElement.GetProperty("translation");
                     foreach (var item in langprop.EnumerateObject())
                     {
-                        Language langEntry = new();
+                        Language langEntry = new(null, null);
                         var langCode = item.Name;
                         langEntry.LangCode = langCode;
                         foreach (var prop in item.Value.EnumerateObject())
@@ -100,6 +100,12 @@ namespace DocumentTranslationService.Core
     /// </summary>
     public class Language
     {
+        public Language(string langCode, string name)
+        {
+            LangCode = langCode;
+            Name = name;
+        }
+
         /// <summary>
         /// ISO639 language code
         /// </summary>

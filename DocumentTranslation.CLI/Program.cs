@@ -198,7 +198,7 @@ namespace TranslationService.CLI
                                     break;
                             }
                         }
-                        await AppSettingsSetter.Write(null, docTransAppSettings);
+                        await AppSettingsSetter.WriteAsync(null, docTransAppSettings);
                         return 0;
                     });
                     configSetCmd.OnValidationError((i) =>

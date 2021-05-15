@@ -45,7 +45,31 @@ namespace DocumentTranslation.GUI
             ViewModel.UISettings.lastToLanguage = toLanguageBox.Text;
             ViewModel.UISettings.lastFromLanguage = fromLanguageBox.Text;
             ViewModel.UISettings.lastCategory = CategoryBox.Text;
-            await ViewModel.Close();
+            await ViewModel.SaveAsync();
+        }
+
+        private async void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.GetAzureRegions();
+            subscriptionKey.Password = ViewModel.settings.SubscriptionKey;
+            resourceName.Text = ViewModel.settings.AzureResourceName;
+            storageConnection.Text = ViewModel.settings.ConnectionStrings.StorageConnectionString;
+            region.ItemsSource = ViewModel.azureRegions;
+            region.SelectedValue = ViewModel.settings.AzureRegion;
+        }
+
+        private async void TabItemAuthentication_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.settings.SubscriptionKey = subscriptionKey.Password;
+            ViewModel.settings.AzureResourceName = resourceName.Text;
+            ViewModel.settings.ConnectionStrings.StorageConnectionString = storageConnection.Text;
+            ViewModel.settings.AzureRegion = region.SelectedValue as string;
+            await ViewModel.SaveAsync();
+        }
+
+        private async void translateButton_Click(object sender, RoutedEventArgs e)
+        {
+            outputBox.Text = await ViewModel.TranslateText(inputBox.Text, fromLanguageBox.SelectedItem, toLanguageBox.SelectedItem);
         }
     }
 }

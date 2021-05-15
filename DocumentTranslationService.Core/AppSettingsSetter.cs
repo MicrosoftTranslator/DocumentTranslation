@@ -47,7 +47,7 @@ namespace DocumentTranslationService.Core
             return JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
         }
 
-        public static async Task Write(string filename, DocTransAppSettings settings)
+        public static async Task WriteAsync(string filename, DocTransAppSettings settings)
         {
             if (string.IsNullOrEmpty(filename))
             {
@@ -91,6 +91,10 @@ namespace DocumentTranslationService.Core
         /// The Custom Translator category ID to use. 
         /// </summary>
         public string Category { get; set; }
+        /// <summary>
+        /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
+        /// </summary>
+        public string AzureRegion { get; set; }
     }
 
     public class Connectionstrings

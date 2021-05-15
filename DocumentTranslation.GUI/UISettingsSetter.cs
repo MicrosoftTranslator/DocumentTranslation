@@ -48,7 +48,7 @@ namespace DocumentTranslation.GUI
             return JsonSerializer.Deserialize<UISettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
         }
 
-        public static async Task Write(string filename, UISettings settings)
+        public static async Task WriteAsync(string filename, UISettings settings)
         {
             if (string.IsNullOrEmpty(filename))
             {
