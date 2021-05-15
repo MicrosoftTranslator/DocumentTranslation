@@ -33,6 +33,9 @@ namespace DocumentTranslation.GUI
         internal UISettings UISettings = new();
         internal DocTransAppSettings settings = new();
         public ObservableCollection<AzureRegion> azureRegions = new();
+        internal TextTranslationService textTranslationService;
+        internal Language fromLanguage { get; set; }
+        internal Language toLanguage { get; set; }
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
 
@@ -47,7 +50,7 @@ namespace DocumentTranslation.GUI
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             Task task = documentTranslationService.GetLanguagesAsync();
-            TextTranslationService textTranslationService = new(documentTranslationService);
+            textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.MyCategories is not null)
                 foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
@@ -73,11 +76,6 @@ namespace DocumentTranslation.GUI
                 toLanguageList.Add(lang.Value);
                 fromLanguageList.Add(lang.Value);
             }
-        }
-
-        internal Task<string> TranslateText(string text, object fromSelectedItem, object toSelectedItem)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task GetAzureRegions()

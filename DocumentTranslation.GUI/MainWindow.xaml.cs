@@ -34,16 +34,16 @@ namespace DocumentTranslation.GUI
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await ViewModel.Initialize();
-            toLanguageBox.SelectedItem = ViewModel.UISettings.lastToLanguage;
+            toLanguageBox.SelectedValue = ViewModel.UISettings.lastToLanguage;
             if (ViewModel.UISettings.lastFromLanguage is not null)
-                fromLanguageBox.SelectedItem = ViewModel.UISettings.lastFromLanguage;
+                fromLanguageBox.SelectedValue = ViewModel.UISettings.lastFromLanguage;
             else fromLanguageBox.SelectedIndex = 0;
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.UISettings.lastToLanguage = toLanguageBox.Text;
-            ViewModel.UISettings.lastFromLanguage = fromLanguageBox.Text;
+            ViewModel.UISettings.lastToLanguage = toLanguageBox.SelectedValue as string;
+            ViewModel.UISettings.lastFromLanguage = fromLanguageBox.SelectedValue as string;
             ViewModel.UISettings.lastCategory = CategoryBox.Text;
             await ViewModel.SaveAsync();
         }
@@ -69,7 +69,7 @@ namespace DocumentTranslation.GUI
 
         private async void translateButton_Click(object sender, RoutedEventArgs e)
         {
-            outputBox.Text = await ViewModel.TranslateText(inputBox.Text, fromLanguageBox.SelectedItem, toLanguageBox.SelectedItem);
+            outputBox.Text = await ViewModel.textTranslationService.TranslateStringAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
         }
     }
 }

@@ -21,9 +21,9 @@
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding Path=fromLanguageList}"/>
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding fromLanguage}" SelectedValuePath="LangCode"/>
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150"/>
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding toLanguage}" SelectedValuePath="LangCode"/>
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
