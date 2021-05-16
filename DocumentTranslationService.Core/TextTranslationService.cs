@@ -460,7 +460,8 @@ namespace DocumentTranslationService.Core
                 switch (status)
                 {
                     case 200:
-                        break; ;
+                        break;
+                    case 401: throw new AccessViolationException("Invalid credentials. Check for key/region mismatch.");
                     case 408:       //Custom system is being loaded
                         Debug.WriteLine("Retry #" + retrycount + " Response: " + (int)response.StatusCode);
                         await Task.Delay(MillisecondsTimeout * 10);
@@ -517,10 +518,15 @@ namespace DocumentTranslationService.Core
                         Debug.WriteLine("{0}\n{1}", responseBody, ex.Message);
                         throw;
                     }
-                    foreach (var result in jaresult.RootElement.EnumerateArray())
+                    var translations = jaresult.RootElement.EnumerateArray();
+                    foreach (var trans in translations)
                     {
-                        string txt = result.GetString();
-                        resultList.Add(txt);
+                        var item = trans.GetProperty("translations");
+                        foreach (var line in item.EnumerateArray())
+                        {
+                            var txt = line.GetProperty("text");
+                            resultList.Add(txt.GetString());
+                        }
                     }
                 }
                 break;

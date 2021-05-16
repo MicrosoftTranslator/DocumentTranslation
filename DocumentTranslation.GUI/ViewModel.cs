@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,8 +35,8 @@ namespace DocumentTranslation.GUI
         internal DocTransAppSettings settings = new();
         public ObservableCollection<AzureRegion> azureRegions = new();
         internal TextTranslationService textTranslationService;
-        internal Language fromLanguage { get; set; }
-        internal Language toLanguage { get; set; }
+        internal Language FromLanguage { get; set; }
+        internal Language ToLanguage { get; set; }
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
 
@@ -76,6 +77,24 @@ namespace DocumentTranslation.GUI
                 toLanguageList.Add(lang.Value);
                 fromLanguageList.Add(lang.Value);
             }
+        }
+
+        internal async Task<string> TranslateTextAsync(string text, string fromLanguageCode, string toLanguageCode)
+        {
+            if (fromLanguageCode == "auto") fromLanguageCode = null;
+            textTranslationService.AzureRegion = settings.AzureRegion;
+            string result;
+            try
+            {
+                result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
+                Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
+            }
+            catch (AccessViolationException ex)
+            {
+                result = ex.Message;
+            }
+
+            return result;
         }
 
         public async Task GetAzureRegions()

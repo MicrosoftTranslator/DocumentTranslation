@@ -67,9 +67,9 @@ namespace DocumentTranslation.GUI
             await ViewModel.SaveAsync();
         }
 
-        private async void translateButton_Click(object sender, RoutedEventArgs e)
+        private async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
-            outputBox.Text = await ViewModel.textTranslationService.TranslateStringAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
+            outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
         }
     }
 }

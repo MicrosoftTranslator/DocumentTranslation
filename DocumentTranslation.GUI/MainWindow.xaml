@@ -16,7 +16,7 @@
                 </TabItem.DataContext>
                 <Grid>
                     <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
-                        <Button x:Name="translateButton" Content="Translate" Width="100" Click="translateButton_Click"/>
+                        <Button x:Name="translateButton" Content="Translate" Width="100" Click="TranslateButton_Click"/>
                         <Button x:Name="allLanguagesButton" Content="List languages" Margin="25,0" Width="100"/>
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
