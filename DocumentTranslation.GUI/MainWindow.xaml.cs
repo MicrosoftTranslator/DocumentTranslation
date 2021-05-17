@@ -93,5 +93,21 @@ namespace DocumentTranslation.GUI
             FilesListBox.ItemsSource = ViewModel.FilesToTranslate;
             return;
         }
+        private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
+            openFileDialog.Filter = await this.ViewModel.GetGlossaryExtensionsFilter();
+            openFileDialog.ShowDialog();
+            foreach (var filename in openFileDialog.FileNames)
+                ViewModel.FilesToTranslate.Add(filename);
+            GlossariesListBox.ItemsSource = ViewModel.FilesToTranslate;
+            return;
+        }
+
+        private async void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }

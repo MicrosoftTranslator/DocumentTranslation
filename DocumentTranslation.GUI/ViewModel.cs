@@ -29,7 +29,7 @@ namespace DocumentTranslation.GUI
                 ID = iD;
             }
         }
-        public ObservableCollection<Language> toLanguageList { get; private set; }  = new();
+        public ObservableCollection<Language> toLanguageList { get; private set; } = new();
         public ObservableCollection<Language> fromLanguageList { get; private set; } = new();
         public ObservableCollection<MyCategory> myCategoryList { get; private set; } = new();
         internal UISettings UISettings = new();
@@ -59,6 +59,7 @@ namespace DocumentTranslation.GUI
                 foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
                     myCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
             _ = documentTranslationService.GetFormatsAsync();
+            _ = documentTranslationService.GetGlossaryFormatsAsync();
         }
 
         public async Task SaveAsync()
@@ -126,7 +127,22 @@ namespace DocumentTranslation.GUI
                 filterBuilder.Append('|');
             }
             filterBuilder.Remove(filterBuilder.Length - 1, 1);
-            Debug.WriteLine("Filter:" + filterBuilder.ToString());
+            return filterBuilder.ToString();
+        }
+
+        internal async Task<string> GetGlossaryExtensionsFilter()
+        {
+            await documentTranslationService.GetGlossaryFormatsAsync();
+            StringBuilder filterBuilder = new();
+            filterBuilder.Append("Glossaries|");
+            foreach (var format in documentTranslationService.GlossaryFormats.value)
+            {
+                foreach (var ext in format.fileExtensions)
+                {
+                    filterBuilder.Append("*" + ext + ";");
+                }
+            }
+            filterBuilder.Remove(filterBuilder.Length - 1, 1);
             return filterBuilder.ToString();
         }
 
