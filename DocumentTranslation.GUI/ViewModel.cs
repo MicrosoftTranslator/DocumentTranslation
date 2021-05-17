@@ -38,8 +38,11 @@ namespace DocumentTranslation.GUI
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
         public Language ToLanguage { get; set; }
-        public ObservableCollection<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
-        private ObservableCollection<string> filesToTranslate = new();
+        public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
+        public string TargetFolder { get; internal set; }
+        public List<string> GlossariesToUse { get; internal set; }
+
+        private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
 
         public ViewModel()
@@ -146,7 +149,6 @@ namespace DocumentTranslation.GUI
             return filterBuilder.ToString();
         }
 
-
         public async Task GetAzureRegions()
         {
             AzureRegionsList azureRegionsList = new();
@@ -154,6 +156,5 @@ namespace DocumentTranslation.GUI
             foreach (var region in azureRegions)
                 this.azureRegions.Add(region);
         }
-
     }
 }

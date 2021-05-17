@@ -46,8 +46,12 @@
             </TabItem>
             <TabItem Header="Translate Documents" Width="200">
                 <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
-                        <Button x:Name="translateDocuments" Content="Translate" Width="100" Click="DocumentsTranslateButton_Click"/>
+                        <Button x:Name="translateDocumentsButton" Content="Translate Documents" Width="Auto" Click="DocumentsTranslateButton_Click" Padding="2" IsEnabled="False" HorizontalAlignment="Right"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
@@ -60,8 +64,9 @@
                     <Grid Margin="20, 60, 20, 10">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="34"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -69,12 +74,29 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Documents to translate: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
-                        <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="4"/>
-                        <Button Content="Browse" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="BrowseButton_Click" Margin="4"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Glossary to use: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
-                        <ListBox Grid.Row="1" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="4"/>
-                        <Button Content="Browse" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4"/>
+                        <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
+                        <Button Content="Browse" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Glossary to use: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                        <ListBox Grid.Row="1" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2"/>
+                        <Button Content="Browse" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Target folder: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                        <ListBox Grid.Row="2" Grid.Column="1" x:Name="TargetListBox" Padding="2,2" Margin="2"/>
+                        <Button Content="Browse" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" Margin="4" IsEnabled="False"/>
+                        <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="Cancel" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
                     </Grid>
+                    <StatusBar Grid.Row="1" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" x:Name="StatusBarText1"/>
+                                <TextBlock Grid.Column="1" x:Name="StatusBarText2"/>
+                            </Grid>
+                        </StackPanel>
+                    </StatusBar>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings" Width="200">

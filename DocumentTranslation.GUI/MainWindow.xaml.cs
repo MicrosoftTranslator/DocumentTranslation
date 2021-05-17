@@ -83,7 +83,7 @@ namespace DocumentTranslation.GUI
             outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
         }
 
-        private async void BrowseButton_Click(object sender, RoutedEventArgs e)
+        private async void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
@@ -91,6 +91,7 @@ namespace DocumentTranslation.GUI
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
             FilesListBox.ItemsSource = ViewModel.FilesToTranslate;
+            if ((ViewModel.FilesToTranslate.Count > 0) && (TargetListBox.Items.Count > 0)) translateDocumentsButton.IsEnabled = true;
             return;
         }
         private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -99,15 +100,70 @@ namespace DocumentTranslation.GUI
             openFileDialog.Filter = await this.ViewModel.GetGlossaryExtensionsFilter();
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
-                ViewModel.FilesToTranslate.Add(filename);
-            GlossariesListBox.ItemsSource = ViewModel.FilesToTranslate;
+                ViewModel.GlossariesToUse.Add(filename);
+            GlossariesListBox.ItemsSource = ViewModel.GlossariesToUse;
             return;
         }
 
-        private async void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
+        private void TargetBrowseButton_Click(object sender, RoutedEventArgs e)
         {
-
+            List<string> items = new();
+            FolderBrowserDialog folderBrowserDialog = new();
+            folderBrowserDialog.ShowDialog();
+            ViewModel.TargetFolder = folderBrowserDialog.SelectedPath;
+            items.Add(ViewModel.TargetFolder);
+            TargetListBox.ItemsSource = items;
+            if ((ViewModel.FilesToTranslate.Count > 0) && (TargetListBox.Items.Count > 0)) translateDocumentsButton.IsEnabled = true;
         }
 
+        private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
+        {
+            CancelButton.IsEnabled = true;
+            ProgressBar.IsIndeterminate = true;
+            DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
+            documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
+            documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
+            documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
+            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
+            ProgressBar.IsIndeterminate = false;
+            ProgressBar.Value = 1;
+        }
+
+        private async void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            StatusBarText1.Text = "Canceling...";
+            CancelButton.IsEnabled = false;
+            CancelButton.Background = Brushes.Red;
+            await ViewModel.documentTranslationService.CancelRunAsync();
+            StatusBarText1.Text = "Canceled";
+        }
+
+        private void DocumentTranslationBusiness_OnUploadComplete(object sender, (int, long) e)
+        {
+            ProgressBar.Value = 10;
+            StatusBarText1.Text = "Documents uploaded";
+        }
+
+        private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
+        {
+            CancelButton.Background = Brushes.Gray;
+            StatusBarText1.Text = e.status;
+            StringBuilder statusText = new();
+            if (e.summary.inProgress > 0) statusText.Append("In progress: " + e.summary.inProgress + '\t');
+            if (e.summary.notYetStarted > 0) statusText.Append("Waiting: " + e.summary.notYetStarted + '\t');
+            if (e.summary.success > 0) statusText.Append("Completed: " + e.summary.success + '\t');
+            if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed);
+            ProgressBar.Value = 10 +  ((e.summary.inProgress / ViewModel.FilesToTranslate.Count) * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
+            StatusBarText2.Text = statusText.ToString();
+        }
+
+
+        private void DocumentTranslationBusiness_OnDownloadComplete(object sender, (int, long) e)
+        {
+            ProgressBar.Value = 100;
+            StatusBarText1.Text = "Done";
+            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} documents translated";
+            CancelButton.IsEnabled = false;
+        }
     }
 }
