@@ -10,10 +10,10 @@
         Title="DocumentTranslation" Height="500" Width="800">
     <Grid>
         <TabControl x:Name="tabControl">
+            <TabControl.DataContext>
+                <local:ViewModel/>
+            </TabControl.DataContext>
             <TabItem Header="Translate Text" Width="200">
-                <TabItem.DataContext>
-                    <local:ViewModel/>
-                </TabItem.DataContext>
                 <Grid>
                     <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
                         <Button x:Name="translateButton" Content="Translate" Width="100" Click="TranslateButton_Click"/>
@@ -21,9 +21,9 @@
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding fromLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding toLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
@@ -45,7 +45,34 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Translate Documents" Width="200">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
+                        <Button x:Name="translateDocuments" Content="Translate" Width="100" Click="TranslateButton_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
+                        <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
+                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
+                        <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
+                        <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <ComboBox x:Name="CategoryBoxDocuments" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
+                    </StackPanel>
+                    <Grid Margin="20, 60, 20, 10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Documents to translate: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="5"/>
+                        <Button Content="Browse" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="BrowseButton_Click" Margin="5"/>
+                        <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="5"/>
+                    </Grid>
+                </Grid>
             </TabItem>
             <TabItem Header="Settings" Width="200">
                 <TabItem.DataContext>
@@ -71,9 +98,9 @@
                                 <Label Grid.Row="2" Content="Resource Name:"/>
                                 <Label Grid.Row="3" Content="Storage Connection String:"/>
                                 <PasswordBox Grid.Row="0" Grid.Column="1" x:Name="subscriptionKey" Height="22"/>
-                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding azureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding settings.AzureRegion}" SelectedValuePath="ID"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding azureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding settings.AzureRegion, Mode=TwoWay}" SelectedValuePath="ID"/>
                                 <TextBox Grid.Row="2" Grid.Column="1" x:Name="resourceName" Height="22" Text="{Binding settings.AzureResourceName, Mode=TwoWay}"/>
-                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="storageConnection" Height="22" Text="{Binding settings.ConnectionStrings.StorageConnectionString}"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="storageConnection" Height="22" Text="{Binding settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Documents" Width="140">

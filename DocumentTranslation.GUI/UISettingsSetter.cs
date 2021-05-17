@@ -63,6 +63,8 @@ namespace DocumentTranslation.GUI
     {
         public string lastFromLanguage;
         public string lastToLanguage;
+        public string lastFromLanguageDocuments;
+        public string lastToLanguageDocuments;
         public string lastCategory;
         public List<MyCategory> MyCategories;
     }

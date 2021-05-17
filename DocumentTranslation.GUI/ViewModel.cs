@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using DocumentTranslationService.Core;
 
 namespace CollectionView
@@ -28,16 +29,17 @@ namespace DocumentTranslation.GUI
                 ID = iD;
             }
         }
-        internal ObservableCollection<Language> toLanguageList = new();
-        internal ObservableCollection<Language> fromLanguageList = new();
-        internal ObservableCollection<MyCategory> myCategoryList = new();
+        public ObservableCollection<Language> toLanguageList { get; private set; }  = new();
+        public ObservableCollection<Language> fromLanguageList { get; private set; } = new();
+        public ObservableCollection<MyCategory> myCategoryList { get; private set; } = new();
         internal UISettings UISettings = new();
-        internal DocTransAppSettings settings = new();
-        public ObservableCollection<AzureRegion> azureRegions = new();
+        public DocTransAppSettings settings { get; private set; } = new();
+        public ObservableCollection<AzureRegion> azureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
-        internal Language FromLanguage { get; set; }
-        internal Language ToLanguage { get; set; }
-
+        public Language FromLanguage { get; set; }
+        public Language ToLanguage { get; set; }
+        public ObservableCollection<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
+        private ObservableCollection<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
 
         public ViewModel()
@@ -50,12 +52,13 @@ namespace DocumentTranslation.GUI
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            Task task = documentTranslationService.GetLanguagesAsync();
+            _ = documentTranslationService.GetLanguagesAsync();
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.MyCategories is not null)
                 foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
                     myCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
+            _ = documentTranslationService.GetFormatsAsync();
         }
 
         public async Task SaveAsync()
@@ -97,6 +100,37 @@ namespace DocumentTranslation.GUI
             return result;
         }
 
+        internal async Task<string> GetDocumentExtensionsFilter()
+        {
+            await documentTranslationService.GetFormatsAsync();
+            StringBuilder filterBuilder = new();
+            filterBuilder.Append("Document Translation|");
+            foreach (var format in documentTranslationService.FileFormats.value)
+            {
+                foreach (var ext in format.fileExtensions)
+                {
+                    filterBuilder.Append("*" + ext + ";");
+                }
+            }
+            filterBuilder.Remove(filterBuilder.Length - 1, 1);
+            filterBuilder.Append('|');
+
+            foreach (var format in documentTranslationService.FileFormats.value)
+            {
+                filterBuilder.Append(format.format + "|");
+                foreach (var ext in format.fileExtensions)
+                {
+                    filterBuilder.Append("*" + ext + ";");
+                }
+                filterBuilder.Remove(filterBuilder.Length - 1, 1);
+                filterBuilder.Append('|');
+            }
+            filterBuilder.Remove(filterBuilder.Length - 1, 1);
+            Debug.WriteLine("Filter:" + filterBuilder.ToString());
+            return filterBuilder.ToString();
+        }
+
+
         public async Task GetAzureRegions()
         {
             AzureRegionsList azureRegionsList = new();
@@ -104,5 +138,6 @@ namespace DocumentTranslation.GUI
             foreach (var region in azureRegions)
                 this.azureRegions.Add(region);
         }
+
     }
 }
