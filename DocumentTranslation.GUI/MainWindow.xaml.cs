@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DocumentTranslationService.Core;
 using System.Diagnostics;
+using System.IO;
 
 namespace DocumentTranslation.GUI
 {
@@ -24,6 +17,8 @@ namespace DocumentTranslation.GUI
     public partial class MainWindow : Window
     {
         private readonly ViewModel ViewModel;
+        private PerLanguageData perLanguageData = new();
+        private int charactersCharged;
 
         public MainWindow()
         {
@@ -88,6 +83,7 @@ namespace DocumentTranslation.GUI
         {
             ResetUI();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
+            if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
             openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
@@ -113,6 +109,7 @@ namespace DocumentTranslation.GUI
             ResetUI();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             openFileDialog.Filter = await this.ViewModel.GetGlossaryExtensionsFilter();
+            if (perLanguageData.lastGlossariesFolder is not null) openFileDialog.InitialDirectory = perLanguageData.lastGlossariesFolder;
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.GlossariesToUse.Add(filename);
@@ -130,6 +127,7 @@ namespace DocumentTranslation.GUI
             ResetUI();
             List<string> items = new();
             FolderBrowserDialog folderBrowserDialog = new();
+            if ((perLanguageData is not null) && (perLanguageData.lastTargetFolder is not null)) folderBrowserDialog.SelectedPath = perLanguageData.lastTargetFolder;
             folderBrowserDialog.ShowDialog();
             ViewModel.TargetFolder = folderBrowserDialog.SelectedPath;
             items.Add(ViewModel.TargetFolder);
@@ -142,6 +140,21 @@ namespace DocumentTranslation.GUI
             ResetUI();
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
+            ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
+            PerLanguageData perLanguageData = new();
+            if ((ViewModel.GlossariesToUse.Count > 0) && (ViewModel.GlossariesToUse[0] is not null))
+            {
+                perLanguageData.lastGlossariesFolder = Path.GetDirectoryName(ViewModel.GlossariesToUse[0]);
+                perLanguageData.lastGlossary= ViewModel.GlossariesToUse[0];
+            }
+            perLanguageData.lastTargetFolder = ViewModel.TargetFolder;
+            if (ViewModel.UISettings.PerLanguageFolders.ContainsKey(toLanguageBoxDocuments.SelectedValue as string))
+            {
+                ViewModel.UISettings.PerLanguageFolders.Remove(toLanguageBoxDocuments.SelectedValue as string);
+            }
+            ViewModel.UISettings.PerLanguageFolders.Add(toLanguageBoxDocuments.SelectedValue as string, perLanguageData);
+            _ = ViewModel.SaveAsync();
+
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
@@ -168,15 +181,17 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            CancelButton.Background = Brushes.Gray;
+            CancelButton.Background = Brushes.LightGray;
             StatusBarText1.Text = e.status;
             StringBuilder statusText = new();
             if (e.summary.inProgress > 0) statusText.Append("In progress: " + e.summary.inProgress + '\t');
             if (e.summary.notYetStarted > 0) statusText.Append("Waiting: " + e.summary.notYetStarted + '\t');
             if (e.summary.success > 0) statusText.Append("Completed: " + e.summary.success + '\t');
-            if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed);
+            if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed + '\t');
+            if (e.summary.totalCharacterCharged > 0) statusText.Append("Characters charged: " + e.summary.totalCharacterCharged);
             ProgressBar.Value = 10 +  ((e.summary.inProgress / ViewModel.FilesToTranslate.Count) * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
+            charactersCharged = e.summary.totalCharacterCharged;
         }
 
 
@@ -184,10 +199,18 @@ namespace DocumentTranslation.GUI
         {
             ProgressBar.Value = 100;
             StatusBarText1.Text = "Done";
-            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} documents translated";
+            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} documents translated \t";
+            if (charactersCharged > 0) StatusBarText2.Text += $" |\t{charactersCharged} characters charged";
             CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
             TargetOpenButton.Visibility = Visibility.Visible;
+        }
+
+        private void toLanguageBoxDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string langCode = toLanguageBoxDocuments.SelectedValue as string;
+            if (ViewModel.UISettings.PerLanguageFolders is not null) ViewModel.UISettings.PerLanguageFolders.TryGetValue(langCode, out perLanguageData);
+            if ((perLanguageData is not null) && (perLanguageData.lastGlossary is not null)) ViewModel.GlossariesToUse.Add(perLanguageData.lastGlossary);
         }
     }
 }

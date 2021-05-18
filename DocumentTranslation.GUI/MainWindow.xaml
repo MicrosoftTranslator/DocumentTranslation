@@ -26,7 +26,7 @@
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
                         <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode" SelectionChanged="toLanguageBoxDocuments_SelectionChanged"/>
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBoxDocuments" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
@@ -77,9 +77,9 @@
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35,20,0" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode" />
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode" />
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>

@@ -68,11 +68,10 @@ namespace DocumentTranslation.GUI
         public string lastCategory;
         public string lastDocumentsFolder;
         public List<MyCategory> MyCategories;
-        public List<PerLanguageData> PerLanguageFolders;
+        public Dictionary<string, PerLanguageData> PerLanguageFolders;
     }
     public class PerLanguageData
     {
-        public string languageCode;
         public string lastGlossariesFolder;
         public string lastGlossary;
         public string lastTargetFolder;

@@ -40,7 +40,7 @@ namespace DocumentTranslation.GUI
         public Language ToLanguage { get; set; }
         public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
         public string TargetFolder { get; internal set; }
-        public List<string> GlossariesToUse { get; internal set; }
+        public List<string> GlossariesToUse { get; internal set; } = new();
 
         private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
@@ -58,6 +58,7 @@ namespace DocumentTranslation.GUI
             _ = documentTranslationService.GetLanguagesAsync();
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
+            if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
             if (UISettings.MyCategories is not null)
                 foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
                     myCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
