@@ -66,8 +66,18 @@ namespace DocumentTranslation.GUI
         public string lastFromLanguageDocuments;
         public string lastToLanguageDocuments;
         public string lastCategory;
+        public string lastDocumentsFolder;
         public List<MyCategory> MyCategories;
+        public List<PerLanguageData> PerLanguageFolders;
     }
+    public class PerLanguageData
+    {
+        public string languageCode;
+        public string lastGlossariesFolder;
+        public string lastGlossary;
+        public string lastTargetFolder;
+    }
+
 
     public class MyCategory
     {

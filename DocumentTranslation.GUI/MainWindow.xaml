@@ -13,45 +13,14 @@
             <TabControl.DataContext>
                 <local:ViewModel/>
             </TabControl.DataContext>
-            <TabItem Header="Translate Text" Width="200">
-                <Grid>
-                    <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
-                        <Button x:Name="translateButton" Content="Translate" Width="100" Click="TranslateButton_Click"/>
-                        <Button x:Name="allLanguagesButton" Content="List languages" Margin="25,0" Width="100"/>
-                    </StackPanel>
-                    <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
-                        <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
-                        <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
-                        <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
-                    </StackPanel>
-                    <Grid Margin="20,60,20,10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Content="Input:" />
-                        <TextBox Grid.Row="1" x:Name="inputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
-                        <Label Grid.Row="2" Content="Result:" />
-                        <TextBox Grid.Row="3" x:Name="outputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
-                    </Grid>
-                </Grid>
-            </TabItem>
             <TabItem Header="Translate Documents" Width="200">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
-                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="22"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top">
-                        <Button x:Name="translateDocumentsButton" Content="Translate Documents" Width="Auto" Click="DocumentsTranslateButton_Click" Padding="2" IsEnabled="False" HorizontalAlignment="Right"/>
+                    <StackPanel Orientation="Horizontal" Margin="20,5" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <Button x:Name="translateDocumentsButton" Content="Translate Documents" Click="DocumentsTranslateButton_Click" Padding="10,0"  IsEnabled="False" HorizontalAlignment="Right"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
@@ -75,15 +44,16 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Documents to translate: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
                         <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Browse" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <Button Content="Select" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Glossary to use: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
                         <ListBox Grid.Row="1" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Browse" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <Button Content="Select" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Target folder: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
                         <ListBox Grid.Row="2" Grid.Column="1" x:Name="TargetListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Browse" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" Margin="4" IsEnabled="False"/>
+                        <Button Content="Select" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" IsEnabled="False"/>
                         <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="Cancel" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
+                        <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="2" Content="Browse" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
                     </Grid>
                     <StatusBar Grid.Row="1" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal">
@@ -99,13 +69,44 @@
                     </StatusBar>
                 </Grid>
             </TabItem>
+            <TabItem Header="Translate Text" Width="200">
+                <Grid>
+                    <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5,20,0" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                        <Button x:Name="allLanguagesButton" Content="List languages" Margin="25,0" Width="100"/>
+                        <Button x:Name="translateButton" Content="Translate" Width="100" Click="TranslateButton_Click"/>
+                    </StackPanel>
+                    <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35,20,0" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                        <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
+                        <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode"/>
+                        <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
+                    </StackPanel>
+                    <Grid Margin="20,60,20,10" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Content="Input:" />
+                        <TextBox Grid.Row="1" x:Name="inputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
+                        <Label Grid.Row="2" Content="Translation:" />
+                        <TextBox Grid.Row="3" x:Name="outputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
             <TabItem Header="Settings" Width="200">
                 <TabItem.DataContext>
                     <local:ViewModel/>
                 </TabItem.DataContext>
                 <Grid>
                     <TabControl>
-                    <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded" Unloaded="TabItemAuthentication_Unloaded">
+                        <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded" Unloaded="TabItemAuthentication_Unloaded">
                             <Grid Margin="20" Height="160">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="160"/>

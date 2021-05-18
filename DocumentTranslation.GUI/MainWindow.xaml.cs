@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DocumentTranslationService.Core;
+using System.Diagnostics;
 
 namespace DocumentTranslation.GUI
 {
@@ -85,6 +86,7 @@ namespace DocumentTranslation.GUI
 
         private async void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
             openFileDialog.ShowDialog();
@@ -94,8 +96,21 @@ namespace DocumentTranslation.GUI
             if ((ViewModel.FilesToTranslate.Count > 0) && (TargetListBox.Items.Count > 0)) translateDocumentsButton.IsEnabled = true;
             return;
         }
+
+        private void ResetUI()
+        {
+            ProgressBar.Value = 0;
+            StatusBarText1.Text = string.Empty;
+            StatusBarText2.Text = string.Empty;
+            CancelButton.IsEnabled = false;
+            CancelButton.Background = Brushes.Gray;
+            CancelButton.Visibility = Visibility.Visible;
+            TargetOpenButton.Visibility = Visibility.Hidden;
+        }
+
         private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             openFileDialog.Filter = await this.ViewModel.GetGlossaryExtensionsFilter();
             openFileDialog.ShowDialog();
@@ -105,8 +120,14 @@ namespace DocumentTranslation.GUI
             return;
         }
 
+        private void TargetOpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(ViewModel.TargetFolder)) Process.Start("explorer.exe", ViewModel.TargetFolder);
+        }
+
         private void TargetBrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
             List<string> items = new();
             FolderBrowserDialog folderBrowserDialog = new();
             folderBrowserDialog.ShowDialog();
@@ -118,6 +139,7 @@ namespace DocumentTranslation.GUI
 
         private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
@@ -164,6 +186,8 @@ namespace DocumentTranslation.GUI
             StatusBarText1.Text = "Done";
             StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} documents translated";
             CancelButton.IsEnabled = false;
+            CancelButton.Visibility = Visibility.Hidden;
+            TargetOpenButton.Visibility = Visibility.Visible;
         }
     }
 }
