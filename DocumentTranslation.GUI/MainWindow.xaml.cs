@@ -8,6 +8,7 @@ using System.Windows.Media;
 using DocumentTranslationService.Core;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace DocumentTranslation.GUI
 {
@@ -25,16 +26,25 @@ namespace DocumentTranslation.GUI
             InitializeComponent();
             ViewModel viewModel = new();
             ViewModel = viewModel;
-            toLanguageBox.ItemsSource = ViewModel.toLanguageList;
-            fromLanguageBox.ItemsSource = ViewModel.fromLanguageList;
-            toLanguageBoxDocuments.ItemsSource = ViewModel.toLanguageList;
-            fromLanguageBoxDocuments.ItemsSource = ViewModel.fromLanguageList;
-
+            EnableTabs();
+            toLanguageBox.ItemsSource = ViewModel.ToLanguageList;
+            fromLanguageBox.ItemsSource = ViewModel.FromLanguageList;
+            toLanguageBoxDocuments.ItemsSource = ViewModel.ToLanguageList;
+            fromLanguageBoxDocuments.ItemsSource = ViewModel.FromLanguageList;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await ViewModel.Initialize();
+            try
+            {
+                await ViewModel.Initialize();
+            }
+            catch (ArgumentNullException ex)
+            {
+                SettingsTab.IsSelected = true;
+                TranslateDocumentsTab.IsEnabled = false;
+                if (ex.ParamName == "SubscriptionKey") TranslateTextTab.IsEnabled = false;
+            }
             toLanguageBox.SelectedValue = ViewModel.UISettings.lastToLanguage;
             if (ViewModel.UISettings.lastFromLanguage is not null)
                 fromLanguageBox.SelectedValue = ViewModel.UISettings.lastFromLanguage;
@@ -58,19 +68,15 @@ namespace DocumentTranslation.GUI
         private async void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
         {
             await ViewModel.GetAzureRegions();
-            subscriptionKey.Password = ViewModel.settings.SubscriptionKey;
-            resourceName.Text = ViewModel.settings.AzureResourceName;
-            storageConnection.Text = ViewModel.settings.ConnectionStrings.StorageConnectionString;
-            region.ItemsSource = ViewModel.azureRegions;
-            region.SelectedValue = ViewModel.settings.AzureRegion;
+            subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
+            region.ItemsSource = ViewModel.AzureRegions;
+            region.SelectedValue = ViewModel.Settings.AzureRegion;
+            storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
+            resourceName.Text = ViewModel.Settings.AzureResourceName;
         }
 
         private async void TabItemAuthentication_Unloaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.settings.SubscriptionKey = subscriptionKey.Password;
-            ViewModel.settings.AzureResourceName = resourceName.Text;
-            ViewModel.settings.ConnectionStrings.StorageConnectionString = storageConnection.Text;
-            ViewModel.settings.AzureRegion = region.SelectedValue as string;
             await ViewModel.SaveAsync();
         }
 
@@ -206,11 +212,45 @@ namespace DocumentTranslation.GUI
             TargetOpenButton.Visibility = Visibility.Visible;
         }
 
-        private void toLanguageBoxDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ToLanguageBoxDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string langCode = toLanguageBoxDocuments.SelectedValue as string;
             if (ViewModel.UISettings.PerLanguageFolders is not null) ViewModel.UISettings.PerLanguageFolders.TryGetValue(langCode, out perLanguageData);
             if ((perLanguageData is not null) && (perLanguageData.lastGlossary is not null)) ViewModel.GlossariesToUse.Add(perLanguageData.lastGlossary);
+        }
+
+        private async void EnableTabs()
+        {
+            await Task.Delay(50);
+            TranslateTextTab.IsEnabled = true;
+            TranslateDocumentsTab.IsEnabled = true;
+            if (string.IsNullOrEmpty(ViewModel.Settings.SubscriptionKey)) { TranslateDocumentsTab.IsEnabled = false; TranslateTextTab.IsEnabled = false; return; }
+            if (string.IsNullOrEmpty(ViewModel.Settings.ConnectionStrings.StorageConnectionString)) TranslateDocumentsTab.IsEnabled = false;
+            if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
+            if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
+        }
+
+        private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Settings.SubscriptionKey = subscriptionKey.Password;
+            EnableTabs();
+        }
+
+        private void Region_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EnableTabs();
+        }
+
+        private void ResourceName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.Settings.AzureResourceName = resourceName.Text;
+            EnableTabs();
+        }
+
+        private void StorageConnection_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.Settings.ConnectionStrings.StorageConnectionString = storageConnectionString.Text;
+            EnableTabs();
         }
     }
 }

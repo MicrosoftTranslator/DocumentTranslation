@@ -16,7 +16,7 @@ namespace CollectionView
 
 namespace DocumentTranslation.GUI
 {
-    class ViewModel
+    internal class ViewModel
     {
         internal class MyCategory
         {
@@ -29,18 +29,18 @@ namespace DocumentTranslation.GUI
                 ID = iD;
             }
         }
-        public ObservableCollection<Language> toLanguageList { get; private set; } = new();
-        public ObservableCollection<Language> fromLanguageList { get; private set; } = new();
-        public ObservableCollection<MyCategory> myCategoryList { get; private set; } = new();
+        public ObservableCollection<Language> ToLanguageList { get; private set; } = new();
+        public ObservableCollection<Language> FromLanguageList { get; private set; } = new();
+        public ObservableCollection<MyCategory> MyCategoryList { get; set; } = new();
         internal UISettings UISettings = new();
-        public DocTransAppSettings settings { get; private set; } = new();
-        public ObservableCollection<AzureRegion> azureRegions { get; private set; } = new();
+        public DocTransAppSettings Settings { get; set; } = new();
+        public ObservableCollection<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
         public Language ToLanguage { get; set; }
         public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
-        public string TargetFolder { get; internal set; }
-        public List<string> GlossariesToUse { get; internal set; } = new();
+        public string TargetFolder { get; set; }
+        public List<string> GlossariesToUse { get; private set; } = new();
 
         private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
@@ -51,8 +51,16 @@ namespace DocumentTranslation.GUI
 
         public async Task Initialize()
         {
-            settings = await AppSettingsSetter.Read();
-            DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+            Settings = await AppSettingsSetter.Read();
+            try
+            {
+                AppSettingsSetter.CheckSettings(Settings);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentNullException(e.ParamName);
+            }
+            DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             _ = documentTranslationService.GetLanguagesAsync();
@@ -61,36 +69,37 @@ namespace DocumentTranslation.GUI
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
             if (UISettings.MyCategories is not null)
                 foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
-                    myCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
-            _ = documentTranslationService.GetFormatsAsync();
+                    MyCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
+            _ = documentTranslationService.GetDocumentFormatsAsync();
             _ = documentTranslationService.GetGlossaryFormatsAsync();
+            return;
         }
 
         public async Task SaveAsync()
         {
             List<Task> tasks = new();
             tasks.Add(UISettingsSetter.WriteAsync(null, UISettings));
-            tasks.Add(AppSettingsSetter.WriteAsync(null, settings));
+            tasks.Add(AppSettingsSetter.WriteAsync(null, Settings));
             await Task.WhenAll();
         }
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
-            toLanguageList.Clear();
-            fromLanguageList.Clear();
-            fromLanguageList.Add(new Language("auto", "Auto-Detect"));
+            ToLanguageList.Clear();
+            FromLanguageList.Clear();
+            FromLanguageList.Add(new Language("auto", "Auto-Detect"));
             var list = documentTranslationService.Languages.OrderBy((x) => x.Value.Name);
             foreach (var lang in list)
             {
-                toLanguageList.Add(lang.Value);
-                fromLanguageList.Add(lang.Value);
+                ToLanguageList.Add(lang.Value);
+                FromLanguageList.Add(lang.Value);
             }
         }
 
         internal async Task<string> TranslateTextAsync(string text, string fromLanguageCode, string toLanguageCode)
         {
             if (fromLanguageCode == "auto") fromLanguageCode = null;
-            textTranslationService.AzureRegion = settings.AzureRegion;
+            textTranslationService.AzureRegion = Settings.AzureRegion;
             string result;
             try
             {
@@ -107,7 +116,7 @@ namespace DocumentTranslation.GUI
 
         internal async Task<string> GetDocumentExtensionsFilter()
         {
-            await documentTranslationService.GetFormatsAsync();
+            await documentTranslationService.GetDocumentFormatsAsync();
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Document Translation|");
             foreach (var format in documentTranslationService.FileFormats.value)
@@ -155,7 +164,7 @@ namespace DocumentTranslation.GUI
             AzureRegionsList azureRegionsList = new();
             List<AzureRegion> azureRegions = await azureRegionsList.GetAzureRegions();
             foreach (var region in azureRegions)
-                this.azureRegions.Add(region);
+                this.AzureRegions.Add(region);
         }
     }
 }

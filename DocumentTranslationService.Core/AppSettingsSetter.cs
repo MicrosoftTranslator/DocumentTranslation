@@ -3,7 +3,10 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -35,15 +38,17 @@ namespace DocumentTranslationService.Core
                 appsettingsJson = await File.ReadAllTextAsync(filename);
             }
 
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
-                return new DocTransAppSettings();
+                if (ex is FileNotFoundException || ex is DirectoryNotFoundException)
+                {
+                    DocTransAppSettings settings = new();
+                    settings.ConnectionStrings = new Connectionstrings();
+                    settings.AzureRegion = "global";
+                    return settings;
+                }
+                throw;
             }
-            catch (DirectoryNotFoundException)
-            {
-                return new DocTransAppSettings();
-            }
-
             return JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
         }
 
@@ -57,24 +62,36 @@ namespace DocumentTranslationService.Core
             await File.WriteAllTextAsync(filename, GetJson(settings));
         }
 
+
         /// <summary>
         /// Throws an exception to indicate the missing settings value;
         /// </summary>
-        /// <param name="settings"></param>
-        public static void CheckSettings(DocTransAppSettings settings)
+        /// <param name="settings">The settings object to check on</param>
+        /// <exception cref="ArgumentException"/>
+        public static void CheckSettings(DocTransAppSettings settings, bool textOnly = false)
         {
             if (string.IsNullOrEmpty(settings.SubscriptionKey)) throw new ArgumentException("SubscriptionKey");
-            if (string.IsNullOrEmpty(settings.ConnectionStrings.StorageConnectionString)) throw new ArgumentException("StorageConnectionString");
-            if (string.IsNullOrEmpty(settings.AzureResourceName)) throw new ArgumentException("AzureResourceName");
+            if (string.IsNullOrEmpty(settings.AzureRegion)) throw new ArgumentException("AzureRegion");
+            if (!textOnly)
+            {
+                if (string.IsNullOrEmpty(settings.ConnectionStrings.StorageConnectionString)) throw new ArgumentException("StorageConnectionString");
+                if (string.IsNullOrEmpty(settings.AzureResourceName)) throw new ArgumentException("AzureResourceName");
+            }
+            return;
         }
     }
 
-    public class DocTransAppSettings
+    public class DocTransAppSettings : INotifyPropertyChanged
     {
+        private string azureResourceName;
+        private string subscriptionKey;
+        private string category;
+        private string azureRegion;
+
         /// <summary>
         /// Name of the Azure Translator resource
         /// </summary>
-        public string AzureResourceName { get; set; }
+        public string AzureResourceName { get => azureResourceName; set { azureResourceName = value; NotifyPropertyChanged(); } }
         /// <summary>
         /// Hold sthe connection strings.
         /// </summary>
@@ -82,7 +99,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The subscription key to use.
         /// </summary>
-        public string SubscriptionKey { get; set; }
+        public string SubscriptionKey { get => subscriptionKey; set { subscriptionKey = value; NotifyPropertyChanged(); } }
         /// <summary>
         /// Whether to show experimental languages
         /// </summary>
@@ -90,11 +107,18 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The Custom Translator category ID to use. 
         /// </summary>
-        public string Category { get; set; }
+        public string Category { get => category; set { category = value; NotifyPropertyChanged(); } }
         /// <summary>
         /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
         /// </summary>
-        public string AzureRegion { get; set; }
+        public string AzureRegion { get => azureRegion; set { azureRegion = value; NotifyPropertyChanged(); } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
 
     public class Connectionstrings
