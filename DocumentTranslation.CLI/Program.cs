@@ -249,7 +249,7 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetFormatsAsync();
+                    await translationService.GetDocumentFormatsAsync();
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");

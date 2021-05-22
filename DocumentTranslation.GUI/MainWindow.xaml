@@ -9,11 +9,11 @@
         Closing="Window_Closing"
         Title="DocumentTranslation" Height="500" Width="800">
     <Grid>
+        <Grid.DataContext>
+            <local:ViewModel/>
+        </Grid.DataContext>
         <TabControl x:Name="tabControl">
-            <TabControl.DataContext>
-                <local:ViewModel/>
-            </TabControl.DataContext>
-            <TabItem Header="Translate Documents" Width="200">
+            <TabItem Header="Translate Documents" Width="200" x:Name="TranslateDocumentsTab">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -24,9 +24,10 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="20,35" Height="22" VerticalAlignment="Top">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode"/>
+                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode">
+                        </ComboBox>
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode" SelectionChanged="toLanguageBoxDocuments_SelectionChanged"/>
+                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBoxDocuments" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
@@ -69,7 +70,7 @@
                     </StatusBar>
                 </Grid>
             </TabItem>
-            <TabItem Header="Translate Text" Width="200">
+            <TabItem Header="Translate Text" Width="200" x:Name="TranslateTextTab">
                 <Grid>
                     <StackPanel x:Name="Commands" Orientation="Horizontal" Margin="20,5,20,0" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                         <Button x:Name="allLanguagesButton" Content="List languages" Margin="25,0" Width="100"/>
@@ -77,9 +78,9 @@
                     </StackPanel>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20,35,20,0" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
                         <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding fromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage}" SelectedValuePath="LangCode" />
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode" />
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding toLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage}" SelectedValuePath="LangCode" />
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name"  SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" />
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
                     </StackPanel>
@@ -100,10 +101,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings" Width="200">
-                <TabItem.DataContext>
-                    <local:ViewModel/>
-                </TabItem.DataContext>
+            <TabItem Header="Settings" Width="200" x:Name="SettingsTab">
                 <Grid>
                     <TabControl>
                         <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded" Unloaded="TabItemAuthentication_Unloaded">
@@ -123,10 +121,10 @@
                                 <Label Grid.Row="1" Content="Azure Region:"/>
                                 <Label Grid.Row="2" Content="Resource Name:"/>
                                 <Label Grid.Row="3" Content="Storage Connection String:"/>
-                                <PasswordBox Grid.Row="0" Grid.Column="1" x:Name="subscriptionKey" Height="22"/>
-                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding azureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding settings.AzureRegion, Mode=TwoWay}" SelectedValuePath="ID"/>
-                                <TextBox Grid.Row="2" Grid.Column="1" x:Name="resourceName" Height="22" Text="{Binding settings.AzureResourceName, Mode=TwoWay}"/>
-                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="storageConnection" Height="22" Text="{Binding settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}"/>
+                                <PasswordBox Grid.Row="0" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged"/>
+                                <TextBox x:Name="resourceName" Grid.Row="2" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged"/>
+                                <TextBox x:Name="storageConnectionString" Grid.Row="3" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged"/>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Categories" Width="140">

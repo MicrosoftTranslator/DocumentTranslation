@@ -68,7 +68,7 @@ namespace DocumentTranslationService.Core
         {
             List<Task> tasks = new();
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
-            tasks.Add(GetFormatsAsync());
+            tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
             tasks.Add(GetLanguagesAsync());
             await Task.WhenAll(tasks);
