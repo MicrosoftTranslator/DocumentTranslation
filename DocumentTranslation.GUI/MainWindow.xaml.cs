@@ -229,6 +229,7 @@ namespace DocumentTranslation.GUI
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
             await Task.Delay(100);
+            _ = ViewModel.SaveAsync();
             Window_Loaded(this, new RoutedEventArgs());
         }
 
