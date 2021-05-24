@@ -26,14 +26,19 @@ namespace DocumentTranslation.GUI
         {
             InitializeComponent();
             ViewModel viewModel = new();
+            AppSettingsSetter.SettingsReadComplete += AppSettingsSetter_SettingsReadComplete;
             ViewModel = viewModel;
-            EnableTabs();
             toLanguageBox.ItemsSource = ViewModel.ToLanguageList;
             fromLanguageBox.ItemsSource = ViewModel.FromLanguageList;
             toLanguageBoxDocuments.ItemsSource = ViewModel.ToLanguageList;
             fromLanguageBoxDocuments.ItemsSource = ViewModel.FromLanguageList;
             CategoryDocumentsBox.ItemsSource = ViewModel.categories.MyCategoryList;
             CategoryTextBox.ItemsSource = ViewModel.categories.MyCategoryList;
+        }
+
+        private void AppSettingsSetter_SettingsReadComplete(object sender, EventArgs e)
+        {
+            EnableTabs();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -229,38 +234,40 @@ namespace DocumentTranslation.GUI
 
         private async void EnableTabs()
         {
-            await Task.Delay(50);
+            await Task.Delay(10);
             TranslateTextTab.IsEnabled = true;
             TranslateDocumentsTab.IsEnabled = true;
             if (string.IsNullOrEmpty(ViewModel.Settings.SubscriptionKey)) { TranslateDocumentsTab.IsEnabled = false; TranslateTextTab.IsEnabled = false; return; }
             if (string.IsNullOrEmpty(ViewModel.Settings.ConnectionStrings.StorageConnectionString)) TranslateDocumentsTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
-            await Task.Delay(100);
-            _ = ViewModel.SaveAsync();
         }
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
         {
             ViewModel.Settings.SubscriptionKey = subscriptionKey.Password;
-            EnableTabs();
         }
 
         private void Region_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EnableTabs();
         }
 
         private void ResourceName_TextChanged(object sender, TextChangedEventArgs e)
         {
             ViewModel.Settings.AzureResourceName = resourceName.Text;
-            EnableTabs();
         }
 
         private void StorageConnection_TextChanged(object sender, TextChangedEventArgs e)
         {
             ViewModel.Settings.ConnectionStrings.StorageConnectionString = storageConnectionString.Text;
+        }
+        private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SavedSettingsText.Visibility = Visibility.Visible;
+            _ = ViewModel.SaveAsync();
             EnableTabs();
+            await Task.Delay(500);
+            SavedSettingsText.Visibility = Visibility.Hidden;
         }
 
         private void CategoriesTab_Loaded(object sender, RoutedEventArgs e)
@@ -317,5 +324,6 @@ namespace DocumentTranslation.GUI
             if (CategoryDocumentsBox.SelectedValue is not null) CategoryDocumentsClearButton.Visibility = Visibility.Visible;
             else CategoryDocumentsClearButton.Visibility = Visibility.Hidden;
         }
+
     }
 }

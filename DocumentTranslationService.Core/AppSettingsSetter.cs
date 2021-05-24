@@ -17,6 +17,7 @@ namespace DocumentTranslationService.Core
     /// </summary>
     public static class AppSettingsSetter
     {
+        public static event EventHandler SettingsReadComplete;
         const string AppName = "Document Translation";
         const string AppSettingsFileName = "appsettings.json";
 
@@ -49,7 +50,9 @@ namespace DocumentTranslationService.Core
                 }
                 throw;
             }
-            return JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            DocTransAppSettings result =  JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            SettingsReadComplete?.Invoke(null, EventArgs.Empty);
+            return result;
         }
 
         public static async Task WriteAsync(string filename, DocTransAppSettings settings)
@@ -81,17 +84,12 @@ namespace DocumentTranslationService.Core
         }
     }
 
-    public class DocTransAppSettings : INotifyPropertyChanged
+    public class DocTransAppSettings
     {
-        private string azureResourceName;
-        private string subscriptionKey;
-        private string category;
-        private string azureRegion;
-
         /// <summary>
         /// Name of the Azure Translator resource
         /// </summary>
-        public string AzureResourceName { get => azureResourceName; set { azureResourceName = value; NotifyPropertyChanged(); } }
+        public string AzureResourceName { get; set; }
         /// <summary>
         /// Hold sthe connection strings.
         /// </summary>
@@ -99,7 +97,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The subscription key to use.
         /// </summary>
-        public string SubscriptionKey { get => subscriptionKey; set { subscriptionKey = value; NotifyPropertyChanged(); } }
+        public string SubscriptionKey { get; set; }
         /// <summary>
         /// Whether to show experimental languages
         /// </summary>
@@ -107,18 +105,11 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The Custom Translator category ID to use. 
         /// </summary>
-        public string Category { get => category; set { category = value; NotifyPropertyChanged(); } }
+        public string Category { get; set; }
         /// <summary>
         /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
         /// </summary>
-        public string AzureRegion { get => azureRegion; set { azureRegion = value; NotifyPropertyChanged(); } }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        public string AzureRegion { get; set; }
     }
 
     public class Connectionstrings

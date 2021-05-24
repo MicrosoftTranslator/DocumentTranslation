@@ -108,12 +108,13 @@
                 <Grid>
                     <TabControl>
                         <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded" Unloaded="TabItemAuthentication_Unloaded">
-                            <Grid Margin="20" Height="160">
+                            <Grid Margin="20" Height="200">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="160"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
@@ -128,6 +129,11 @@
                                 <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged"/>
                                 <TextBox x:Name="resourceName" Grid.Row="2" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged"/>
                                 <TextBox x:Name="storageConnectionString" Grid.Row="3" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged"/>
+                                <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="5,0,5,0" Grid.ColumnSpan="2">
+                                    <Button x:Name="SaveSettingsButton" Content="Save" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click"/>
+                                    <TextBlock x:Name="SavedSettingsText" Text="Settings saved" Margin="5" Padding="2" Visibility="Hidden"/>
+                                </StackPanel>
+
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="CategoriesTab" Header="Categories" Width="140" Loaded="CategoriesTab_Loaded">
