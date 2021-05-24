@@ -18,15 +18,6 @@ namespace DocumentTranslation.GUI
         const string AppName = "Document Translation";
         const string AppSettingsFileName = "uisettings.json";
 
-        /// <summary>
-        /// Create JSON string for app settings.
-        /// </summary>
-        /// <returns>JSON for appsettings</returns>
-        public static string GetJson(UISettings settings)
-        {
-            return JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true });
-        }
-
         public static async Task<UISettings> Read(string filename = null)
         {
             string appsettingsJson;
@@ -55,7 +46,7 @@ namespace DocumentTranslation.GUI
                 Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName);
                 filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
             }
-            await File.WriteAllTextAsync(filename, GetJson(settings));
+            await File.WriteAllTextAsync(filename, JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true }));
         }
     }
 
@@ -65,9 +56,9 @@ namespace DocumentTranslation.GUI
         public string lastToLanguage;
         public string lastFromLanguageDocuments;
         public string lastToLanguageDocuments;
-        public string lastCategory;
+        public string lastCategoryText;
+        public string lastCategoryDocuments;
         public string lastDocumentsFolder;
-        public List<MyCategory> MyCategories;
         public Dictionary<string, PerLanguageData> PerLanguageFolders;
     }
     public class PerLanguageData
@@ -75,15 +66,5 @@ namespace DocumentTranslation.GUI
         public string lastGlossariesFolder;
         public string lastGlossary;
         public string lastTargetFolder;
-    }
-
-
-    public class MyCategory
-    {
-        /// <summary>
-        /// Azure storage connection string, copied from the portal.
-        /// </summary>
-        public string CategoryID;
-        public string MyCategoryName;
     }
 }

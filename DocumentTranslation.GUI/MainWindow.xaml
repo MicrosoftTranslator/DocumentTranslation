@@ -1,5 +1,6 @@
 ﻿<Window x:Class="DocumentTranslation.GUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,7 +30,8 @@
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="CategoryBoxDocuments" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
+                        <ComboBox x:Name="CategoryDocumentsBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged"/>
+                        <Button x:Name="CategoryDocumentsClearButton" Content="Clear" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click"/>
                     </StackPanel>
                     <Grid Margin="20, 60, 20, 10">
                         <Grid.RowDefinitions>
@@ -82,7 +84,8 @@
                         <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name"  SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" />
                         <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="CategoryBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150"/>
+                        <ComboBox x:Name="CategoryTextBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryTextBox_SelectionChanged"/>
+                        <Button x:Name="CategoryTextClearButton" Content="Clear" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryTextClearButton_Click"/>
                     </StackPanel>
                     <Grid Margin="20,60,20,10" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
@@ -127,8 +130,22 @@
                                 <TextBox x:Name="storageConnectionString" Grid.Row="3" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged"/>
                             </Grid>
                         </TabItem>
-                        <TabItem Header="Categories" Width="140">
-
+                        <TabItem x:Name="CategoriesTab" Header="Categories" Width="140" Loaded="CategoriesTab_Loaded">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="32"/>
+                                </Grid.RowDefinitions>
+                            <WindowsFormsHost Margin="10">
+                                <wf:DataGridView x:Name="CategoriesGridView" RowHeadersVisible="False" Padding="2,2,2,2"/>
+                            </WindowsFormsHost>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0,5,0">
+                                    <Button x:Name="AddCategoryButton" Content="Add" Margin="5" Padding="2" Width="100" Click="AddCategoryButton_Click"/>
+                                    <Button x:Name="DeleteCategoryButton" Content="Delete" Margin="5" Padding="2" Width="100" Click="DeleteCategoryButton_Click"/>
+                                    <Button x:Name="SaveCategoriesButton" Content="Save" Margin="5" Padding="2" Width="100" Click="SaveCategoriesButton_Click"/>
+                                    <TextBlock x:Name="SavedCategoriesText" Text="Categories saved" Margin="5" Padding="2" Visibility="Hidden"/>
+                                </StackPanel>
+                            </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>

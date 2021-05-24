@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
+using System.Windows.Forms;
 using DocumentTranslationService.Core;
 
 namespace CollectionView
@@ -18,20 +17,8 @@ namespace DocumentTranslation.GUI
 {
     internal class ViewModel
     {
-        internal class MyCategory
-        {
-            internal string Name;
-            internal string ID;
-
-            public MyCategory(string name, string iD)
-            {
-                Name = name;
-                ID = iD;
-            }
-        }
         public ObservableCollection<Language> ToLanguageList { get; private set; } = new();
         public ObservableCollection<Language> FromLanguageList { get; private set; } = new();
-        public ObservableCollection<MyCategory> MyCategoryList { get; set; } = new();
         internal UISettings UISettings = new();
         public DocTransAppSettings Settings { get; set; } = new();
         public ObservableCollection<AzureRegion> AzureRegions { get; private set; } = new();
@@ -44,6 +31,7 @@ namespace DocumentTranslation.GUI
 
         private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
+        public readonly Categories categories = new();
 
         public ViewModel()
         {
@@ -67,11 +55,9 @@ namespace DocumentTranslation.GUI
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
-            if (UISettings.MyCategories is not null)
-                foreach (var cat in UISettings.MyCategories.OrderBy((x) => x.MyCategoryName))
-                    MyCategoryList.Add(new MyCategory(cat.MyCategoryName, cat.CategoryID));
             _ = documentTranslationService.GetDocumentFormatsAsync();
             _ = documentTranslationService.GetGlossaryFormatsAsync();
+
             return;
         }
 
@@ -114,6 +100,7 @@ namespace DocumentTranslation.GUI
             return result;
         }
 
+        #region Generate Filters
         internal async Task<string> GetDocumentExtensionsFilter()
         {
             await documentTranslationService.GetDocumentFormatsAsync();
@@ -158,7 +145,8 @@ namespace DocumentTranslation.GUI
             filterBuilder.Remove(filterBuilder.Length - 1, 1);
             return filterBuilder.ToString();
         }
-
+        #endregion
+        #region Credentials
         public async Task GetAzureRegions()
         {
             AzureRegionsList azureRegionsList = new();
@@ -166,5 +154,25 @@ namespace DocumentTranslation.GUI
             foreach (var region in azureRegions)
                 this.AzureRegions.Add(region);
         }
+        #endregion
+        #region Settings.Categories
+
+        internal void AddCategory(DataGridViewSelectedCellCollection selectedCells)
+        {
+            foreach (DataGridViewCell cell in selectedCells)
+                categories.MyCategoryList.Insert(cell.RowIndex, new MyCategory("New category name", "New category ID"));
+        }
+
+        internal void DeleteCategory(DataGridViewSelectedCellCollection selectedCells)
+        {
+            foreach (DataGridViewCell cell in selectedCells)
+                categories.MyCategoryList.RemoveAt(cell.RowIndex);
+        }
+
+        internal async void SaveCategories()
+        {
+            await categories.WriteAsync();
+        }
+        #endregion
     }
 }
