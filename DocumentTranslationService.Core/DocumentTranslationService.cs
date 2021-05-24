@@ -150,8 +150,13 @@ namespace DocumentTranslationService.Core
                 }
                 else
                 {
-                    Debug.WriteLine("Response content: " + await response.Content.ReadAsStringAsync());
-                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) return null;
+                    string resp = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine("Response content: " + resp);
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        StatusResponse status = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
+                        throw new Exception($"{status.error.code} {status.error.message}: {status.error.innerError.code} {status.error.innerError.message}");
+                    }
                     await Task.Delay(1000);
                 }
             }

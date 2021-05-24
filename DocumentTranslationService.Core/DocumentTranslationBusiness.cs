@@ -173,8 +173,15 @@ namespace DocumentTranslationService.Core
             List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
 
             DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
-
-            TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
+            try
+            {
+                TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
+            }
+            catch (Exception)
+            {
+                await DeleteContainersAsync();
+                throw;
+            }
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (TranslationService.ProcessingLocation is null)
             {

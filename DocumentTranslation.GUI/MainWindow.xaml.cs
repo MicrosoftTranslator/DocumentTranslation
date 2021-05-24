@@ -173,12 +173,22 @@ namespace DocumentTranslation.GUI
             }
             ViewModel.UISettings.PerLanguageFolders.Add(toLanguageBoxDocuments.SelectedValue as string, perLanguageData);
             _ = ViewModel.SaveAsync();
-
+            if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
-            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
+            try
+            {
+                _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
+            }
+            catch (Exception ex)
+            {
+                StatusBarText1.Text = ex.Message;
+                ProgressBar.Value = 0;
+                ProgressBar.IsIndeterminate = false;
+                return;
+            }
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 1;
         }
@@ -188,7 +198,11 @@ namespace DocumentTranslation.GUI
             StatusBarText1.Text = "Canceling...";
             CancelButton.IsEnabled = false;
             CancelButton.Background = Brushes.Red;
-            await ViewModel.documentTranslationService.CancelRunAsync();
+            try
+            {
+                await ViewModel.documentTranslationService.CancelRunAsync();
+            }
+            catch (UriFormatException) { }
             StatusBarText1.Text = "Canceled";
         }
 
