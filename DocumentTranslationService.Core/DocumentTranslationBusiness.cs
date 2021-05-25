@@ -177,10 +177,9 @@ namespace DocumentTranslationService.Core
             {
                 TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
             }
-            catch (Exception)
+            catch (ServiceErrorException ex)
             {
-                await DeleteContainersAsync();
-                throw;
+                OnStatusUpdate?.Invoke(this, TranslationService.errorResponse);
             }
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (TranslationService.ProcessingLocation is null)
@@ -303,6 +302,7 @@ namespace DocumentTranslationService.Core
             deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
             deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
             deletionTasks.Add(Glossary.DeleteAsync());
+            if (DateTime.Now.Millisecond < 100) deletionTasks.Add(ClearOldContainersAsync());  //Clear out old stuff ~ every 10th time. 
             await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
         }

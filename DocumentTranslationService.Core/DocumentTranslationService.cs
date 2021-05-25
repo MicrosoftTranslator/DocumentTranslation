@@ -33,6 +33,11 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public string AzureResourceName { get; } = string.Empty;
 
+        /// <summary>
+        /// In case of a service error exception, pick up the error message here. 
+        /// </summary>
+        public StatusResponse errorResponse { get; private set; }
+
         internal string ProcessingLocation { get; set; } = string.Empty;
 
         internal BlobContainerClient ContainerClientSource { get; set; }
@@ -154,8 +159,8 @@ namespace DocumentTranslationService.Core
                     Debug.WriteLine("Response content: " + resp);
                     if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     {
-                        StatusResponse status = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
-                        throw new Exception($"{status.error.code} {status.error.message}: {status.error.innerError.code} {status.error.innerError.message}");
+                        this.errorResponse = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
+                        throw new ServiceErrorException();
                     }
                     await Task.Delay(1000);
                 }

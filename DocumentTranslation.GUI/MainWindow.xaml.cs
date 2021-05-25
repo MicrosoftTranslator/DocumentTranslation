@@ -164,7 +164,7 @@ namespace DocumentTranslation.GUI
             if ((ViewModel.GlossariesToUse.Count > 0) && (ViewModel.GlossariesToUse[0] is not null))
             {
                 perLanguageData.lastGlossariesFolder = Path.GetDirectoryName(ViewModel.GlossariesToUse[0]);
-                perLanguageData.lastGlossary= ViewModel.GlossariesToUse[0];
+                perLanguageData.lastGlossary = ViewModel.GlossariesToUse[0];
             }
             perLanguageData.lastTargetFolder = ViewModel.TargetFolder;
             if (ViewModel.UISettings.PerLanguageFolders.ContainsKey(toLanguageBoxDocuments.SelectedValue as string))
@@ -174,21 +174,12 @@ namespace DocumentTranslation.GUI
             ViewModel.UISettings.PerLanguageFolders.Add(toLanguageBoxDocuments.SelectedValue as string, perLanguageData);
             _ = ViewModel.SaveAsync();
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
+            else ViewModel.documentTranslationService.Category = null;
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
-            try
-            {
-                _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
-            }
-            catch (Exception ex)
-            {
-                StatusBarText1.Text = ex.Message;
-                ProgressBar.Value = 0;
-                ProgressBar.IsIndeterminate = false;
-                return;
-            }
+            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 1;
         }
@@ -214,6 +205,17 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
+            if (e.error is not null)
+                if (!string.IsNullOrEmpty(e.error.code))
+                {
+                    StatusBarText1.Text = e.error.code;
+                    StatusBarText2.Text = e.error.message;
+                    ProgressBar.Value = 0;
+                    ProgressBar.IsIndeterminate = false;
+                    CancelButton.IsEnabled = false;
+                    CancelButton.Visibility = Visibility.Hidden;
+                    return;
+                }
             CancelButton.Background = Brushes.LightGray;
             StatusBarText1.Text = e.status;
             StringBuilder statusText = new();
@@ -222,7 +224,7 @@ namespace DocumentTranslation.GUI
             if (e.summary.success > 0) statusText.Append("Completed: " + e.summary.success + '\t');
             if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed + '\t');
             if (e.summary.totalCharacterCharged > 0) statusText.Append("Characters charged: " + e.summary.totalCharacterCharged);
-            ProgressBar.Value = 10 +  ((e.summary.inProgress / ViewModel.FilesToTranslate.Count) * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
+            ProgressBar.Value = 10 + ((e.summary.inProgress / ViewModel.FilesToTranslate.Count) * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
             charactersCharged = e.summary.totalCharacterCharged;
         }
@@ -232,7 +234,7 @@ namespace DocumentTranslation.GUI
         {
             ProgressBar.Value = 100;
             StatusBarText1.Text = "Done";
-            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} documents translated \t";
+            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} document(s) translated \t";
             if (charactersCharged > 0) StatusBarText2.Text += $" |\t{charactersCharged} characters charged";
             CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
