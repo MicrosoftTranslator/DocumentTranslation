@@ -177,9 +177,9 @@ namespace DocumentTranslationService.Core
             {
                 TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
             }
-            catch (ServiceErrorException ex)
+            catch (ServiceErrorException)
             {
-                OnStatusUpdate?.Invoke(this, TranslationService.errorResponse);
+                OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
             }
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (TranslationService.ProcessingLocation is null)

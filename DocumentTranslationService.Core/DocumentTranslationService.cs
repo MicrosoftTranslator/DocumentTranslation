@@ -36,7 +36,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// In case of a service error exception, pick up the error message here. 
         /// </summary>
-        public StatusResponse errorResponse { get; private set; }
+        public StatusResponse ErrorResponse { get; private set; }
 
         internal string ProcessingLocation { get; set; } = string.Empty;
 
@@ -159,7 +159,7 @@ namespace DocumentTranslationService.Core
                     Debug.WriteLine("Response content: " + resp);
                     if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     {
-                        this.errorResponse = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
+                        this.ErrorResponse = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
                         throw new ServiceErrorException();
                     }
                     await Task.Delay(1000);

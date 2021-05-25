@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -8,20 +8,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DocumentTranslationService.Core;
 
-namespace CollectionView
-{
-
-}
-
 namespace DocumentTranslation.GUI
 {
     internal class ViewModel
     {
-        public ObservableCollection<Language> ToLanguageList { get; private set; } = new();
-        public ObservableCollection<Language> FromLanguageList { get; private set; } = new();
+        public BindingList<Language> ToLanguageList { get; private set; } = new();
+        public BindingList<Language> FromLanguageList { get; private set; } = new();
         internal UISettings UISettings = new();
         public DocTransAppSettings Settings { get; set; } = new();
-        public ObservableCollection<AzureRegion> AzureRegions { get; private set; } = new();
+        public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
         public Language ToLanguage { get; set; }
