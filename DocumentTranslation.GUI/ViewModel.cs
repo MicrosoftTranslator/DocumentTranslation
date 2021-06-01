@@ -23,6 +23,7 @@ namespace DocumentTranslation.GUI
         public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
         public string TargetFolder { get; set; }
         public List<string> GlossariesToUse { get; private set; } = new();
+        public event EventHandler OnLanguagesUpdate;
 
         private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
@@ -46,7 +47,7 @@ namespace DocumentTranslation.GUI
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            _ = documentTranslationService.GetLanguagesAsync();
+            _ = documentTranslationService.GetLanguagesAsync(Settings.ShowExperimental);
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
@@ -75,6 +76,7 @@ namespace DocumentTranslation.GUI
                 ToLanguageList.Add(lang.Value);
                 FromLanguageList.Add(lang.Value);
             }
+            OnLanguagesUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         internal async Task<string> TranslateTextAsync(string text, string fromLanguageCode, string toLanguageCode)

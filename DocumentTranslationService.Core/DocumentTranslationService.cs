@@ -63,6 +63,9 @@ namespace DocumentTranslationService.Core
             this.StorageConnectionString = StorageConnectionString;
         }
 
+        /// <summary>
+        /// Fires when initialization is complete.
+        /// </summary>
         public event EventHandler OnInitializeComplete;
 
         /// <summary>

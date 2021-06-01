@@ -11,30 +11,26 @@ namespace DocumentTranslationService.Core
     public partial class DocumentTranslationService
     {
         /// <summary>
-        /// Whether to include experimental languages
-        /// </summary>
-        public bool ShowExperimental { get => showExperimental; set => showExperimental = value; }
-        private bool showExperimental = false;
-        private bool lastShowExperimental = false;
-
-        /// <summary>
         /// Holds the set of languages. If list is empty, call GetLanguagesAsync first. 
         /// </summary>
-        public Dictionary<String, Language> Languages { get; private set; } = new();
+        public Dictionary<string, Language> Languages { get; private set; } = new();
 
         /// <summary>
         /// Fires when the 'Languages' list finished updating. 
         /// </summary>
         public event EventHandler OnLanguagesUpdate;
+        public bool ShowExperimental { get; private set; }
 
+        private bool? lastShowExperimental = null;
         private string lastLanguage;
 
+
         /// <summary>
-        /// Read the set of languages form the service and store in the Languages list
+        /// Read the set of languages from the service and store in the Languages list
         /// </summary>
-        /// <param name="acceptLanguage">The language you want the langauge list in</param>
+        /// <param name="acceptLanguage">The language you want the language list in. Default is the thread locale</param>
         /// <returns>Task</returns>
-        public async Task GetLanguagesAsync(string acceptLanguage = null)
+        public async Task GetLanguagesAsync(bool showExperimental = false, string acceptLanguage = null)
         {
             if (acceptLanguage is null) acceptLanguage = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
             //Cut this call short if we have everything and no change in language of the language names, or in the experimental state.
@@ -56,7 +52,6 @@ namespace DocumentTranslationService.Core
                 {
                     Languages.Clear();
                     string resultJson = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine("Languages received.");
                     using JsonDocument doc = JsonDocument.Parse(resultJson);
                     var langprop = doc.RootElement.GetProperty("translation");
                     foreach (var item in langprop.EnumerateObject())
@@ -86,6 +81,8 @@ namespace DocumentTranslationService.Core
                         if (!Languages.TryAdd(langCode, langEntry))
                             Debug.WriteLine($"Duplicate language entry: {langCode}");
                     }
+                    Debug.WriteLine($"Languages received: {Languages.Count}, Experimental: {showExperimental}");
+                    ShowExperimental = showExperimental;
                     if (OnLanguagesUpdate is not null) OnLanguagesUpdate(this, EventArgs.Empty);
                     return;
                 }
