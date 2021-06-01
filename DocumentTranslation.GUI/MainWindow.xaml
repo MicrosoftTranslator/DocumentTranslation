@@ -108,13 +108,14 @@
             <TabItem Header="Settings" Width="200" x:Name="SettingsTab">
                 <Grid>
                     <TabControl>
-                        <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded" Unloaded="TabItemAuthentication_Unloaded">
-                            <Grid Margin="20" Height="240">
+                        <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded">
+                            <Grid Margin="20" Height="280">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
@@ -133,10 +134,12 @@
                                 <TextBox x:Name="resourceName" Grid.Row="2" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged"/>
                                 <TextBox x:Name="storageConnectionString" Grid.Row="3" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged"/>
                                 <CheckBox x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" />
-                                <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="5,0,5,0" Grid.ColumnSpan="2">
+                                <StackPanel Grid.Row="6" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                                    <Button x:Name="TestSettingsButton" Content="Test" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click"/>
                                     <Button x:Name="SaveSettingsButton" Content="Save" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click"/>
-                                    <TextBlock x:Name="SavedSettingsText" Text="Settings saved" Margin="5" Padding="2" Visibility="Hidden"/>
                                 </StackPanel>
+                                <TextBlock Grid.Row="7" x:Name="SavedSettingsText" Text="Settings saved" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
+                                <TextBlock Grid.Row="7" x:Name="TestSettingsText" Text="PASS" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="CategoriesTab" Header="Categories" Width="140" Loaded="CategoriesTab_Loaded">

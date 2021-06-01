@@ -94,11 +94,6 @@ namespace DocumentTranslation.GUI
             experimentalCheckbox.IsChecked = ViewModel.Settings.ShowExperimental;
         }
 
-        private async void TabItemAuthentication_Unloaded(object sender, RoutedEventArgs e)
-        {
-            await ViewModel.SaveAsync();
-        }
-
         private async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
             outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
@@ -356,6 +351,22 @@ namespace DocumentTranslation.GUI
         private void ExperimentalCheckbox_Unchecked(object sender, RoutedEventArgs e)
         {
             ViewModel.Settings.ShowExperimental = experimentalCheckbox.IsChecked.Value;
+        }
+
+        private async void TestSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            TestSettingsText.Visibility = Visibility.Visible;
+            try
+            {
+                await ViewModel.documentTranslationService.TryCredentials();
+                TestSettingsText.Text = "PASS";
+            }
+            catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
+            {
+                TestSettingsText.Text = "FAIL: " + ex.Message;
+            }
+            await Task.Delay(1000);
+            TestSettingsText.Visibility = Visibility.Hidden;
         }
     }
 }
