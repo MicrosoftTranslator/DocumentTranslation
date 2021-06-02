@@ -33,7 +33,6 @@ Command	| Required/Optional
 `doctr config --set name <Name of the Azure Translator resource>`	| Required	|
 `doctr config --set category <Custom Translator category ID>`	| Optional	|
 
-
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
 You may edit the file by hand, using the editor of your choice. 
