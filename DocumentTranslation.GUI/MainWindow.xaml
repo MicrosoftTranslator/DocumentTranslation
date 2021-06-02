@@ -5,10 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DocumentTranslation.GUI"
+        xmlns:resx="clr-namespace:DocumentTranslation.GUI.Properties"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
-        Title="DocumentTranslation" Height="500" Width="800">
+        Title="Document Translation" Height="500" Width="800">
     <Grid>
         <Grid.DataContext>
             <local:ViewModel/>

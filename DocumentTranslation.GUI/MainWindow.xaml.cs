@@ -225,7 +225,7 @@ namespace DocumentTranslation.GUI
             if (e.summary.success > 0) statusText.Append("Completed: " + e.summary.success + '\t');
             if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed + '\t');
             if (e.summary.totalCharacterCharged > 0) statusText.Append("Characters charged: " + e.summary.totalCharacterCharged);
-            ProgressBar.Value = 10 + ((e.summary.inProgress / ViewModel.FilesToTranslate.Count) * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
+            ProgressBar.Value = 10 + (e.summary.inProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
             charactersCharged = e.summary.totalCharacterCharged;
         }
