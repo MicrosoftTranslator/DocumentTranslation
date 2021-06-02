@@ -3,17 +3,21 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace TranslationService.CLI
+namespace DocumentTranslationService.Core
 {
     /// <summary>
     /// Manage the storage of the application settings
     /// </summary>
     public static class AppSettingsSetter
     {
+        public static event EventHandler SettingsReadComplete;
         const string AppName = "Document Translation";
         const string AppSettingsFileName = "appsettings.json";
 
@@ -35,19 +39,23 @@ namespace TranslationService.CLI
                 appsettingsJson = await File.ReadAllTextAsync(filename);
             }
 
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
-                return new DocTransAppSettings();
+                if (ex is FileNotFoundException || ex is DirectoryNotFoundException)
+                {
+                    DocTransAppSettings settings = new();
+                    settings.ConnectionStrings = new Connectionstrings();
+                    settings.AzureRegion = "global";
+                    return settings;
+                }
+                throw;
             }
-            catch (DirectoryNotFoundException)
-            {
-                return new DocTransAppSettings();
-            }
-
-            return JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            DocTransAppSettings result =  JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            SettingsReadComplete?.Invoke(null, EventArgs.Empty);
+            return result;
         }
 
-        public static async Task Write(string filename, DocTransAppSettings settings)
+        public static async Task WriteAsync(string filename, DocTransAppSettings settings)
         {
             if (string.IsNullOrEmpty(filename))
             {
@@ -57,15 +65,22 @@ namespace TranslationService.CLI
             await File.WriteAllTextAsync(filename, GetJson(settings));
         }
 
+
         /// <summary>
         /// Throws an exception to indicate the missing settings value;
         /// </summary>
-        /// <param name="settings"></param>
-        internal static void CheckSettings(DocTransAppSettings settings)
+        /// <param name="settings">The settings object to check on</param>
+        /// <exception cref="ArgumentException"/>
+        public static void CheckSettings(DocTransAppSettings settings, bool textOnly = false)
         {
             if (string.IsNullOrEmpty(settings.SubscriptionKey)) throw new ArgumentException("SubscriptionKey");
-            if (string.IsNullOrEmpty(settings.ConnectionStrings.StorageConnectionString)) throw new ArgumentException("StorageConnectionString");
-            if (string.IsNullOrEmpty(settings.AzureResourceName)) throw new ArgumentException("AzureResourceName");
+            if (string.IsNullOrEmpty(settings.AzureRegion)) throw new ArgumentException("AzureRegion");
+            if (!textOnly)
+            {
+                if (string.IsNullOrEmpty(settings.ConnectionStrings.StorageConnectionString)) throw new ArgumentException("StorageConnectionString");
+                if (string.IsNullOrEmpty(settings.AzureResourceName)) throw new ArgumentException("AzureResourceName");
+            }
+            return;
         }
     }
 
@@ -91,6 +106,10 @@ namespace TranslationService.CLI
         /// The Custom Translator category ID to use. 
         /// </summary>
         public string Category { get; set; }
+        /// <summary>
+        /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
+        /// </summary>
+        public string AzureRegion { get; set; }
     }
 
     public class Connectionstrings

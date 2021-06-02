@@ -16,17 +16,27 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The "Connection String" of the Azure blob storage resource. Get from properties of Azure storage.
         /// </summary>
-        internal string StorageConnectionString { get; } = string.Empty;
+        public string StorageConnectionString { get; } = string.Empty;
+
+        /// <summary>
+        /// Holds the Custom Translator category.
+        /// </summary>
+        public string Category { get; set; }
 
         /// <summary>
         /// Your Azure Translator subscription key. Get from properties of the Translator resource
         /// </summary>
-        private string SubscriptionKey { get; } = string.Empty;
+        public string SubscriptionKey { get; } = string.Empty;
 
         /// <summary>
         /// The name of the Azure Translator resource
         /// </summary>
         public string AzureResourceName { get; } = string.Empty;
+
+        /// <summary>
+        /// In case of a service error exception, pick up the error message here. 
+        /// </summary>
+        public StatusResponse ErrorResponse { get; private set; }
 
         internal string ProcessingLocation { get; set; } = string.Empty;
 
@@ -53,6 +63,9 @@ namespace DocumentTranslationService.Core
             this.StorageConnectionString = StorageConnectionString;
         }
 
+        /// <summary>
+        /// Fires when initialization is complete.
+        /// </summary>
         public event EventHandler OnInitializeComplete;
 
         /// <summary>
@@ -63,7 +76,7 @@ namespace DocumentTranslationService.Core
         {
             List<Task> tasks = new();
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
-            tasks.Add(GetFormatsAsync());
+            tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
             tasks.Add(GetLanguagesAsync());
             await Task.WhenAll(tasks);
@@ -145,8 +158,13 @@ namespace DocumentTranslationService.Core
                 }
                 else
                 {
-                    Debug.WriteLine("Response content: " + await response.Content.ReadAsStringAsync());
-                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) return null;
+                    string resp = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine("Response content: " + resp);
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        this.ErrorResponse = JsonSerializer.Deserialize<StatusResponse>(resp, new JsonSerializerOptions { IncludeFields = true });
+                        throw new ServiceErrorException();
+                    }
                     await Task.Delay(1000);
                 }
             }

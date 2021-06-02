@@ -15,11 +15,6 @@ namespace DocumentTranslationService.Core
         public DocumentTranslationService TranslationService { get; }
 
         /// <summary>
-        /// Holds the Custom Translator category.
-        /// </summary>
-        public string Category { get; set; }
-
-        /// <summary>
         /// Can retrieve the final target folder here
         /// </summary>
         public string TargetFolder { get; private set; }
@@ -64,7 +59,6 @@ namespace DocumentTranslationService.Core
         public DocumentTranslationBusiness(DocumentTranslationService documentTranslationService)
         {
             TranslationService = documentTranslationService;
-            Category = null;
         }
 
         /// <summary>
@@ -171,16 +165,22 @@ namespace DocumentTranslationService.Core
                 foreach (var glos in glossary.Glossaries)
                     serviceGlossaries.Add(glos.Value);
             documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
-            if (Category is not null)
+            if (TranslationService.Category is not null)
             {
-                documentTranslationTarget.category = Category;
+                documentTranslationTarget.category = TranslationService.Category;
             }
 
             List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
 
             DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
-
-            TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
+            try
+            {
+                TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
+            }
+            catch (ServiceErrorException)
+            {
+                OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
+            }
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (TranslationService.ProcessingLocation is null)
             {
@@ -302,6 +302,7 @@ namespace DocumentTranslationService.Core
             deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
             deletionTasks.Add(TranslationService.ContainerClientTarget.DeleteAsync());
             deletionTasks.Add(Glossary.DeleteAsync());
+            if (DateTime.Now.Millisecond < 100) deletionTasks.Add(ClearOldContainersAsync());  //Clear out old stuff ~ every 10th time. 
             await Task.WhenAll(deletionTasks);
             Debug.WriteLine("Containers deleted.");
         }

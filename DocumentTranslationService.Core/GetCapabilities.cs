@@ -24,7 +24,7 @@ namespace DocumentTranslationService.Core
 
         public event EventHandler OnGlossaryFormatsUpdate;
 
-        public async Task<FileFormatList> GetFormatsAsync()
+        public async Task<FileFormatList> GetDocumentFormatsAsync()
         {
             if (FileFormats?.value.Length > 0) return FileFormats;
             else return await GetFormatsInternal();

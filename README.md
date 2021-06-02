@@ -5,19 +5,18 @@ command line interface, and allowing you translate local documents, in any of th
 to list the available formats.
 
 ## Download
-Pleae download the latest binary from the "Releases" section.
-## Quickstart
-## Overview
+Please download the latest binary from the "Releases" section and extract the content opf the zip file to a folder of your choice,
+recommended is a folder in your operating system's PATH.
 
 ## Minimum requirements
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
 - A Windows computer able to run this executable. The code is written in .Net 5.0 and able to run on other platforms that
-.Net 5.0 is present on, but the executable for other platforms is currently not provided here.
+.Net 5.0 is present on.
 
 ## Usage
-Use 'doctr --help' or 'doctr <command> --help' to get detailed information about the command.
+Use `doctr --help` or `doctr <command> --help` to get detailed information about the command.
 
 ### Configure the tool
 The configuration contains the credentials for the needed Azure resources:
@@ -27,52 +26,57 @@ The minimum needed credentials are
 - A storage connection string.
 You can obtain all of these from the Azure portal.
 
-|Command                     |                                         |
-|----------------------------|-----------------------------------------|
-|doctr config --set storage &lt;Storage Connection String&gt;	| Required |
-|doctr config --set key &lt;Subscription key of the Translator resource&gt;	| Required |
-|doctr config --set name &lt;Name of the Azure Translator resource&gt;	| Required |
-|doctr config --set category &lt;Custom Translator category ID&gt;	| Optional |
-|doctr config test | Report on the validity of the settings. PASS if OK, FAIL if not.|
-  
+Command	| Required/Optional
+----------------------------|-----------------------------------------
+`doctr config --set storage <Storage Connection String>`	| Required	|
+`doctr config --set key <Subscription key of the Translator resource>`	| Required	|
+`doctr config --set name <Name of the Azure Translator resource>`	| Required	|
+`doctr config --set category <Custom Translator category ID>`	| Optional	|
+
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
 You may edit the file by hand, using the editor of your choice. 
 
 You can inspect the settings using the following commands:
-'doctr config list'	| List the current configuration settings.
-'doctr config test'	| Validate the credentials and report which one is failing.
+
+Command	| Function
+----------------------------|-----------------------------------------
+`doctr config list`	| List the current configuration settings.
+`doctr config test`	| Validate the credentials and report which one is failing.
 
 ### List capabilities
 
-|Command | |
-|-------------------|---------------------|
-|doctr languages	| List the available languages. Can be listed before credentials are set. |
-|doctr formats		| List the file formats available for translation. Requires credentials key, name and storage to be set. |
-|doctr glossary		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set. |
-
+ Command	| Function
+-------------------|---------------------
+`doctr languages`	| List the available languages. Can be listed before credentials are set.
+`doctr formats`		| List the file formats available for translation. Requires credentials key, name and storage to be set.
+`doctr glossary`		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set.
 
 ### Translate
-|Command | |
-|----|-----|
-|doctr translate <source folder OR document> [&lt;target folder&gt;] --to <language code>' | Translate a document or the content of a folder to another language.|
+
+Command	| Function
+--------|----------
+`doctr translate <source folder OR document> [<target folder>] --to <language code>` | Translate a document or the content of a folder to another language.
 
 If provided, the target folder must be a folder, even if the source document is an individual document. If not provided, the translated document will be placed in a folder
-that has the same name as the source folder, plus '.<language code>'.
-Optional parameters to the translate command are
-  
-| Options | |
-| --|---|
-|--from <language code> | The language to translate from. If omitted, the system performs automatic language detection.|
-|--key <key to the Translator resource> | This key will override the settin in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. |
-|--category <category ID> | The custom Translator category ID.|
-|--glossary <file or folder> | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.|
+that has the same name as the source folder, plus `.<language code>`.
+
+Optional parameters to the translate command | Function
+---------------------------------------------|----------
+`--from <language code>` | The language to translate from. If omitted, the system performs automatic language detection.
+`--key <key to the Translator resource>` | This key will override the settin in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
+`--category <category ID>` | The custom Translator category ID.
+`--glossary <file or folder>` | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
 
 ### Clear
 If a translation run gets interrupted or fails, it may also fail to clean up after itself and leave behind documents in the storage account.
 A repeated run will always use a fresh storage container for its operation. The 'clear' command deletes storage containers from failed or abandoned runs
 for all DOCTR runs that are using the storage account you provided in the settings. In order to not disrupt any other runs of the service,
 it limits the deletion to containers that are older than one week. 
+
+Command	| Function
+--------|---------
+`doctr clear`	| Delete residue from abandoned or failed translation runs in the storage account
 
 ## Implementation Details
 Written in C#, based on .Net 5. 

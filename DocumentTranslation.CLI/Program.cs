@@ -2,7 +2,6 @@
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace TranslationService.CLI
@@ -79,7 +78,7 @@ namespace TranslationService.CLI
                     TranslationService = documentTranslationService;
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
                     if (nodelete.HasValue()) translationBusiness.Nodelete = true;
-                    if (cat.HasValue()) translationBusiness.Category = cat.Value();
+                    if (cat.HasValue()) documentTranslationService.Category = cat.Value();
                     translationBusiness.OnStatusUpdate += TranslationBusiness_OnStatusUpdate;
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
@@ -199,7 +198,7 @@ namespace TranslationService.CLI
                                     break;
                             }
                         }
-                        await AppSettingsSetter.Write(null, docTransAppSettings);
+                        await AppSettingsSetter.WriteAsync(null, docTransAppSettings);
                         return 0;
                     });
                     configSetCmd.OnValidationError((i) =>
@@ -250,7 +249,7 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetFormatsAsync();
+                    await translationService.GetDocumentFormatsAsync();
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
