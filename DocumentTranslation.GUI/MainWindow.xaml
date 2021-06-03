@@ -78,9 +78,9 @@
                 <Grid>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
                         <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode" />
+                        <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="FromLanguageBox_SelectionChanged" />
                         <Label Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name"  SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" />
+                        <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name"  SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBox_SelectionChanged" />
                         <Label Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
                         <ComboBox x:Name="CategoryTextBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryTextBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
                         <Button x:Name="CategoryTextClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryTextClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
@@ -97,10 +97,10 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Content="{x:Static resx:Resources.label_Input}" />
-                        <TextBox Grid.Row="1" x:Name="inputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
+                        <TextBox Grid.Row="1" x:Name="inputBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                         <Label Grid.Row="2" Content="{x:Static resx:Resources.label_Translation}" />
-                        <TextBox Grid.Row="3" x:Name="outputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
-                        <StackPanel Grid.Row="4" x:Name="Commands" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
+                        <TextBox Grid.Row="3" x:Name="outputBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
                             <Button x:Name="translateButton" Content="{x:Static resx:Resources.button_Translate}" Width="100" Click="TranslateButton_Click" Padding="2"/>
                         </StackPanel>
                     </Grid>

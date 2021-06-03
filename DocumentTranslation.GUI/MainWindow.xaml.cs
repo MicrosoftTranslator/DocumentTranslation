@@ -368,5 +368,35 @@ namespace DocumentTranslation.GUI
             await Task.Delay(1000);
             TestSettingsText.Visibility = Visibility.Hidden;
         }
+
+        private void FromLanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (fromLanguageBox.SelectedItem is not Language lang) return;
+            if (lang.Bidi)
+            {
+                inputBox.TextAlignment = TextAlignment.Right;
+                inputBox.FlowDirection = System.Windows.FlowDirection.RightToLeft;
+            }
+            else
+            {
+                inputBox.TextAlignment = TextAlignment.Left;
+                inputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
+            }
+        }
+
+        private void ToLanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (toLanguageBox.SelectedItem is not Language lang) return;
+            if (lang.Bidi)
+            {
+                outputBox.FlowDirection = System.Windows.FlowDirection.RightToLeft;
+                outputBox.TextAlignment = TextAlignment.Right;
+            }
+            else
+            {
+                outputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
+                outputBox.TextAlignment = TextAlignment.Left;
+            }
+        }
     }
 }
