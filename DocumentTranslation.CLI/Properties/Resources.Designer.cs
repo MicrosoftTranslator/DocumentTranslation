@@ -70,6 +70,15 @@ namespace DocumentTranslation.CLI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message from Translator service: .
+        /// </summary>
+        internal static string msg_ServerMessage {
+            get {
+                return ResourceManager.GetString("msg_ServerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR: Missing or invalid resource name. Use the &apos;config set name&apos; command to set value..
         /// </summary>
         internal static string msg_WrongResourceName {

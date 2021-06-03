@@ -109,6 +109,11 @@ namespace DocumentTranslation.CLI
                     {
                         Console.WriteLine(e.Message);
                     }
+                    catch (ServiceErrorException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return;
+                    }
                     Console.WriteLine($"Target folder: {translationBusiness.TargetFolder}");
                     timer.Stop();
                     timer.Dispose();
@@ -367,11 +372,15 @@ namespace DocumentTranslation.CLI
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            var time = DateTime.Parse(e.lastActionDateTimeUtc);
-            Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
-            if (e.status.Contains("Failed") && e.error is not null)
+            if (e.error is not null)
             {
-                Console.WriteLine($"{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                throw new ServiceErrorException(e.error.code);
+            }
+            else
+            {
+                var time = DateTime.Parse(e.lastActionDateTimeUtc);
+                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
             }
         }
     }

@@ -120,6 +120,9 @@
   <data name="msg_MissingCredentials" xml:space="preserve">
     <value>ERROR: Missing or invalid credentials. Use the 'config set' command to set values.</value>
   </data>
+  <data name="msg_ServerMessage" xml:space="preserve">
+    <value>Message from Translator service: </value>
+  </data>
   <data name="msg_WrongResourceName" xml:space="preserve">
     <value>ERROR: Missing or invalid resource name. Use the 'config set name' command to set value.</value>
   </data>
