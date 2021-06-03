@@ -375,7 +375,6 @@ namespace DocumentTranslation.CLI
             if (e.error is not null)
             {
                 Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
-                throw new ServiceErrorException(e.error.code);
             }
             else
             {

@@ -182,9 +182,10 @@ namespace DocumentTranslationService.Core
                 OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
             }
             Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
-            if (TranslationService.ProcessingLocation is null)
+            if (string.IsNullOrEmpty(TranslationService.ProcessingLocation))
             {
                 Debug.WriteLine("ERROR: Start of translation job failed.");
+                if (!Nodelete) await DeleteContainersAsync();
                 return;
             }
 
