@@ -9,13 +9,13 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
-        Title="Document Translation" Height="500" Width="800">
+        Title="{x:Static resx:Resources.title_WindowTitle}" Height="500" Width="800">
     <Grid>
         <Grid.DataContext>
             <local:ViewModel/>
         </Grid.DataContext>
-        <TabControl x:Name="tabControl">
-            <TabItem Header="Translate Documents" Width="200" x:Name="TranslateDocumentsTab">
+        <TabControl>
+            <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateDocuments}" Width="200" x:Name="TranslateDocumentsTab">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -23,14 +23,14 @@
                         <RowDefinition Height="22"/>
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top">
-                        <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
+                        <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
                         <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode">
                         </ComboBox>
-                        <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <Label Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
-                        <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="CategoryDocumentsBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged"/>
-                        <Button x:Name="CategoryDocumentsClearButton" Content="Clear" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click"/>
+                        <Label Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                        <ComboBox x:Name="CategoryDocumentsBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                        <Button x:Name="CategoryDocumentsClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
                     </StackPanel>
                     <Grid Margin="20, 50, 20, 10">
                         <Grid.RowDefinitions>
@@ -44,21 +44,21 @@
                             <ColumnDefinition/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Documents to translate: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.label_DocumentsToTranslate}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
                         <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Select" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Target folder: " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                        <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
                         <ListBox Grid.Row="1" Grid.Column="1" x:Name="TargetListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Select" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Glossary to use (optional): " TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                        <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.label_Glossary}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
                         <ListBox Grid.Row="2" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="Select" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                        <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" IsEnabled="False" Margin="2"/>
-                        <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="Cancel" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
-                        <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="2" Content="Browse" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
+                        <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Cancel}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
+                        <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Browse}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
                     </Grid>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,2" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <Button x:Name="translateDocumentsButton" Content="Translate Documents" Click="DocumentsTranslateButton_Click" Padding="10,2"  IsEnabled="False" HorizontalAlignment="Right"/>
+                        <Button x:Name="translateDocumentsButton" Content="{x:Static resx:Resources.button_TranslateDocuments}" Click="DocumentsTranslateButton_Click" Padding="10,2"  IsEnabled="False" HorizontalAlignment="Right"/>
                     </StackPanel>
                     <StatusBar Grid.Row="2" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal">
@@ -74,16 +74,16 @@
                     </StatusBar>
                 </Grid>
             </TabItem>
-            <TabItem Header="Translate Text" Width="200" x:Name="TranslateTextTab">
+            <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateText}" Width="200" x:Name="TranslateTextTab">
                 <Grid>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
-                        <Label Content="From:" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
+                        <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
                         <ComboBox x:Name="fromLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode" />
-                        <Label Content="To:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
+                        <Label Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
                         <ComboBox x:Name="toLanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name"  SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" />
-                        <Label Content="Category:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="CategoryTextBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryTextBox_SelectionChanged"/>
-                        <Button x:Name="CategoryTextClearButton" Content="Clear" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryTextClearButton_Click"/>
+                        <Label Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                        <ComboBox x:Name="CategoryTextBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryTextBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                        <Button x:Name="CategoryTextClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryTextClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
                     </StackPanel>
                     <Grid Margin="20,50,20,10" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
@@ -96,26 +96,27 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Content="Input:" />
+                        <Label Grid.Row="0" Content="{x:Static resx:Resources.label_Input}" />
                         <TextBox Grid.Row="1" x:Name="inputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
-                        <Label Grid.Row="2" Content="Translation:" />
+                        <Label Grid.Row="2" Content="{x:Static resx:Resources.label_Translation}" />
                         <TextBox Grid.Row="3" x:Name="outputBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Stretch"/>
                         <StackPanel Grid.Row="4" x:Name="Commands" Orientation="Horizontal" VerticalAlignment="Center" Grid.ColumnSpan="2" HorizontalAlignment="Right" >
-                            <Button x:Name="translateButton" Content="Translate" Width="100" Click="TranslateButton_Click" Padding="2"/>
+                            <Button x:Name="translateButton" Content="{x:Static resx:Resources.button_Translate}" Width="100" Click="TranslateButton_Click" Padding="2"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings" Width="200" x:Name="SettingsTab">
+            <TabItem Header="{x:Static resx:Resources.tabTitle_Settings}" Width="200" x:Name="SettingsTab">
                 <Grid>
                     <TabControl>
-                        <TabItem Header="Authentication" Width="140" Loaded="TabItemAuthentication_Loaded">
-                            <Grid Margin="20" Height="280">
+                        <TabItem Header="{x:Static resx:Resources.tabTitle_Authentication}" Width="140" Loaded="TabItemAuthentication_Loaded">
+                            <Grid Margin="20" Height="320">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition MinHeight="50"/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
@@ -125,38 +126,41 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Label Grid.Row="0" Content="Subscription Key:" VerticalContentAlignment="Center"/>
-                                <Label Grid.Row="1" Content="Azure Region:" VerticalContentAlignment="Center"/>
-                                <Label Grid.Row="2" Content="Resource Name:" VerticalContentAlignment="Center"/>
-                                <Label Grid.Row="3" Content="Storage Connection String:" VerticalContentAlignment="Center"/>
-                                <Label Grid.Row="4" Content="Show experimental languages:" VerticalContentAlignment="Center"/>
-                                <PasswordBox Grid.Row="0" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged"/>
-                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged"/>
-                                <TextBox x:Name="resourceName" Grid.Row="2" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged"/>
-                                <TextBox x:Name="storageConnectionString" Grid.Row="3" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged"/>
-                                <CheckBox x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" />
-                                <StackPanel Grid.Row="6" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-                                    <Button x:Name="TestSettingsButton" Content="Test" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click"/>
-                                    <Button x:Name="SaveSettingsButton" Content="Save" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click"/>
+                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{x:Static resx:Resources.text_SettingsInstructions}" TextWrapping="Wrap"/>
+                                <Label Grid.Row="1" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
+                                <Label Grid.Row="2" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <Label Grid.Row="3" Content="{x:Static resx:Resources.label_ResourceName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
+                                <Label Grid.Row="4" Content="{x:Static resx:Resources.label_StorageConnectionString}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
+                                <Label Grid.Row="5" Content="{x:Static resx:Resources.label_ShowExperimental}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <TextBox Grid.Row="3" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
+                                <TextBox Grid.Row="4" x:Name="storageConnectionString" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
+                                <CheckBox Grid.Row="5" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <StackPanel Grid.Row="7" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                                    <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
+                                    <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>
                                 </StackPanel>
-                                <TextBlock Grid.Row="7" x:Name="SavedSettingsText" Text="Settings saved" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
-                                <TextBlock Grid.Row="7" x:Name="TestSettingsText" Text="PASS" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
+                                <TextBlock Grid.Row="8" x:Name="SavedSettingsText" Text="{x:Static resx:Resources.msg_SettingsSaved}" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
+                                <TextBlock Grid.Row="8" x:Name="TestSettingsText" Text="{x:Static resx:Resources.msg_TestPassed}" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="CategoriesTab" Header="Categories" Width="140" Loaded="CategoriesTab_Loaded">
-                            <Grid>
+                        <TabItem x:Name="CategoriesTab" Header="{x:Static resx:Resources.tabTitle_Categories}" Width="140" Loaded="CategoriesTab_Loaded">
+                            <Grid Margin="20">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" MinHeight="50"/>
                                     <RowDefinition/>
                                     <RowDefinition Height="32"/>
                                 </Grid.RowDefinitions>
-                            <WindowsFormsHost Margin="10">
+                                <TextBlock Text="{x:Static resx:Resources.text_Categories}" TextWrapping="Wrap"/>
+                                <WindowsFormsHost Grid.Row="1">
                                 <wf:DataGridView x:Name="CategoriesGridView" RowHeadersVisible="False" Padding="2,2,2,2"/>
                             </WindowsFormsHost>
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0,5,0">
-                                    <Button x:Name="AddCategoryButton" Content="Add" Margin="5" Padding="2" Width="100" Click="AddCategoryButton_Click"/>
-                                    <Button x:Name="DeleteCategoryButton" Content="Delete" Margin="5" Padding="2" Width="100" Click="DeleteCategoryButton_Click"/>
-                                    <Button x:Name="SaveCategoriesButton" Content="Save" Margin="5" Padding="2" Width="100" Click="SaveCategoriesButton_Click"/>
-                                    <TextBlock x:Name="SavedCategoriesText" Text="Categories saved" Margin="5" Padding="2" Visibility="Hidden"/>
+                                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                    <Button x:Name="AddCategoryButton" Content="{x:Static resx:Resources.button_Add}" Margin="0,5" Padding="2" Width="100" Click="AddCategoryButton_Click"/>
+                                    <Button x:Name="DeleteCategoryButton" Content="{x:Static resx:Resources.button_Delete}" Margin="5" Padding="2" Width="100" Click="DeleteCategoryButton_Click"/>
+                                    <Button x:Name="SaveCategoriesButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveCategoriesButton_Click"/>
+                                    <TextBlock x:Name="SavedCategoriesText" Text="{x:Static resx:Resources.msg_CategoriesSaved}" Margin="5" Padding="2" Visibility="Hidden"/>
                                 </StackPanel>
                             </Grid>
                         </TabItem>
