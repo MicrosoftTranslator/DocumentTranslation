@@ -65,10 +65,11 @@ namespace DocumentTranslationService.Core
         /// Perform a translation of a set of files using the TranslationService passed in the Constructor.
         /// </summary>
         /// <param name="filestotranslate">A list of files to translate. Can be a single file or a single directory.</param>
-        /// <param name="tolanguage">A single target language</param>
-        /// <param name="glossaryfiles">The glossary files</param>
+        /// <param name="fromlanguage">A single source language. Can be null.</param>
+        /// <param name="tolanguage">A single target language.</param>
+        /// <param name="glossaryfiles">The glossary files.</param>
         /// <returns></returns>
-        public async Task RunAsync(List<string> filestotranslate, string tolanguage, List<string> glossaryfiles = null, string targetFolder = null)
+        public async Task RunAsync(List<string> filestotranslate, string fromlanguage, string tolanguage, List<string> glossaryfiles = null, string targetFolder = null)
         {
             if (filestotranslate.Count == 0) throw new ArgumentNullException(nameof(filestotranslate), "No files to translate.");
             Task initialize = TranslationService.InitializeAsync();
@@ -159,6 +160,11 @@ namespace DocumentTranslationService.Core
             await targetContainerTask;
             Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
+            if (!(string.IsNullOrEmpty(fromlanguage)))
+            {
+                if (fromlanguage.ToLowerInvariant() == "auto") fromlanguage = null;
+                else documentTranslationSource.Language = fromlanguage;
+            }
             DocumentTranslationTarget documentTranslationTarget = new(language: tolanguage, targetUrl: sasUriTarget.ToString());
             List<ServiceGlossary> serviceGlossaries = new();
             if (glossary.Glossaries is not null)

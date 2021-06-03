@@ -180,7 +180,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
-            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
+            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 1;
         }
