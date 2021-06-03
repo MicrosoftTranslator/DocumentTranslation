@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Timers;
 
-namespace TranslationService.CLI
+namespace DocumentTranslation.CLI
 {
     partial class Program
     {
@@ -30,8 +30,16 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
-                    int deletedCount = await translationBusiness.ClearOldContainersAsync();
-                    Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
+                    try
+                    {
+                        int deletedCount = await translationBusiness.ClearOldContainersAsync();
+                        Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
                 });
             }
             );
@@ -249,7 +257,15 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetDocumentFormatsAsync();
+                    try
+                    {
+                        await translationService.GetDocumentFormatsAsync();
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
@@ -267,7 +283,20 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetGlossaryFormatsAsync();
+                    try
+                    {
+                        await translationService.GetGlossaryFormatsAsync();
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
+                    catch (System.UriFormatException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_WrongResourceName);
+                        return;
+                    }
                     foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
