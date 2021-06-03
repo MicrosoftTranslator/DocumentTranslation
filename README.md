@@ -1,7 +1,7 @@
 # DOCTR: Microsoft Document Translation Command Line Interface (CLI)
 The Microsoft Document Translation Command Line Interface gives quick access to document translation functions.
 It is a simple program which makes use of the server-side document translation functionality, giving it a client-based
-command line interface, and allowing you translate local documents, in any of the the supported file formats. Use 'doctr formats'
+command line interface, and allowing you translate local documents, in any of the the supported file formats. Use `doctr formats`
 to list the available formats.
 
 ## Download
@@ -12,8 +12,9 @@ recommended is a folder in your operating system's PATH.
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
-- A Windows computer able to run this executable. The code is written in .Net 5.0 and able to run on other platforms that
-.Net 5.0 is present on.
+- An Linux, MacOS or Windows operating system able to run .Net 5. The tool is written in .Net 5.0 and able to run on other platforms that
+.Net 5.0 is present on. Tested only on Windows. Try to run as is. If it fails,
+install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
 
 ## Usage
 Use `doctr --help` or `doctr <command> --help` to get detailed information about the command.
@@ -64,7 +65,7 @@ that has the same name as the source folder, plus `.<language code>`.
 Optional parameters to the translate command | Function
 ---------------------------------------------|----------
 `--from <language code>` | The language to translate from. If omitted, the system performs automatic language detection.
-`--key <key to the Translator resource>` | This key will override the settin in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
+`--key <key to the Translator resource>` | This key will override the setting in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
 `--category <category ID>` | The custom Translator category ID.
 `--glossary <file or folder>` | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
 

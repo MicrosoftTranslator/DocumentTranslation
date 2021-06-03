@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Timers;
 
-namespace TranslationService.CLI
+namespace DocumentTranslation.CLI
 {
     partial class Program
     {
@@ -30,8 +30,16 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
-                    int deletedCount = await translationBusiness.ClearOldContainersAsync();
-                    Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
+                    try
+                    {
+                        int deletedCount = await translationBusiness.ClearOldContainersAsync();
+                        Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
                 });
             }
             );
@@ -100,6 +108,11 @@ namespace TranslationService.CLI
                     catch (System.ArgumentException e)
                     {
                         Console.WriteLine(e.Message);
+                    }
+                    catch (ServiceErrorException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return;
                     }
                     Console.WriteLine($"Target folder: {translationBusiness.TargetFolder}");
                     timer.Stop();
@@ -249,7 +262,25 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetDocumentFormatsAsync();
+                    try
+                    {
+                        var result = await translationService.GetDocumentFormatsAsync();
+                        if (result is null)
+                        {
+                            Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                            return;
+                        }
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
+                    catch (System.UriFormatException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_WrongResourceName);
+                        return;
+                    }
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
@@ -267,7 +298,25 @@ namespace TranslationService.CLI
                     DocTransAppSettings settings = new();
                     settings = await AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
-                    await translationService.GetGlossaryFormatsAsync();
+                    try
+                    {
+                        var result = await translationService.GetGlossaryFormatsAsync();
+                        if (result is null)
+                        {
+                            Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                            return;
+                        }
+                    }
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
+                    catch (System.UriFormatException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_WrongResourceName);
+                        return;
+                    }
                     foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
@@ -323,11 +372,15 @@ namespace TranslationService.CLI
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            var time = DateTime.Parse(e.lastActionDateTimeUtc);
-            Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
-            if (e.status.Contains("Failed") && e.error is not null)
+            if (e.error is not null)
             {
-                Console.WriteLine($"{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                throw new ServiceErrorException(e.error.code);
+            }
+            else
+            {
+                var time = DateTime.Parse(e.lastActionDateTimeUtc);
+                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
             }
         }
     }

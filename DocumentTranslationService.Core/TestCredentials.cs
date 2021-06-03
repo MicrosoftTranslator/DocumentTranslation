@@ -48,14 +48,18 @@ namespace DocumentTranslationService.Core
 
         private async Task TryCredentialsName()
         {
-            HttpRequestMessage request = new() { Method = HttpMethod.Get, RequestUri = new Uri("https://"+ this.AzureResourceName + baseUriTemplate + "/documents/formats") };
-            HttpClient client = new();
-            HttpResponseMessage response;
             try
             {
+                HttpRequestMessage request = new() { Method = HttpMethod.Get, RequestUri = new Uri("https://" + this.AzureResourceName + baseUriTemplate + "/documents/formats") };
+                HttpClient client = new();
+                HttpResponseMessage response;
                 response = await client.SendAsync(request);
             }
             catch (HttpRequestException)
+            {
+                throw new CredentialsException("name");
+            }
+            catch (System.UriFormatException)
             {
                 throw new CredentialsException("name");
             }
