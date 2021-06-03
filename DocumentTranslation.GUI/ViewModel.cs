@@ -146,10 +146,10 @@ namespace DocumentTranslation.GUI
         #region Credentials
         public async Task GetAzureRegions()
         {
-            AzureRegionsList azureRegionsList = new();
-            List<AzureRegion> azureRegions = await azureRegionsList.GetAzureRegions();
+            List<AzureRegion> azureRegions = await AzureRegionsList.ReadAzureRegionsAsync();
+            AzureRegions.Clear();
             foreach (var region in azureRegions)
-                this.AzureRegions.Add(region);
+                AzureRegions.Add(region);
         }
         #endregion
         #region Settings.Categories
