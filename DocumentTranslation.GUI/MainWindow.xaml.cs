@@ -187,7 +187,7 @@ namespace DocumentTranslation.GUI
 
         private async void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            StatusBarText1.Text = "Canceling...";
+            StatusBarText1.Text = Properties.Resources.msg_Canceling;
             CancelButton.IsEnabled = false;
             CancelButton.Background = Brushes.Red;
             try
@@ -195,13 +195,13 @@ namespace DocumentTranslation.GUI
                 await ViewModel.documentTranslationService.CancelRunAsync();
             }
             catch (UriFormatException) { }
-            StatusBarText1.Text = "Canceled";
+            StatusBarText1.Text = Properties.Resources.msg_Canceled;
         }
 
         private void DocumentTranslationBusiness_OnUploadComplete(object sender, (int, long) e)
         {
             ProgressBar.Value = 10;
-            StatusBarText1.Text = "Documents uploaded";
+            StatusBarText1.Text = Properties.Resources.msg_DocumentsUploaded;
         }
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
@@ -220,11 +220,11 @@ namespace DocumentTranslation.GUI
             CancelButton.Background = Brushes.LightGray;
             StatusBarText1.Text = e.status;
             StringBuilder statusText = new();
-            if (e.summary.inProgress > 0) statusText.Append("In progress: " + e.summary.inProgress + '\t');
-            if (e.summary.notYetStarted > 0) statusText.Append("Waiting: " + e.summary.notYetStarted + '\t');
-            if (e.summary.success > 0) statusText.Append("Completed: " + e.summary.success + '\t');
-            if (e.summary.failed > 0) statusText.Append("Failed: " + e.summary.failed + '\t');
-            if (e.summary.totalCharacterCharged > 0) statusText.Append("Characters charged: " + e.summary.totalCharacterCharged);
+            if (e.summary.inProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.summary.inProgress + '\t');
+            if (e.summary.notYetStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.summary.notYetStarted + '\t');
+            if (e.summary.success > 0) statusText.Append(Properties.Resources.msg_Completed + e.summary.success + '\t');
+            if (e.summary.failed > 0) statusText.Append(Properties.Resources.msg_Failed + e.summary.failed + '\t');
+            if (e.summary.totalCharacterCharged > 0) statusText.Append(Properties.Resources.msg_CharactersCharged + e.summary.totalCharacterCharged);
             ProgressBar.Value = 10 + (e.summary.inProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
             charactersCharged = e.summary.totalCharacterCharged;
@@ -234,9 +234,9 @@ namespace DocumentTranslation.GUI
         private void DocumentTranslationBusiness_OnDownloadComplete(object sender, (int, long) e)
         {
             ProgressBar.Value = 100;
-            StatusBarText1.Text = "Done";
-            StatusBarText2.Text = $"{e.Item2} bytes in {e.Item1} document(s) translated \t";
-            if (charactersCharged > 0) StatusBarText2.Text += $" |\t{charactersCharged} characters charged";
+            StatusBarText1.Text = Properties.Resources.msg_Done;
+            StatusBarText2.Text = $"{e.Item2} {Properties.Resources.msg_Bytes} {e.Item1} {Properties.Resources.msg_DocumentsTranslated} \t";
+            if (charactersCharged > 0) StatusBarText2.Text += $" |\t{Properties.Resources.msg_CharactersCharged}{charactersCharged}";
             CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
             TargetOpenButton.Visibility = Visibility.Visible;
@@ -295,9 +295,9 @@ namespace DocumentTranslation.GUI
             CategoriesGridView.DataSource = ViewModel.categories.MyCategoryList;
             CategoriesGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             CategoriesGridView.Columns[0].FillWeight = 2;
-            CategoriesGridView.Columns[0].HeaderText = "Name";
+            CategoriesGridView.Columns[0].HeaderText = Properties.Resources.label_CategoryName;
             CategoriesGridView.Columns[1].FillWeight = 3;
-            CategoriesGridView.Columns[1].HeaderText = "Custom Translator Category ID";
+            CategoriesGridView.Columns[1].HeaderText = Properties.Resources.label_CategoryId;
         }
 
         private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
@@ -359,11 +359,11 @@ namespace DocumentTranslation.GUI
             try
             {
                 await ViewModel.documentTranslationService.TryCredentials();
-                TestSettingsText.Text = "PASS";
+                TestSettingsText.Text = Properties.Resources.msg_TestPassed;
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
             {
-                TestSettingsText.Text = "FAIL: " + ex.Message;
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ex.Message;
             }
             await Task.Delay(1000);
             TestSettingsText.Visibility = Visibility.Hidden;
