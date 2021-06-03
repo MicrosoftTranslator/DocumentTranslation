@@ -98,7 +98,7 @@ namespace DocumentTranslation.CLI
                     if (!string.IsNullOrEmpty(targetFolder.Value)) target = targetFolder.Value;
                     try
                     {
-                        await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values, tolanguage: toLang.Value(), glossaryfiles: gls.Values, targetFolder: target);
+                        await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values, fromlanguage: fromLang.Value(), tolanguage: toLang.Value(), glossaryfiles: gls.Values, targetFolder: target);
                     }
                     catch (System.ArgumentNullException e)
                     {

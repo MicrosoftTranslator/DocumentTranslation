@@ -48,6 +48,7 @@ namespace DocumentTranslationService.Core
 
     public class DocumentTranslationSource
     {
+        public string Language;
         public string SourceUrl;
     }
 
