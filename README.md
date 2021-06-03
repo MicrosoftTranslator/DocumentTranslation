@@ -1,11 +1,12 @@
 # DOCTR: Microsoft Document Translation Command Line Interface (CLI)
 The Microsoft Document Translation Command Line Interface gives quick access to document translation functions.
 It is a simple program which makes use of the server-side document translation functionality, giving it a client-based
-command line interface, and allowing you translate local documents, in any of the the supported file formats. Use 'doctr formats'
-to list the available formats.
+command line interface, allowing you to translate local documents, in any of the the supported file formats. Use `doctr formats`
+to list the [available formats](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/overview#supported-document-formats).
+The CLI tool is designed to be used in document workflow automation and in batch processing scripts.
 
 ## Download
-Please download the latest binary from the "Releases" section and extract the content opf the zip file to a folder of your choice,
+Please download the latest binary from the "Releases" section and extract the content of the zip file to a folder of your choice,
 recommended is a folder in your operating system's PATH.
 
 ## Minimum requirements
@@ -14,6 +15,31 @@ recommended is a folder in your operating system's PATH.
 - A Blob storage resource in your Azure subscription
 - A Windows computer able to run this executable. The code is written in .Net 5.0 and able to run on other platforms that
 .Net 5.0 is present on.
+
+### How to obtain the service credentials
+
+#### Translator resource name and key
+
+You can use an existing Translator resource that you have. 
+If you don't have a Translator resource, create one:
+
+![Translator Account](Solution%20Items/translatoraccount.png)
+
+
+
+#### Storage connection string
+You can use an existing Azure storage account that you have. 
+If you don't have an Azure storage account, create one:
+
+![Create storage account](Solution%20Items/storageaccount1.png)
+
+Visit the properties of your storage account.
+Copy the entire "Connection String". It is a very long string. 
+
+![Copy the connection string](Solution%20Items/connectionstring.png)
+
+Paste this string to the "Storage connection string" credential.
+Use `doctr config set --storage="<this string>"` to enter, with the quotes.
 
 ## Usage
 Use `doctr --help` or `doctr <command> --help` to get detailed information about the command.
