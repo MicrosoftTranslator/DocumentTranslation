@@ -259,11 +259,21 @@ namespace DocumentTranslation.CLI
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     try
                     {
-                        await translationService.GetDocumentFormatsAsync();
+                        var result = await translationService.GetDocumentFormatsAsync();
+                        if (result is null)
+                        {
+                            Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                            return;
+                        }
                     }
                     catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
                     {
                         Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
+                    catch (System.UriFormatException)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
@@ -285,7 +295,12 @@ namespace DocumentTranslation.CLI
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     try
                     {
-                        await translationService.GetGlossaryFormatsAsync();
+                        var result = await translationService.GetGlossaryFormatsAsync();
+                        if (result is null)
+                        {
+                            Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                            return;
+                        }
                     }
                     catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
                     {
