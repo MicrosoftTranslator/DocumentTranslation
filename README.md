@@ -13,30 +13,51 @@ recommended is a folder in your operating system's PATH.
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
-- A Windows computer able to run this executable. The code is written in .Net 5.0 and able to run on other platforms that
-.Net 5.0 is present on.
+- An Linux, MacOS or Windows operating system able to run .Net 5. The tool is written in .Net 5.0 and able to run on other platforms that
+.Net 5.0 is present on. Tested only on Windows. Try to run as is. If it fails,
+install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
 
 ### How to obtain the service credentials
 
-#### Translator resource name and key
+#### Translator resource key and name
 
 You can use an existing Translator resource that you have. 
 If you don't have a Translator resource, create one:
 
+------------------------------
 ![Translator Account](Solution%20Items/translatoraccount.png)
 
+------------------------------
+Visit the properties of your Translator resource.
+
+-------------------
+![Translator Key and Name](Solution%20Items/translatorkey.png)
+
+-------------------
+
+Copy the key and paste it into the "key" credential. It doesn't matter whether you use key 1 or key 2.
+Use `doctr config set --key=<this key>` to enter.
+
+Copy the resource name, in the example "TranslatorText", and paste it into the "name" credential.
+Use `doctr config set --name=<this name>` to enter.
 
 
 #### Storage connection string
 You can use an existing Azure storage account that you have. 
 If you don't have an Azure storage account, create one:
 
+------------------------
 ![Create storage account](Solution%20Items/storageaccount1.png)
+
+-------------------------
 
 Visit the properties of your storage account.
 Copy the entire "Connection String". It is a very long string. 
 
+------------------
 ![Copy the connection string](Solution%20Items/connectionstring.png)
+
+--------------
 
 Paste this string to the "Storage connection string" credential.
 Use `doctr config set --storage="<this string>"` to enter, with the quotes.
@@ -90,7 +111,7 @@ that has the same name as the source folder, plus `.<language code>`.
 Optional parameters to the translate command | Function
 ---------------------------------------------|----------
 `--from <language code>` | The language to translate from. If omitted, the system performs automatic language detection.
-`--key <key to the Translator resource>` | This key will override the settin in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
+`--key <key to the Translator resource>` | This key will override the setting in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
 `--category <category ID>` | The custom Translator category ID.
 `--glossary <file or folder>` | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
 
