@@ -49,7 +49,7 @@ namespace DocumentTranslationService.Core
         /// The base URL template for making translation requests.
         /// {0} is the name of the Translator resource.
         /// </summary>
-        private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0-preview.1";
+        private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0";
         #endregion Constants
         #region Methods
 
