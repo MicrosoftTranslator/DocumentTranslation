@@ -385,6 +385,24 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid credentials.
+        /// </summary>
+        public static string msg_InvalidCredentials {
+            get {
+                return ResourceManager.GetString("msg_InvalidCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please obtain valid credentials and enter in Settings.
+        /// </summary>
+        public static string msg_InvalidCredentialsTip {
+            get {
+                return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings saved.
         /// </summary>
         public static string msg_SettingsSaved {

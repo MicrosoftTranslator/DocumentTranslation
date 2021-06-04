@@ -104,7 +104,16 @@ namespace DocumentTranslation.GUI
             ResetUI();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
-            openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
+            try
+            {
+                openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
+            }
+            catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_InvalidCredentials;
+                StatusBarText2.Text = Properties.Resources.msg_InvalidCredentialsTip;
+                return;
+            }
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);

@@ -100,7 +100,10 @@ namespace DocumentTranslation.GUI
         #region Generate Filters
         internal async Task<string> GetDocumentExtensionsFilter()
         {
-            await documentTranslationService.GetDocumentFormatsAsync();
+            if (await documentTranslationService.GetDocumentFormatsAsync() is null)
+            {
+                throw new DocumentTranslationService.Core.DocumentTranslationService.CredentialsException();
+            }
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Document Translation|");
             foreach (var format in documentTranslationService.FileFormats.value)

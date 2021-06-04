@@ -225,6 +225,12 @@
   <data name="msg_InProgress" xml:space="preserve">
     <value>In progress: </value>
   </data>
+  <data name="msg_InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials</value>
+  </data>
+  <data name="msg_InvalidCredentialsTip" xml:space="preserve">
+    <value>Please obtain valid credentials and enter in Settings</value>
+  </data>
   <data name="msg_SettingsSaved" xml:space="preserve">
     <value>Settings saved</value>
   </data>
