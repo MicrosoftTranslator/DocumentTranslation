@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
-    public class DocumentTranslationBusiness
+    public partial class DocumentTranslationBusiness
     {
         #region Properties
         public DocumentTranslationService TranslationService { get; }
