@@ -50,6 +50,8 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public event EventHandler<List<string>> OnFilesDiscarded;
 
+        private readonly Logger logger = new();
+
         #endregion Properties
 
         /// <summary>
@@ -71,6 +73,9 @@ namespace DocumentTranslationService.Core
         /// <returns></returns>
         public async Task RunAsync(List<string> filestotranslate, string fromlanguage, string tolanguage, List<string> glossaryfiles = null, string targetFolder = null)
         {
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Translation run started");
             if (filestotranslate.Count == 0) throw new ArgumentNullException(nameof(filestotranslate), "No files to translate.");
             Task initialize = TranslationService.InitializeAsync();
 
@@ -95,20 +100,21 @@ namespace DocumentTranslationService.Core
             {
                 foreach (string fileName in discards)
                 {
-                    Debug.WriteLine($"Run: Discarded due to invalid file format for translation: {fileName}");
+                    logger.WriteLine($"Discarded due to invalid file format for translation: {fileName}");
                 }
                 if ((OnFilesDiscarded is not null) && (discards.Count > 0)) OnFilesDiscarded(this, discards);
             }
             if (sourcefiles.Count == 0)
             {
                 //There is nothing to translate
-                Debug.WriteLine("Run: Nothing left to translate.");
+                logger.WriteLine("Nothing left to translate.");
                 throw new ArgumentNullException(nameof(filestotranslate), "List filtered to nothing.");
             }
             if (!TranslationService.Languages.ContainsKey(tolanguage)) throw new ArgumentException("Invalid 'to' language.", nameof(tolanguage));
             #endregion
 
             #region Create the containers
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - container creation.");
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
 
             BlobContainerClient sourceContainer = new(TranslationService.StorageConnectionString, containerNameBase + "src");
@@ -123,7 +129,8 @@ namespace DocumentTranslationService.Core
 
             #region Upload documents
             await sourceContainerTask;
-            Debug.WriteLine("Source container created");
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - container creation.");
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Documents and glossaries upload.");
             int count = 0;
             long sizeInBytes = 0;
             List<Task> uploadTasks = new();
@@ -143,9 +150,9 @@ namespace DocumentTranslationService.Core
                     }
                     catch (System.AggregateException e)
                     {
-                        Debug.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
+                        logger.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
                     }
-                    Debug.WriteLine($"File {filename} uploaded.");
+                    logger.WriteLine($"File {filename} uploaded.");
                 }
             }
             Debug.WriteLine("Awaiting upload task completion.");
@@ -153,6 +160,7 @@ namespace DocumentTranslationService.Core
             //Upload Glossaries
             var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
             if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document and glossary upload: {sizeInBytes} bytes in {count} files.");
             #endregion
 
             #region Translate the container content
@@ -182,15 +190,17 @@ namespace DocumentTranslationService.Core
             try
             {
                 TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request.");
+                logger.WriteLine(System.Text.Json.JsonSerializer.Serialize<DocumentTranslationInput>(input, new System.Text.Json.JsonSerializerOptions() { WriteIndented = true, IncludeFields=true }));
             }
             catch (ServiceErrorException)
             {
                 OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
             }
-            Debug.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
+            logger.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
             if (string.IsNullOrEmpty(TranslationService.ProcessingLocation))
             {
-                Debug.WriteLine("ERROR: Start of translation job failed.");
+                logger.WriteLine("ERROR: Start of translation job failed.");
                 if (!Nodelete) await DeleteContainersAsync();
                 return;
             }
@@ -202,6 +212,7 @@ namespace DocumentTranslationService.Core
             {
                 await Task.Delay(1000);
                 statusResult = await TranslationService.CheckStatusAsync();
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Service status: {statusResult.createdDateTimeUtc} {statusResult.status}");
                 if (statusResult.lastActionDateTimeUtc != lastActionTime)
                 {
                     //Raise the update event
@@ -220,6 +231,7 @@ namespace DocumentTranslationService.Core
 
             #region Download the translations
             //Chance for optimization: Check status on the documents and start download immediately after each document is translated. 
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - document download.");
             string directoryName;
             if (string.IsNullOrEmpty(targetFolder)) directoryName = Path.GetDirectoryName(sourcefiles[0]) + "." + tolanguage;
             else directoryName = targetFolder;
@@ -242,10 +254,11 @@ namespace DocumentTranslationService.Core
             #endregion
             this.TargetFolder = directoryName;
             #region final
-            Debug.WriteLine("Download complete.");
             if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Documents downloaded: {sizeInBytes} bytes in {count} files.");
             if (!Nodelete) await DeleteContainersAsync();
-            Debug.WriteLine("Run: Exiting.");
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Run: Exiting.");
+            logger.Close();
             #endregion
         }
 
@@ -262,7 +275,7 @@ namespace DocumentTranslationService.Core
             FileStream downloadFileStream = File.Create(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
             await blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
             downloadFileStream.Close();
-            Debug.WriteLine("Downloaded: " + downloadFileStream.Name);
+            logger.WriteLine("Downloaded: " + downloadFileStream.Name);
         }
 
         /// <summary>
@@ -271,6 +284,7 @@ namespace DocumentTranslationService.Core
         /// <returns>Number of old containers that were deleted</returns>
         public async Task<int> ClearOldContainersAsync()
         {
+            logger.WriteLine("START - Abandoned containers deletion.");
             int counter = 0;
             List<Task> deletionTasks = new();
             BlobServiceClient blobServiceClient = new(TranslationService.StorageConnectionString);
@@ -293,17 +307,17 @@ namespace DocumentTranslationService.Core
                 }
             }
             await Task.WhenAll(deletionTasks);
-            Debug.WriteLine("Old Containers deleted.");
+            logger.WriteLine($"END - Abandoned containers deleted: {counter}");
             return counter;
         }
 
         /// <summary>
         /// Delete the containers created by this instance.
         /// </summary>
-        /// <param name="CleanUpAll">Optional: If set, delete all containers following the naming scheme that have been last accessed more than 10 days ago.</param>
         /// <returns>The task only</returns>
         private async Task DeleteContainersAsync()
         {
+            logger.WriteLine("START - Container deletion.");
             List<Task> deletionTasks = new();
             //delete the containers of this run
             deletionTasks.Add(TranslationService.ContainerClientSource.DeleteAsync());
@@ -311,7 +325,7 @@ namespace DocumentTranslationService.Core
             deletionTasks.Add(Glossary.DeleteAsync());
             if (DateTime.Now.Millisecond < 100) deletionTasks.Add(ClearOldContainersAsync());  //Clear out old stuff ~ every 10th time. 
             await Task.WhenAll(deletionTasks);
-            Debug.WriteLine("Containers deleted.");
+            logger.WriteLine("END - Containers deleted.");
         }
 
         public static string Normalize(string filename)
