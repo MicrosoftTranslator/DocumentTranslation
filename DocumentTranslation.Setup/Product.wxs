@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="Document Translation" Language="1033" Version="0.8.0.0" Manufacturer="Microsoft" UpgradeCode="cc63954a-c510-49da-af5f-dc82af6502e1">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of Document Translation is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeatureGUI" Title="Windows" Level="1">
+			<ComponentGroupRef Id="ProductComponentsGUI" />
+      <ComponentGroupRef Id="ProductComponentsBase" />
+    </Feature>
+    <Feature Id="ProductFeatureCLI" Title="Command Line" Level="1">
+      <ComponentGroupRef Id="ProductComponentsCLI" />
+      <ComponentGroupRef Id="ProductComponentsBase" />
+    </Feature>
+  </Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="Document Translation" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponentsGUI" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponentGUI">
+        <File Source="$(var.DocumentTranslation.GUI.TargetPath)"/>
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ProductComponentsCLI" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponentCLI">
+        <File Source="$(var.doctr.TargetPath)"/>
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ProductComponentsBase" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponentBase">
+        <File Source="$(var.DocumentTranslationService.TargetPath)"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
