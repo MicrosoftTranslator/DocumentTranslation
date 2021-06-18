@@ -8,17 +8,17 @@ It comes in a Windows UI and a command line interface. It is built on .Net 5. Th
 -------------------
 ## Content
 
-[Running on Windows](#Running-on-Windows)
+[Running on Windows](#running-on-Windows)
 
-[Command Line Interface](#Command-Line-Interface)
+[Command Line Interface](#command-line-interface)
 
-[Implementation Details](#Implementation-Details)
+[Implementation Details](#implementation-details)
 
-[Bug Reports](#Bug-Reports)
+[Bug Reports](#bug-reports)
 
-[Contributions](#Contributions)
+[Contributions](#contributions)
 
-[Credits](#Credits)
+[Credits](#credits)
 
 ---------------
 
