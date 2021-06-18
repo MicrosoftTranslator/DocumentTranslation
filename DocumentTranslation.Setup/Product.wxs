@@ -8,7 +8,6 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Document Translation is already installed." />
     <Media Id="1" Cabinet ="DocumentTranslation.cab" EmbedCab="yes" />
-    <UIRef Id="WixUI_FeatureTree" />
     <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
     <Feature Id="ProductFeatureGUI" Title="Windows" Level="1">
       <ComponentGroupRef Id="ProductComponentsGUI" />
@@ -19,6 +18,19 @@
       <ComponentGroupRef Id="ProductComponentsCLI" />
       <ComponentGroupRef Id="ProductComponentsBase" />
     </Feature>
+
+    <UI>
+      <UIRef Id="WixUI_FeatureTree" />
+      <Publish Dialog="ExitDialog"
+          Control="Finish"
+          Event="DoAction"
+          Value="LaunchApplication">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Run Document Translation" />
+    <Property Id="WixShellExecTarget" Value="[#DocumentTranslation.GUI.exe]" />
+    </UI>
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes"/>
   </Product>
 
 

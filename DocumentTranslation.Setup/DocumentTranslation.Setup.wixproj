@@ -48,6 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>C:\Users\wendt\.nuget\packages\wix\3.11.2\tools\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixUIExtension">
       <HintPath>C:\Users\wendt\.nuget\packages\wix\3.11.2\tools\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
