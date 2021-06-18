@@ -22,18 +22,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{204E769F-E6F0-441E-B8BA-80BB5B575CD1}"
 	ProjectSection(SolutionItems) = preProject
 		docs\_config.yml = docs\_config.yml
-		docs\CLI.md = docs\CLI.md
-		docs\connectionstring.png = docs\connectionstring.png
-		docs\GUI.md = docs\GUI.md
 		docs\index.md = docs\index.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30FE-48F7-443E-AFC8-76EB24108B82}"
+	ProjectSection(SolutionItems) = preProject
+		docs\connectionstring.png = docs\connectionstring.png
 		docs\storageaccount1.png = docs\storageaccount1.png
 		docs\translatoraccount.png = docs\translatoraccount.png
 		docs\translatorkey.png = docs\translatorkey.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_data", "_data", "{2CCE89B8-BA37-4767-902F-8069565A47BE}"
-	ProjectSection(SolutionItems) = preProject
-		docs\_data\navigation.yml = docs\_data\navigation.yml
 	EndProjectSection
 EndProject
 Global
@@ -79,7 +76,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2CCE89B8-BA37-4767-902F-8069565A47BE} = {204E769F-E6F0-441E-B8BA-80BB5B575CD1}
+		{C0EB30FE-48F7-443E-AFC8-76EB24108B82} = {204E769F-E6F0-441E-B8BA-80BB5B575CD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27CBFB4A-74CF-4B6D-AFC3-A99B8989BE17}

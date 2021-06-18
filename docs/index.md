@@ -1,15 +1,95 @@
-# DOCTR: Microsoft Document Translation Command Line Interface (CLI)
+# Microsoft Document Translation
+The Document Translation tool translates documents in your local storage using the Microsoft Azure Translator service. 
+It can translate Office documents (Word, Excel, PowerPoint), HTML documents, PDF documents, Outlook Messages, Markdown, MHTML,
+plain text, RTF and XLIFF files.
+
+It comes in a Windows UI and a command line interface. It is built on .Net 5, and the command line interface is generally
+capable of running on Linux, MacOS and Windows. 
+
+-------------------
+## Content
+
+[Running on Windows](#Running-on-Windows)
+
+[Command Line Interface](#Command-Line-Interface)
+
+[Implementation Details](#Implementation-Details)
+
+[Contributions](#Contributions)
+
+[Credits](#Credits)
+
+---------------
+
+## Running on Windows
+
+### Install
+Run the latest **DocumentTranslation.msi** from [Github releases](https://github.com/MicrosoftTranslator/DocumentTranslation/releases).
+It will install the document translation tool on your Windows computer.
+
+### Minimum requirements
+- An Azure subscription
+- A Translator resource in your Azure subscription
+- A Blob storage resource in your Azure subscription
+- An Windows 10 or later operating system able to run .Net 5. If it fails, install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
+
+#### How to obtain the service credentials
+
+##### Translator resource key and name
+
+You can use an existing Azure Translator resource that you have. 
+If you don't have a Translator resource, create one:
+
+------------------------------
+![Translator Account](images/translatoraccount.png)
+
+------------------------------
+Visit the properties of your Translator resource.
+
+-------------------
+![Translator Key and Name](images/translatorkey.png)
+
+-------------------
+
+
+
+
+##### Storage connection string
+You can use an existing Azure storage account that you have. 
+If you don't have an Azure storage account, create one:
+
+------------------------
+![Create storage account](images/storageaccount1.png)
+
+-------------------------
+
+Visit the properties of your storage account.
+Copy the entire "Connection String". It is a very long string. 
+
+------------------
+![Copy the connection string](images/connectionstring.png)
+
+--------------
+
+Paste this string to the "Storage connection string" credential.
+Use `doctr config set --storage="<this string>"` to enter, with the quotes.
+
+
+
+
+-----------------------
+## Command Line Interface
 The Microsoft Document Translation Command Line Interface gives quick access to document translation functions.
 It is a simple program which makes use of the server-side document translation functionality, giving it a client-based
 command line interface, allowing you to translate local documents, in any of the the supported file formats. Use `doctr formats`
 to list the [available formats](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/overview#supported-document-formats).
 The CLI tool is designed to be used in document workflow automation and in batch processing scripts.
 
-## Download
+### Download
 Please download the latest binary from the "Releases" section and extract the content of the zip file to a folder of your choice,
 recommended is a folder in your operating system's PATH.
 
-## Minimum requirements
+### Minimum requirements
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
@@ -17,9 +97,9 @@ recommended is a folder in your operating system's PATH.
 .Net 5.0 is present on. Tested only on Windows. Try to run as is. If it fails,
 install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
 
-### How to obtain the service credentials
+#### How to obtain the service credentials
 
-#### Translator resource key and name
+##### Translator resource key and name
 
 You can use an existing Translator resource that you have. 
 If you don't have a Translator resource, create one:
@@ -42,7 +122,7 @@ Copy the resource name, in the example "TranslatorText", and paste it into the "
 Use `doctr config set --name=<this name>` to enter.
 
 
-#### Storage connection string
+##### Storage connection string
 You can use an existing Azure storage account that you have. 
 If you don't have an Azure storage account, create one:
 
@@ -62,10 +142,10 @@ Copy the entire "Connection String". It is a very long string.
 Paste this string to the "Storage connection string" credential.
 Use `doctr config set --storage="<this string>"` to enter, with the quotes.
 
-## Usage
+### Usage
 Use `doctr --help` or `doctr <command> --help` to get detailed information about the command.
 
-### Configure the tool
+#### Configure the tool
 The configuration contains the credentials for the needed Azure resources:
 The minimum needed credentials are
 - The subscription key to the Translator resource.
@@ -91,7 +171,7 @@ Command	| Function
 `doctr config list`	| List the current configuration settings.
 `doctr config test`	| Validate the credentials and report which one is failing.
 
-### List capabilities
+#### List capabilities
 
  Command	| Function
 -------------------|---------------------
@@ -99,7 +179,7 @@ Command	| Function
 `doctr formats`		| List the file formats available for translation. Requires credentials key, name and storage to be set.
 `doctr glossary`		| List the glossary formats available for use as glossary. Requires credentials key, name and storage to be set.
 
-### Translate
+#### Translate
 
 Command	| Function
 --------|----------
@@ -115,7 +195,7 @@ Optional parameters to the translate command | Function
 `--category <category ID>` | The custom Translator category ID.
 `--glossary <file or folder>` | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
 
-### Clear
+#### Clear
 If a translation run gets interrupted or fails, it may also fail to clean up after itself and leave behind documents in the storage account.
 A repeated run will always use a fresh storage container for its operation. The 'clear' command deletes storage containers from failed or abandoned runs
 for all DOCTR runs that are using the storage account you provided in the settings. In order to not disrupt any other runs of the service,
