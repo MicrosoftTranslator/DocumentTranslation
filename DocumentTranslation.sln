@@ -19,6 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslation.GUI", "
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "DocumentTranslation.Setup", "DocumentTranslation.Setup\DocumentTranslation.Setup.wixproj", "{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{204E769F-E6F0-441E-B8BA-80BB5B575CD1}"
+	ProjectSection(SolutionItems) = preProject
+		docs\_config.yml = docs\_config.yml
+		docs\connectionstring.png = docs\connectionstring.png
+		docs\GUI.md = docs\GUI.md
+		docs\index.md = docs\index.md
+		docs\storageaccount1.png = docs\storageaccount1.png
+		docs\translatoraccount.png = docs\translatoraccount.png
+		docs\translatorkey.png = docs\translatorkey.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
