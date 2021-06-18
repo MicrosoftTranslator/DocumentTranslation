@@ -4,7 +4,7 @@ This project provides a local interface to the document translation features of 
 
 ## Documentation
 
-See the [complete documentation of the tool](https://microsofttranslator.github.io/documenttranslation).
+See the [complete documentation of the tool](https://microsofttranslator.github.io/DocumentTranslation).
 
 The documentation is stored in the /docs folder of the project. 
 
