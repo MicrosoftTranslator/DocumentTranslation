@@ -50,8 +50,13 @@ Visit the properties of your Translator resource.
 ![Translator Key and Name](images/translatorkey.png)
 
 -------------------
+Copy the key to the "Subscription Key" field in the Settings/Authentication tab.
 
+Copy the name of the resource into the "Resource Name" field in the Settings/Authentication tab.
 
+Select the Azure region where your Translator resource is located in the Settings/Authentication tab.
+
+![Settings Dialog](images/SettingsDialog.png)
 
 
 ##### Storage connection string
@@ -71,11 +76,43 @@ Copy the entire "Connection String". It is a very long string.
 
 --------------
 
-Paste this string to the "Storage connection string" credential.
-Use `doctr config set --storage="<this string>"` to enter, with the quotes.
+Paste this string to the "Storage Connection String" field in the Settings/Authentication tab.
 
 
+### Translate Documents
 
+After you have entered the credentials, you are able to start translating documents.
+![Translate Documents](images/TranslateDocuments.png)
+
+Select your source and target languages. You may choose "Auto-Detect" as the source language.
+Leave Category empty, unless your administrator or your langauge service provider has told you to use a certain category,
+or you have defined your own custom category with [Custom Translator](http://customtranslator.ai).
+
+Choose your local documents that you want to translate. Pressing "Select" opens a file picker interface. You may pick as many files
+to translate as you like, up to 1000.
+Additional limits are documented in [API documentation: Limits](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/get-started-with-document-translation?tabs=csharp#content-limits)
+
+Choose a folder to store the translated documents in. You may choose any folder on your computer.
+If you have translated to this langauge before, the app will suggest using the same folder as last time you translated to this target language.
+
+You may optionally provide a glossary of words or phrases you want to have translated in a specific way. Add only words and phrases that you are sure must
+be translated a certain way, and only those that do not translate naturally as intended. Works well for compound nouns like product names or
+phrases that shall remain untranslated.
+
+You can supply a simple mapping file like this, as a TSV (tab separated variables) file:
+
+![Glossary](images/Glossary.png)
+
+
+After selecting the languages, one or more documents to translate, and the target location, you are ready to hit "Translate Documents".
+
+![Running](images/Running.png)
+
+The status bar at the bottom gives an indication of the status of the translation, and whether an error was encountered.
+
+After the progress bar reaches 100%, you can retrieve your documents in the target location.
+
+You are now ready for the next language or the next batch of documents to translate. 
 
 -----------------------
 ## Command Line Interface
