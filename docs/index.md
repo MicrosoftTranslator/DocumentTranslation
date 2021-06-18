@@ -1,4 +1,4 @@
-# Microsoft Document Translation
+
 The Document Translation tool translates documents in your local storage using the Microsoft Azure Translator service. 
 It can translate Office documents (Word, Excel, PowerPoint), HTML documents, PDF documents, Outlook Messages, Markdown, MHTML,
 plain text, RTF and XLIFF files.
