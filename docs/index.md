@@ -25,7 +25,7 @@ It comes in a Windows UI and a command line interface. It is built on .Net 5. Th
 ## Running on Windows
 
 ### Install
-Run the latest **DocumentTranslation.msi** from [Github releases](https://github.com/MicrosoftTranslator/DocumentTranslation/releases).
+Run the latest **DocumentTranslation.Setup.msi** from [Github releases](https://github.com/MicrosoftTranslator/DocumentTranslation/releases).
 It will install the document translation tool on your Windows computer.
 
 ### Minimum requirements
