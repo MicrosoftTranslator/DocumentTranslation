@@ -14,6 +14,8 @@ It comes in a Windows UI and a command line interface. It is built on .Net 5. Th
 
 [Implementation Details](#Implementation-Details)
 
+[Bug Reports](#Bug-Reports)
+
 [Contributions](#Contributions)
 
 [Credits](#Credits)
@@ -254,6 +256,9 @@ Project 'DocumentTranslationService' contains three relevant classes: DocumentTr
 DocumentTranslationBusiness handles the local file operations and business logic. Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
 
 Future optimization includes a shared storage for the glossary, so that multiple clients can refer to a single company-wide glossary. 
+
+## Bug Reports
+Please report any bugs por issues you find with the tool [here](https://github.com/MicrosoftTranslator/DocumentTranslation/issues).
 
 ## Contributions
 Please contribute your bug fix, and functionality additions. Submit a pull request. We will review and integrate
