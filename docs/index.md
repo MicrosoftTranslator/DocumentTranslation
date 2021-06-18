@@ -25,13 +25,13 @@ You can use an existing Translator resource that you have.
 If you don't have a Translator resource, create one:
 
 ------------------------------
-![Translator Account](Solution%20Items/translatoraccount.png)
+![Translator Account](images/translatoraccount.png)
 
 ------------------------------
 Visit the properties of your Translator resource.
 
 -------------------
-![Translator Key and Name](Solution%20Items/translatorkey.png)
+![Translator Key and Name](images/translatorkey.png)
 
 -------------------
 
@@ -47,7 +47,7 @@ You can use an existing Azure storage account that you have.
 If you don't have an Azure storage account, create one:
 
 ------------------------
-![Create storage account](Solution%20Items/storageaccount1.png)
+![Create storage account](images/storageaccount1.png)
 
 -------------------------
 
@@ -55,7 +55,7 @@ Visit the properties of your storage account.
 Copy the entire "Connection String". It is a very long string. 
 
 ------------------
-![Copy the connection string](Solution%20Items/connectionstring.png)
+![Copy the connection string](images/connectionstring.png)
 
 --------------
 
