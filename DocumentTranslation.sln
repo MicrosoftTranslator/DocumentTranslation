@@ -21,7 +21,6 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "DocumentTranslation.Setup",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{204E769F-E6F0-441E-B8BA-80BB5B575CD1}"
 	ProjectSection(SolutionItems) = preProject
-		docs\_config.yml = docs\_config.yml
 		docs\index.md = docs\index.md
 	EndProjectSection
 EndProject
