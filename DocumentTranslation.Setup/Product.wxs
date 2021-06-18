@@ -9,6 +9,7 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of Document Translation is already installed." />
     <Media Id="1" Cabinet ="DocumentTranslation.cab" EmbedCab="yes" />
     <UIRef Id="WixUI_FeatureTree" />
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
     <Feature Id="ProductFeatureGUI" Title="Windows" Level="1">
       <ComponentGroupRef Id="ProductComponentsGUI" />
       <ComponentGroupRef Id="ProductComponentsBase" />
@@ -27,7 +28,6 @@
         <Directory Id="INSTALLFOLDER" Name="Document Translation" />
       </Directory>
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="Document Translation"/>
       </Directory>
     </Directory>
   </Fragment>
@@ -41,7 +41,6 @@
         <Shortcut Id="ApplicationStartMenuShortcut" Icon="DocumentIcon"
                   Name="Document Translation" Description="Document Translation with Microsoft Azure" Target="[INSTALLFOLDER]DocumentTranslation.GUI.exe"
                   WorkingDirectory="INSTALLFOLDER" />
-        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\Microsoft\Translator\DocumentTranslation" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </DirectoryRef>
