@@ -9,10 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doctr", "DocumentTranslatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9A35F10-42E5-4DA4-B4DF-AF2A0FF5652E}"
 	ProjectSection(SolutionItems) = preProject
-		Solution Items\connectionstring.png = Solution Items\connectionstring.png
 		LICENSE.md = LICENSE.md
 		README.md = README.md
-		Solution Items\storageaccount1.png = Solution Items\storageaccount1.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslation.GUI", "DocumentTranslation.GUI\DocumentTranslation.GUI.csproj", "{23830242-C648-49B3-97D4-233775C218C5}"
@@ -27,7 +25,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30FE-48F7-443E-AFC8-76EB24108B82}"
 	ProjectSection(SolutionItems) = preProject
 		docs\connectionstring.png = docs\connectionstring.png
+		docs\images\Glossary.png = docs\images\Glossary.png
+		docs\images\Running.png = docs\images\Running.png
+		docs\images\SettingsDialog.png = docs\images\SettingsDialog.png
 		docs\storageaccount1.png = docs\storageaccount1.png
+		docs\images\TranslateDocuments.png = docs\images\TranslateDocuments.png
 		docs\translatoraccount.png = docs\translatoraccount.png
 		docs\translatorkey.png = docs\translatorkey.png
 	EndProjectSection
