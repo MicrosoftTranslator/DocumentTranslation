@@ -99,21 +99,13 @@ namespace DocumentTranslation.GUI
             outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
         }
 
-        private async void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
+        private void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
+            ViewModel.FilesToTranslate.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
-            try
-            {
-                openFileDialog.Filter = await this.ViewModel.GetDocumentExtensionsFilter();
-            }
-            catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
-            {
-                StatusBarText1.Text = Properties.Resources.msg_InvalidCredentials;
-                StatusBarText2.Text = Properties.Resources.msg_InvalidCredentialsTip;
-                return;
-            }
+            openFileDialog.Filter = ViewModel.GetDocumentExtensionsFilter();
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
@@ -133,11 +125,12 @@ namespace DocumentTranslation.GUI
             TargetOpenButton.Visibility = Visibility.Hidden;
         }
 
-        private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
+        private void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
+            ViewModel.GlossariesToUse.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
-            openFileDialog.Filter = await this.ViewModel.GetGlossaryExtensionsFilter();
+            openFileDialog.Filter = ViewModel.GetGlossaryExtensionsFilter();
             if (perLanguageData.lastGlossariesFolder is not null) openFileDialog.InitialDirectory = perLanguageData.lastGlossariesFolder;
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
@@ -189,7 +182,11 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
-            _ = documentTranslationBusiness.RunAsync(ViewModel.FilesToTranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, ViewModel.GlossariesToUse, ViewModel.TargetFolder);
+            List<string> filestotranslate = new();
+            foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
+            List<string> glossariestouse = new();
+            foreach (var glossary in ViewModel.GlossariesToUse) glossariestouse.Add(glossary);
+            _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 1;
         }
