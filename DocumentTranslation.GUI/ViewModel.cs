@@ -19,13 +19,12 @@ namespace DocumentTranslation.GUI
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
-        public Language ToLanguage { get; set; }
-        public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
+        public Language ToLanguage { get; init; }
+        public BindingList<string> FilesToTranslate { get; private set; } = new();
         public string TargetFolder { get; set; }
-        public List<string> GlossariesToUse { get; private set; } = new();
+        public BindingList<string> GlossariesToUse { get; private set; } = new();
         public event EventHandler OnLanguagesUpdate;
 
-        private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
         public readonly Categories categories = new();
 
@@ -98,12 +97,8 @@ namespace DocumentTranslation.GUI
         }
 
         #region Generate Filters
-        internal async Task<string> GetDocumentExtensionsFilter()
+        internal string GetDocumentExtensionsFilter()
         {
-            if (await documentTranslationService.GetDocumentFormatsAsync() is null)
-            {
-                throw new DocumentTranslationService.Core.DocumentTranslationService.CredentialsException();
-            }
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Document Translation|");
             foreach (var format in documentTranslationService.FileFormats.value)
@@ -130,9 +125,8 @@ namespace DocumentTranslation.GUI
             return filterBuilder.ToString();
         }
 
-        internal async Task<string> GetGlossaryExtensionsFilter()
+        internal string GetGlossaryExtensionsFilter()
         {
-            await documentTranslationService.GetGlossaryFormatsAsync();
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Glossaries|");
             foreach (var format in documentTranslationService.GlossaryFormats.value)
