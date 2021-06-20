@@ -96,6 +96,10 @@ namespace DocumentTranslation.GUI
 
         private async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CategoryTextBox.SelectedItem is not null)
+                ViewModel.textTranslationService.CategoryID = ((MyCategory)CategoryTextBox.SelectedItem).ID;
+            else
+                ViewModel.textTranslationService.CategoryID = null;
             outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
         }
 
