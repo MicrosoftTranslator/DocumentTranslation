@@ -240,6 +240,12 @@
   <data name="msg_TestPassed" xml:space="preserve">
     <value>Test passed</value>
   </data>
+  <data name="msg_TranslateButton_Click_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="msg_TranslateButton_Click_InvalidCategory" xml:space="preserve">
+    <value>Invalid Category</value>
+  </data>
   <data name="msg_Waiting" xml:space="preserve">
     <value>Waiting: </value>
   </data>

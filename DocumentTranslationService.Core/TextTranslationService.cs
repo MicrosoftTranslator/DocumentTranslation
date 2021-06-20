@@ -445,10 +445,12 @@ namespace DocumentTranslationService.Core
                     continue;
                 }
                 int status = (int)response.StatusCode;
+                if (status != 200) Debug.WriteLine($"TranslateText error: {response.ReasonPhrase}");
                 switch (status)
                 {
                     case 200:
                         break;
+                    case 400: throw new InvalidCategoryException(category);
                     case 401: throw new AccessViolationException("Invalid credentials. Check for key/region mismatch.");
                     case 408:       //Custom system is being loaded
                         Debug.WriteLine("Retry #" + retrycount + " Response: " + (int)response.StatusCode);

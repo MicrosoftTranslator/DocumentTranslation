@@ -74,7 +74,7 @@
                     </StatusBar>
                 </Grid>
             </TabItem>
-            <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateText}" Width="200" x:Name="TranslateTextTab">
+            <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateText}" Width="200" x:Name="TranslateTextTab" Loaded="TranslateTextTab_Loaded">
                 <Grid>
                     <StackPanel x:Name="Fields" Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top" Grid.ColumnSpan="2">
                         <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
@@ -85,7 +85,7 @@
                         <ComboBox x:Name="CategoryTextBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryTextBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
                         <Button x:Name="CategoryTextClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryTextClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
                     </StackPanel>
-                    <Grid Margin="20,50,20,10" Grid.ColumnSpan="2">
+                    <Grid Margin="20,50,20,25" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="25"/>
                             <RowDefinition/>
@@ -104,6 +104,12 @@
                             <Button x:Name="translateButton" Content="{x:Static resx:Resources.button_Translate}" Width="100" Click="TranslateButton_Click" Padding="2"/>
                         </StackPanel>
                     </Grid>
+                    <StatusBar VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="StatusBarTText1" Margin="10,0,0,0"/>
+                            <TextBlock x:Name="StatusBarTText2" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StatusBar>
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static resx:Resources.tabTitle_Settings}" Width="200" x:Name="SettingsTab">

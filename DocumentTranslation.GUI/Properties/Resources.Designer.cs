@@ -430,6 +430,24 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string msg_TranslateButton_Click_Error {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Category.
+        /// </summary>
+        public static string msg_TranslateButton_Click_InvalidCategory {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_InvalidCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting: .
         /// </summary>
         public static string msg_Waiting {
