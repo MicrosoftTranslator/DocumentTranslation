@@ -96,7 +96,20 @@ namespace DocumentTranslation.GUI
 
         private async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
-            outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
+            ViewModel.textTranslationService.CategoryID = CategoryTextBox.SelectedItem is not null ? ((MyCategory)CategoryTextBox.SelectedItem).ID : null;
+            try
+            {
+                outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
+            }
+            catch (InvalidCategoryException)
+            {
+                outputBox.Text = string.Empty;
+                StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_Error;
+                StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_InvalidCategory;
+                await Task.Delay(2000);
+                StatusBarTText1.Text = string.Empty;
+                StatusBarTText1.Text = string.Empty;
+            }
         }
 
         private void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -403,6 +416,11 @@ namespace DocumentTranslation.GUI
                 outputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
                 outputBox.TextAlignment = TextAlignment.Left;
             }
+        }
+
+        private void TranslateTextTab_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
