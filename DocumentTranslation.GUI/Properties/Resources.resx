@@ -301,4 +301,7 @@
   <data name="tooltip_TestSettings" xml:space="preserve">
     <value>Invoke a test of teh above settings. Will show a pass or fail result. </value>
   </data>
+  <data name="msg_TranslateButton_Click_CharactersTranslated" xml:space="preserve">
+    <value>characters translated</value>
+  </data>
 </root>

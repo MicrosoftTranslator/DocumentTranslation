@@ -100,15 +100,18 @@ namespace DocumentTranslation.GUI
             try
             {
                 outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);
+                StatusBarTText2.Text = $"{inputBox.Text.Length} {Properties.Resources.msg_TranslateButton_Click_CharactersTranslated}";
+                await Task.Delay(2000);
+                StatusBarTText2.Text = string.Empty;
             }
             catch (InvalidCategoryException)
             {
                 outputBox.Text = string.Empty;
                 StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_Error;
-                StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_InvalidCategory;
+                StatusBarTText2.Text = Properties.Resources.msg_TranslateButton_Click_InvalidCategory;
                 await Task.Delay(2000);
                 StatusBarTText1.Text = string.Empty;
-                StatusBarTText1.Text = string.Empty;
+                StatusBarTText2.Text = string.Empty;
             }
         }
 

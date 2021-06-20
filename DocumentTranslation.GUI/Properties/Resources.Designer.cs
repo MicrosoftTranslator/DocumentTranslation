@@ -430,6 +430,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to characters translated.
+        /// </summary>
+        public static string msg_TranslateButton_Click_CharactersTranslated {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_CharactersTranslated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string msg_TranslateButton_Click_Error {
