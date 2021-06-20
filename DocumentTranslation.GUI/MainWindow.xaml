@@ -48,10 +48,10 @@
                         <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
                         <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
-                        <ListBox Grid.Row="1" Grid.Column="1" x:Name="TargetListBox" Padding="2,2" Margin="2"/>
+                        <ListBox Grid.Row="1" Grid.Column="1" x:Name="TargetListBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
                         <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.label_Glossary}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
-                        <ListBox Grid.Row="2" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2"/>
+                        <ListBox Grid.Row="2" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
                         <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                         <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" IsEnabled="False" Margin="2"/>
                         <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Cancel}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
