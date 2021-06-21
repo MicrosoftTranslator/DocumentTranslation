@@ -3,7 +3,8 @@ The Document Translation tool translates documents in your local storage using t
 It can translate Office documents (Word, Excel, PowerPoint), HTML documents, PDF documents, Outlook Messages, Markdown, MHTML,
 plain text, RTF and XLIFF files.
 
-It comes in a Windows UI and a command line interface. It is built on .Net 5. The command line interface runs on Linux, MacOS and Windows. 
+It comes in a Windows UI and a command line interface. The command line interface runs on Linux, MacOS and Windows, any system
+that a [.Net 5 runtime](https://dotnet.microsoft.com/download/dotnet/5.0) is available for. 
 
 -------------------
 ## Content
@@ -32,13 +33,13 @@ It will install the document translation tool on your Windows computer.
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
-- An Windows 10 or later operating system able to run .Net 5. If it fails, install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
+- A Windows 10 or later operating system able to run .Net 5. If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/dotnet/5.0.
 
 #### How to obtain the service credentials
 
 ##### Translator resource key and name
 
-You can use an existing Azure Translator resource that you have. 
+You can use an existing Azure Translator resource. 
 If you don't have a Translator resource, create one:
 
 ------------------------------
@@ -55,13 +56,13 @@ Copy the key to the "Subscription Key" field in the Settings/Authentication tab.
 
 Copy the name of the resource into the "Resource Name" field in the Settings/Authentication tab.
 
-Select the Azure region where your Translator resource is located in the Settings/Authentication tab.
+Select the "Azure Region" where your Translator resource is located in the Settings/Authentication tab.
 
 ![Settings Dialog](images/SettingsDialog.png)
 
 
 ##### Storage connection string
-You can use an existing Azure storage account that you have. 
+You can use an existing Azure storage account. 
 If you don't have an Azure storage account, create one:
 
 ------------------------
@@ -86,7 +87,7 @@ After you have entered the credentials, you are able to start translating docume
 ![Translate Documents](images/TranslateDocuments.png)
 
 Select your source and target languages. You may choose "Auto-Detect" as the source language.
-Leave Category empty, unless your administrator or your langauge service provider has told you to use a certain category,
+Leave Category empty, unless your administrator or your language service provider has told you to use a certain category,
 or you have defined your own custom category with [Custom Translator](http://customtranslator.ai).
 
 Choose your local documents that you want to translate. Pressing "Select" opens a file picker interface. You may pick as many files
@@ -94,7 +95,7 @@ to translate as you like, up to 1000.
 Additional limits are documented in [API documentation: Limits](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/get-started-with-document-translation?tabs=csharp#content-limits)
 
 Choose a folder to store the translated documents in. You may choose any folder on your computer.
-If you have translated to this langauge before, the app will suggest using the same folder as last time you translated to this target language.
+If you have translated to this language before, the app will suggest using the same folder as last time you translated to this target language.
 
 You may optionally provide a glossary of words or phrases you want to have translated in a specific way. Add only words and phrases that you are sure must
 be translated a certain way, and only those that do not translate naturally as intended. Works well for compound nouns like product names or
@@ -200,7 +201,7 @@ Command	| Required/Optional
 
 The configuration settings are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
 C:\Users\<Username>\AppData\Roaming\Document Translation
-You may edit the file by hand, using the editor of your choice. 
+You may edit the file by hand, using a text editor of your choice. 
 
 You can inspect the settings using the following commands:
 
@@ -245,10 +246,11 @@ Command	| Function
 
 ## Implementation Details
 Written in C#, based on .Net 5. 
-This tool makes use of the Azure Document Translation service. The Azure Document Translation translates a set of documents that reside in an Azure storage container,
-and delivers the translations in another Azure storage container. This tool provides a local interface to that service, allowing you to translate a locally
-rediding file or a folder, and receiving the translation of these documents in a local folder. The tool uploads the local documents, invokes the translation,
-monitors the translation progress, downloads the translated documents to your local machine, and then deletes the containers from the service.
+This tool makes use of the Azure Document Translation service. The Azure Document Translation service translates a set of documents that reside
+in an Azure storage container, and delivers the translations in another Azure storage container. This tool provides a local interface to that service,
+allowing you to translate a locally rediding file or a folder, and receiving the translation of these documents in a local folder.
+The tool uploads the local documents, invokes the translation, monitors the translation progress,
+downloads the translated documents to your local machine, and then deletes the containers from the service.
 Each run is independent of each other by giving the containers it uses a unique name within the common storage account.
 
 Project "doctr" contains the command line processing based on Nate McMaster's Command Line Utilities. All user interaction is handled here.
@@ -258,10 +260,10 @@ DocumentTranslationBusiness handles the local file operations and business logic
 Future optimization includes a shared storage for the glossary, so that multiple clients can refer to a single company-wide glossary. 
 
 ## Bug Reports
-Please report any bugs por issues you find with the tool [here](https://github.com/MicrosoftTranslator/DocumentTranslation/issues).
+Please report any bugs or issues you find with the tool [here](https://github.com/MicrosoftTranslator/DocumentTranslation/issues).
 
 ## Contributions
-Please contribute your bug fix, and functionality additions. Submit a pull request. We will review and integrate
+Please contribute your bug fix or functionality addition. Submit a pull request. We will review and integrate
 quickly - or reject with comments.
 
 ## Credits
