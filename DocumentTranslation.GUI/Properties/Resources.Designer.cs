@@ -529,6 +529,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open in browser.
+        /// </summary>
+        public static string text_OpenInBrowser {
+            get {
+                return ResourceManager.GetString("text_OpenInBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization&apos;s Azure administrator..
         /// </summary>
         public static string text_SettingsInstructions {

@@ -425,5 +425,15 @@ namespace DocumentTranslation.GUI
         {
 
         }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        }
+
+        private void TabHelp_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

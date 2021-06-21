@@ -135,7 +135,7 @@
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Vertical">
                                     <TextBlock TextWrapping="Wrap">
                                         <Run Text="{x:Static resx:Resources.text_SettingsInstructions}" />
-                                        <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/#how-to-obtain-the-service-credentials">
+                                        <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/#how-to-obtain-the-service-credentials" RequestNavigate="Hyperlink_RequestNavigate">
                                             <Run Text="{x:Static resx:Resources.text_HowToObtainTheServiceCredentials}"/>
                                         </Hyperlink>
                                     </TextBlock>
@@ -178,6 +178,18 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="?" x:Name="tabHelp" Width="50" Loaded="TabHelp_Loaded">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="22"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" HorizontalAlignment="Right">
+                    <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static resx:Resources.text_OpenInBrowser}"/></Hyperlink>
+                    </TextBlock>
+                    <WebBrowser Grid.Row="1" Source="https://microsofttranslator.github.io/DocumentTranslation/" />
                 </Grid>
             </TabItem>
         </TabControl>

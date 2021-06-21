@@ -307,4 +307,7 @@
   <data name="text_HowToObtainTheServiceCredentials" xml:space="preserve">
     <value>How to obtain the service credentials.</value>
   </data>
+  <data name="text_OpenInBrowser" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
 </root>
