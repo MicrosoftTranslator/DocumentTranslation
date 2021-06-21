@@ -184,12 +184,17 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="22"/>
+                        <RowDefinition Height="22"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" HorizontalAlignment="Right">
-                    <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static resx:Resources.text_OpenInBrowser}"/></Hyperlink>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{x:Static resx:Resources.text_BuildDate}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{x:Static resx:Resources.BuildDate}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" HorizontalAlignment="Right" Margin="10,0,0,0">
+                            <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static resx:Resources.text_OpenInBrowser}"/></Hyperlink>
                     </TextBlock>
-                    <WebBrowser Grid.Row="1" Source="https://microsofttranslator.github.io/DocumentTranslation/" />
+                    <WebBrowser Grid.Row="2" Source="https://microsofttranslator.github.io/DocumentTranslation/" />
                 </Grid>
             </TabItem>
         </TabControl>
