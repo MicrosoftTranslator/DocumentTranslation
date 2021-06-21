@@ -61,6 +61,16 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sun 06/20/2021 17:29:04.14 
+        ///.
+        /// </summary>
+        public static string BuildDate {
+            get {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string button_Add {
@@ -507,6 +517,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tabTitle_TranslateText {
             get {
                 return ResourceManager.GetString("tabTitle_TranslateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Build date:.
+        /// </summary>
+        public static string text_BuildDate {
+            get {
+                return ResourceManager.GetString("text_BuildDate", resourceCulture);
             }
         }
         

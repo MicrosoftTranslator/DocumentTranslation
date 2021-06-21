@@ -430,10 +430,5 @@ namespace DocumentTranslation.GUI
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         }
-
-        private void TabHelp_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
