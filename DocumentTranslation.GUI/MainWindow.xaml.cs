@@ -277,7 +277,11 @@ namespace DocumentTranslation.GUI
         {
             string langCode = toLanguageBoxDocuments.SelectedValue as string;
             if (ViewModel.UISettings.PerLanguageFolders is not null && langCode is not null) ViewModel.UISettings.PerLanguageFolders.TryGetValue(langCode, out perLanguageData);
-            if ((perLanguageData is not null) && (perLanguageData.lastGlossary is not null)) ViewModel.GlossariesToUse.Add(perLanguageData.lastGlossary);
+            if (perLanguageData is not null)
+            {
+                if (perLanguageData.lastGlossary is not null) GlossariesListBox.Items.Add(perLanguageData.lastGlossary);
+                if (perLanguageData.lastTargetFolder is not null) TargetListBox.Items.Add(perLanguageData.lastTargetFolder);
+            }
         }
 
         private async void EnableTabs()
