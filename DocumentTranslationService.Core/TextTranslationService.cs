@@ -92,7 +92,7 @@ namespace DocumentTranslationService.Core
         private void SetHeaders(HttpRequestMessage request)
         {
             request.Headers.Add("Ocp-Apim-Subscription-Key", documentTranslationService.SubscriptionKey);
-            if (!(AzureRegion.ToUpperInvariant() == "GLOBAL")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
+            if (!(AzureRegion?.ToLowerInvariant() == "global")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
         }
 
 
