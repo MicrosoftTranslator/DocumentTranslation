@@ -317,4 +317,7 @@
   <data name="text_BuildDate" xml:space="preserve">
     <value>Build date:</value>
   </data>
+  <data name="Label_Testing" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
 </root>

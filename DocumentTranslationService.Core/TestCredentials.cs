@@ -9,6 +9,7 @@ namespace DocumentTranslationService.Core
 {
     partial class DocumentTranslationService
     {
+        
         /// <summary>
         /// Validate the credentials supplied as properties, and throw a CredentialsExceptions for the failing ones. 
         /// This is meant to be lightweight, but it is not free in terms of time and resources: The method makes
@@ -23,7 +24,7 @@ namespace DocumentTranslationService.Core
         {
             List<Task> credTestTasks = new();
             //Test the subscription key
-            credTestTasks.Add(TryCredentialsKey());
+            credTestTasks.Add(TryCredentialsKey(SubscriptionKey, AzureRegion));
             //Test the name of the resource
             credTestTasks.Add(TryCredentialsName());
             //Test the storage account
@@ -65,10 +66,11 @@ namespace DocumentTranslationService.Core
             }
         }
 
-        private async Task TryCredentialsKey()
+        private static async Task TryCredentialsKey(string subscriptionKey, string azureRegion = "global")
         {
             HttpRequestMessage request = new() { Method = HttpMethod.Post, RequestUri = new Uri("https://api.cognitive.microsofttranslator.com/detect?api-version=3.0") };
-            request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+            request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
+            if (azureRegion?.ToLowerInvariant() != "global") request.Headers.Add("Ocp-Apim-Subscription-Region", azureRegion);
             request.Content = new StringContent("[{ \"Text\": \"English\" }]", Encoding.UTF8, "application/json");
             HttpClient client = new();
             HttpResponseMessage response = await client.SendAsync(request);

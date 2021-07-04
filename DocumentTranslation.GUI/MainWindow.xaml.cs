@@ -88,7 +88,7 @@ namespace DocumentTranslation.GUI
             await ViewModel.GetAzureRegions();
             subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
             region.ItemsSource = ViewModel.AzureRegions;
-            region.SelectedValue = ViewModel.Settings.AzureRegion;
+            region.SelectedIndex =  ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
             storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
             resourceName.Text = ViewModel.Settings.AzureResourceName;
             experimentalCheckbox.IsChecked = ViewModel.Settings.ShowExperimental;
@@ -109,6 +109,15 @@ namespace DocumentTranslation.GUI
                 outputBox.Text = string.Empty;
                 StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_Error;
                 StatusBarTText2.Text = Properties.Resources.msg_TranslateButton_Click_InvalidCategory;
+                await Task.Delay(2000);
+                StatusBarTText1.Text = string.Empty;
+                StatusBarTText2.Text = string.Empty;
+            }
+            catch (AccessViolationException ex)
+            {
+                outputBox.Text = string.Empty;
+                StatusBarTText1.Text = Properties.Resources.msg_TranslateButton_Click_Error;
+                StatusBarTText2.Text = ex.Message;
                 await Task.Delay(2000);
                 StatusBarTText1.Text = string.Empty;
                 StatusBarTText2.Text = string.Empty;
@@ -289,6 +298,8 @@ namespace DocumentTranslation.GUI
 
         private void Region_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ViewModel.Settings.AzureRegion = (string)region.SelectedValue;
+            ViewModel.documentTranslationService.AzureRegion = (string)region.SelectedValue;
         }
 
         private void ResourceName_TextChanged(object sender, TextChangedEventArgs e)
@@ -377,6 +388,7 @@ namespace DocumentTranslation.GUI
 
         private async void TestSettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            TestSettingsText.Text = Properties.Resources.Label_Testing;
             TestSettingsText.Visibility = Visibility.Visible;
             try
             {
@@ -387,7 +399,7 @@ namespace DocumentTranslation.GUI
             {
                 TestSettingsText.Text = Properties.Resources.msg_TestFailed + ex.Message;
             }
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             TestSettingsText.Visibility = Visibility.Hidden;
         }
 

@@ -82,17 +82,8 @@ namespace DocumentTranslation.GUI
         {
             if (fromLanguageCode == "auto") fromLanguageCode = null;
             textTranslationService.AzureRegion = Settings.AzureRegion;
-            string result;
-            try
-            {
-                result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
-                Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
-            }
-            catch (AccessViolationException ex)
-            {
-                result = ex.Message;
-            }
-
+            string result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
+            Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
             return result;
         }
 
@@ -125,6 +116,16 @@ namespace DocumentTranslation.GUI
             return filterBuilder.ToString();
         }
 
+        internal static int GetIndex(BindingList<AzureRegion> azureRegions, string azureRegion)
+        {
+            for (int i = 0; i < azureRegions.Count; i++)
+            {
+                AzureRegion item = azureRegions[i];
+                if (item.ID == azureRegion) return i;
+            }
+            return -1;
+        }
+
         internal string GetGlossaryExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
@@ -143,10 +144,12 @@ namespace DocumentTranslation.GUI
         #region Credentials
         public async Task GetAzureRegions()
         {
+            if (AzureRegions.Count > 5) return;
             List<AzureRegion> azureRegions = await AzureRegionsList.ReadAzureRegionsAsync();
             AzureRegions.Clear();
             foreach (var region in azureRegions)
                 AzureRegions.Add(region);
+            return;
         }
         #endregion
         #region Settings.Categories

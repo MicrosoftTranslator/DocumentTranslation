@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sun 06/20/2021 17:29:04.14 
+        ///   Looks up a localized string similar to Fri 07/02/2021 11:45:51.81 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -274,6 +274,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_TargetFolder {
             get {
                 return ResourceManager.GetString("label_TargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing....
+        /// </summary>
+        public static string Label_Testing {
+            get {
+                return ResourceManager.GetString("Label_Testing", resourceCulture);
             }
         }
         
