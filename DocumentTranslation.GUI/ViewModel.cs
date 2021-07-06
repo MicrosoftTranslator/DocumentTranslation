@@ -170,6 +170,7 @@ namespace DocumentTranslation.GUI
         {
             await categories.WriteAsync();
         }
+
         #endregion
     }
 }

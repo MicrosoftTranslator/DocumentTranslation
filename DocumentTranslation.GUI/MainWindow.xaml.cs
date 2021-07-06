@@ -135,7 +135,11 @@ namespace DocumentTranslation.GUI
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
             FilesListBox.ItemsSource = ViewModel.FilesToTranslate;
-            if ((ViewModel.FilesToTranslate.Count > 0) && (TargetListBox.Items.Count > 0)) translateDocumentsButton.IsEnabled = true;
+            if (ViewModel.FilesToTranslate.Count > 0)
+            {
+                if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + "." + toLanguageBoxDocuments.SelectedValue as string;
+            }
+            if (!string.IsNullOrEmpty(TargetTextBox.Text)) translateDocumentsButton.IsEnabled = true;
             return;
         }
 
@@ -172,14 +176,11 @@ namespace DocumentTranslation.GUI
         private void TargetBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
-            List<string> items = new();
             FolderBrowserDialog folderBrowserDialog = new();
             if ((perLanguageData is not null) && (perLanguageData.lastTargetFolder is not null)) folderBrowserDialog.SelectedPath = perLanguageData.lastTargetFolder;
             folderBrowserDialog.ShowDialog();
-            ViewModel.TargetFolder = folderBrowserDialog.SelectedPath;
-            items.Add(ViewModel.TargetFolder);
-            TargetListBox.ItemsSource = items;
-            if ((ViewModel.FilesToTranslate.Count > 0) && (TargetListBox.Items.Count > 0)) translateDocumentsButton.IsEnabled = true;
+            TargetTextBox.Text = folderBrowserDialog.SelectedPath;
+            if ((ViewModel.FilesToTranslate.Count > 0) && (!string.IsNullOrEmpty(TargetTextBox.Text))) translateDocumentsButton.IsEnabled = true;
         }
 
         private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
@@ -187,6 +188,7 @@ namespace DocumentTranslation.GUI
             ResetUI();
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
+            ViewModel.TargetFolder = TargetTextBox.Text;
             ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
             PerLanguageData perLanguageData = new();
             if ((ViewModel.GlossariesToUse.Count > 0) && (ViewModel.GlossariesToUse[0] is not null))
@@ -277,7 +279,17 @@ namespace DocumentTranslation.GUI
         {
             string langCode = toLanguageBoxDocuments.SelectedValue as string;
             if (ViewModel.UISettings.PerLanguageFolders is not null && langCode is not null) ViewModel.UISettings.PerLanguageFolders.TryGetValue(langCode, out perLanguageData);
-            if ((perLanguageData is not null) && (perLanguageData.lastGlossary is not null)) ViewModel.GlossariesToUse.Add(perLanguageData.lastGlossary);
+            if (perLanguageData is not null)
+            {
+                if (perLanguageData.lastTargetFolder is not null) TargetTextBox.Text = perLanguageData.lastTargetFolder;
+                if (perLanguageData.lastGlossary is not null) GlossariesListBox.Items.Add(perLanguageData.lastGlossary);
+            }
+            else
+            {
+                foreach (Language lang in ViewModel.ToLanguageList)
+                    if (TargetTextBox.Text.ToLowerInvariant().EndsWith("."+lang.LangCode.ToLowerInvariant()))
+                        TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + langCode;
+            }
         }
 
         private async void EnableTabs()
