@@ -29,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30
 		docs\images\Running.png = docs\images\Running.png
 		docs\images\SettingsDialog.png = docs\images\SettingsDialog.png
 		docs\storageaccount1.png = docs\storageaccount1.png
+		docs\images\TextTranslate.png = docs\images\TextTranslate.png
 		docs\images\TranslateDocuments.png = docs\images\TranslateDocuments.png
 		docs\translatoraccount.png = docs\translatoraccount.png
 		docs\translatorkey.png = docs\translatorkey.png
