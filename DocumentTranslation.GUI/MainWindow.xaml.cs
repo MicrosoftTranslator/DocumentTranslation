@@ -188,6 +188,7 @@ namespace DocumentTranslation.GUI
             ResetUI();
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
+            ViewModel.TargetFolder = TargetTextBox.Text;
             ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
             PerLanguageData perLanguageData = new();
             if ((ViewModel.GlossariesToUse.Count > 0) && (ViewModel.GlossariesToUse[0] is not null))
