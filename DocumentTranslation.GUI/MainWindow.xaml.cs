@@ -68,6 +68,21 @@ namespace DocumentTranslation.GUI
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
             CategoryTextBox.SelectedValue = ViewModel.UISettings.lastCategoryText;
             ViewModel_OnLanguagesUpdate(this, EventArgs.Empty);
+            ViewModel.GlossariesToUse.ListChanged += GlossariesToUse_ListChanged;
+        }
+
+        private void GlossariesToUse_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+        {
+            if (GlossariesListBox.Items.Count > 0)
+            {
+                GlossariesClearButton.Visibility = Visibility.Visible;
+                GlossariesSelectButton.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                GlossariesClearButton.Visibility = Visibility.Hidden;
+                GlossariesSelectButton.Visibility = Visibility.Visible;
+            }
         }
 
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -157,14 +172,14 @@ namespace DocumentTranslation.GUI
         private void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
-            ViewModel.GlossariesToUse.Clear();
+            GlossariesListBox.Items.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             openFileDialog.Filter = ViewModel.GetGlossaryExtensionsFilter();
-            if (perLanguageData.lastGlossariesFolder is not null) openFileDialog.InitialDirectory = perLanguageData.lastGlossariesFolder;
+            if (perLanguageData?.lastGlossariesFolder is not null) openFileDialog.InitialDirectory = perLanguageData.lastGlossariesFolder;
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
-                ViewModel.GlossariesToUse.Add(filename);
-            GlossariesListBox.ItemsSource = ViewModel.GlossariesToUse;
+                GlossariesListBox.Items.Add(filename);
+            GlossariesToUse_ListChanged(this, null);
             return;
         }
 
@@ -190,6 +205,8 @@ namespace DocumentTranslation.GUI
             ProgressBar.IsIndeterminate = true;
             ViewModel.TargetFolder = TargetTextBox.Text;
             ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
+            ViewModel.GlossariesToUse.Clear();
+            foreach (var item in GlossariesListBox.Items) ViewModel.GlossariesToUse.Add(item as string);
             PerLanguageData perLanguageData = new();
             if ((ViewModel.GlossariesToUse.Count > 0) && (ViewModel.GlossariesToUse[0] is not null))
             {
@@ -283,13 +300,16 @@ namespace DocumentTranslation.GUI
             {
                 if (perLanguageData.lastTargetFolder is not null) TargetTextBox.Text = perLanguageData.lastTargetFolder;
                 if (perLanguageData.lastGlossary is not null) GlossariesListBox.Items.Add(perLanguageData.lastGlossary);
+                else GlossariesListBox.Items.Clear();
             }
             else
             {
+                GlossariesListBox.Items.Clear();
                 foreach (Language lang in ViewModel.ToLanguageList)
                     if (TargetTextBox.Text.ToLowerInvariant().EndsWith("."+lang.LangCode.ToLowerInvariant()))
                         TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + langCode;
             }
+            GlossariesToUse_ListChanged(this, null);
         }
 
         private async void EnableTabs()
@@ -453,6 +473,13 @@ namespace DocumentTranslation.GUI
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        }
+
+        private void GlossariesClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            GlossariesListBox.Items.Clear();
+            GlossariesClearButton.Visibility = Visibility.Hidden;
+            GlossariesSelectButton.Visibility = Visibility.Visible;
         }
     }
 }

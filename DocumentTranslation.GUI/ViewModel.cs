@@ -22,7 +22,7 @@ namespace DocumentTranslation.GUI
         public Language ToLanguage { get; init; }
         public BindingList<string> FilesToTranslate { get; private set; } = new();
         public string TargetFolder { get; set; }
-        public BindingList<string> GlossariesToUse { get; private set; } = new();
+        public BindingList<string> GlossariesToUse { get; set; } = new();
         public event EventHandler OnLanguagesUpdate;
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
