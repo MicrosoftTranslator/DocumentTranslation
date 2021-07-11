@@ -41,9 +41,9 @@ namespace DocumentTranslationService.Core
                 await testContainer.CreateAsync();
                 await testContainer.DeleteIfExistsAsync();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new CredentialsException("storage");
+                throw new CredentialsException("storage\n" + ex.Message);
             }
         }
 
@@ -66,7 +66,7 @@ namespace DocumentTranslationService.Core
             }
         }
 
-        private static async Task TryCredentialsKey(string subscriptionKey, string azureRegion = "global")
+        private static async Task TryCredentialsKey(string subscriptionKey, string azureRegion)
         {
             HttpRequestMessage request = new() { Method = HttpMethod.Post, RequestUri = new Uri("https://api.cognitive.microsofttranslator.com/detect?api-version=3.0") };
             request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);

@@ -359,7 +359,7 @@ namespace DocumentTranslation.GUI
             _ = ViewModel.SaveAsync();
             EnableTabs();
             _ = ViewModel.Initialize();
-            await Task.Delay(500);
+            await Task.Delay(1000);
             SavedSettingsText.Visibility = Visibility.Hidden;
         }
 
@@ -432,6 +432,8 @@ namespace DocumentTranslation.GUI
         {
             TestSettingsText.Text = Properties.Resources.Label_Testing;
             TestSettingsText.Visibility = Visibility.Visible;
+            await ViewModel.SaveAsync();
+            await ViewModel.Initialize();
             try
             {
                 await ViewModel.documentTranslationService.TryCredentials();
@@ -439,9 +441,9 @@ namespace DocumentTranslation.GUI
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
             {
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ex.Message;
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
             }
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             TestSettingsText.Visibility = Visibility.Hidden;
         }
 

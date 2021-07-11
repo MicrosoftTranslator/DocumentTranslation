@@ -299,7 +299,7 @@
     <value>Copy the "Key 1" or "Key 2" of the Translator resource in your Azure subscription.</value>
   </data>
   <data name="tooltip_TestSettings" xml:space="preserve">
-    <value>Invoke a test of teh above settings. Will show a pass or fail result. </value>
+    <value>Invoke a test of the above settings. Will show a pass or fail result. </value>
   </data>
   <data name="msg_TranslateButton_Click_CharactersTranslated" xml:space="preserve">
     <value>characters translated</value>

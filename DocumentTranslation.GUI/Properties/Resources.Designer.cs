@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sat 07/10/2021 22:19:57.39 
+        ///   Looks up a localized string similar to Sun 07/11/2021  9:44:23.20 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -665,7 +665,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoke a test of teh above settings. Will show a pass or fail result. .
+        ///   Looks up a localized string similar to Invoke a test of the above settings. Will show a pass or fail result. .
         /// </summary>
         public static string tooltip_TestSettings {
             get {
