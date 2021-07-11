@@ -3,10 +3,7 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -51,6 +48,7 @@ namespace DocumentTranslationService.Core
                 throw;
             }
             DocTransAppSettings result =  JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            if (result.AzureRegion is null) result.AzureRegion = "global";
             SettingsReadComplete?.Invoke(null, EventArgs.Empty);
             return result;
         }

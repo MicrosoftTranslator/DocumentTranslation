@@ -225,6 +225,12 @@
   <data name="msg_InProgress" xml:space="preserve">
     <value>In progress: </value>
   </data>
+  <data name="msg_InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials</value>
+  </data>
+  <data name="msg_InvalidCredentialsTip" xml:space="preserve">
+    <value>Please obtain valid credentials and enter in Settings</value>
+  </data>
   <data name="msg_SettingsSaved" xml:space="preserve">
     <value>Settings saved</value>
   </data>
@@ -233,6 +239,12 @@
   </data>
   <data name="msg_TestPassed" xml:space="preserve">
     <value>Test passed</value>
+  </data>
+  <data name="msg_TranslateButton_Click_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="msg_TranslateButton_Click_InvalidCategory" xml:space="preserve">
+    <value>Invalid Category</value>
   </data>
   <data name="msg_Waiting" xml:space="preserve">
     <value>Waiting: </value>
@@ -287,6 +299,28 @@
     <value>Copy the "Key 1" or "Key 2" of the Translator resource in your Azure subscription.</value>
   </data>
   <data name="tooltip_TestSettings" xml:space="preserve">
-    <value>Invoke a test of teh above settings. Will show a pass or fail result. </value>
+    <value>Invoke a test of the above settings. Will show a pass or fail result. </value>
+  </data>
+  <data name="msg_TranslateButton_Click_CharactersTranslated" xml:space="preserve">
+    <value>characters translated</value>
+  </data>
+  <data name="text_HowToObtainTheServiceCredentials" xml:space="preserve">
+    <value>How to obtain the service credentials.</value>
+  </data>
+  <data name="text_OpenInBrowser" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="text_BuildDate" xml:space="preserve">
+    <value>Build date:</value>
+  </data>
+  <data name="Label_Testing" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
+  <data name="msg_StorageContainerError" xml:space="preserve">
+    <value>Storage container error</value>
   </data>
 </root>

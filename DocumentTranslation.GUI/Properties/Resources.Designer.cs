@@ -61,6 +61,16 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sun 07/11/2021  9:44:23.20 
+        ///.
+        /// </summary>
+        public static string BuildDate {
+            get {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string button_Add {
@@ -268,6 +278,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Testing....
+        /// </summary>
+        public static string Label_Testing {
+            get {
+                return ResourceManager.GetString("Label_Testing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To:.
         /// </summary>
         public static string label_To {
@@ -385,11 +404,38 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid credentials.
+        /// </summary>
+        public static string msg_InvalidCredentials {
+            get {
+                return ResourceManager.GetString("msg_InvalidCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please obtain valid credentials and enter in Settings.
+        /// </summary>
+        public static string msg_InvalidCredentialsTip {
+            get {
+                return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings saved.
         /// </summary>
         public static string msg_SettingsSaved {
             get {
                 return ResourceManager.GetString("msg_SettingsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage container error.
+        /// </summary>
+        public static string msg_StorageContainerError {
+            get {
+                return ResourceManager.GetString("msg_StorageContainerError", resourceCulture);
             }
         }
         
@@ -408,6 +454,33 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_TestPassed {
             get {
                 return ResourceManager.GetString("msg_TestPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to characters translated.
+        /// </summary>
+        public static string msg_TranslateButton_Click_CharactersTranslated {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_CharactersTranslated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string msg_TranslateButton_Click_Error {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Category.
+        /// </summary>
+        public static string msg_TranslateButton_Click_InvalidCategory {
+            get {
+                return ResourceManager.GetString("msg_TranslateButton_Click_InvalidCategory", resourceCulture);
             }
         }
         
@@ -466,11 +539,38 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Build date:.
+        /// </summary>
+        public static string text_BuildDate {
+            get {
+                return ResourceManager.GetString("text_BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This list of category names provides easy access to a friendly name for custom translation systems you have built with Custom Translator. More information at http://customtranslator.ai. No need to use this unless you have built a custom translation system. .
         /// </summary>
         public static string text_Categories {
             get {
                 return ResourceManager.GetString("text_Categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to obtain the service credentials..
+        /// </summary>
+        public static string text_HowToObtainTheServiceCredentials {
+            get {
+                return ResourceManager.GetString("text_HowToObtainTheServiceCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in browser.
+        /// </summary>
+        public static string text_OpenInBrowser {
+            get {
+                return ResourceManager.GetString("text_OpenInBrowser", resourceCulture);
             }
         }
         
@@ -565,7 +665,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoke a test of teh above settings. Will show a pass or fail result. .
+        ///   Looks up a localized string similar to Invoke a test of the above settings. Will show a pass or fail result. .
         /// </summary>
         public static string tooltip_TestSettings {
             get {

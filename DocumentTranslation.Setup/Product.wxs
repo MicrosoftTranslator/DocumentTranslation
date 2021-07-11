@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define doctr_TargetDir=$(var.doctr.TargetDir)?>
+  <?define DocumentTranslationService_TargetDir=$(var.DocumentTranslationService.TargetDir)?>
+  <?define DocumentTranslation.GUI_TargetDir=$(var.DocumentTranslation.GUI.TargetDir)?>
+  <Product Id="*" Name="Document Translation" Language="1033" Version="0.7.0.3" Manufacturer="Microsoft" UpgradeCode="cc63954a-c510-49da-af5f-dc82af6502e1">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Document Translation is already installed." />
+    <Media Id="1" Cabinet ="DocumentTranslation.cab" EmbedCab="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+    <Feature Id="ProductFeatureGUI" Title="Windows" Level="1">
+      <ComponentGroupRef Id="ProductComponentsGUI" />
+      <ComponentGroupRef Id="ProductComponentsBase" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+    <Feature Id="ProductFeatureCLI" Title="Command Line" Level="1">
+      <ComponentGroupRef Id="ProductComponentsCLI" />
+      <ComponentGroupRef Id="ProductComponentsBase" />
+    </Feature>
+
+    <UI>
+      <UIRef Id="WixUI_FeatureTree" />
+      <Publish Dialog="ExitDialog"
+          Control="Finish"
+          Event="DoAction"
+          Value="LaunchApplication">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Run Document Translation" />
+    <Property Id="WixShellExecTarget" Value="[#DocumentTranslation.GUI.exe]" />
+    </UI>
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes"/>
+  </Product>
+
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Document Translation" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+      </Directory>
+    </Directory>
+  </Fragment>
+
+
+  <Fragment>
+    <Icon Id="DocumentIcon" SourceFile="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslatorIcon_100.ico" />
+
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="ApplicationShortcut" Guid="{3CBF3CA7-53A6-43E9-B60A-265A87749A7C}">
+        <Shortcut Id="ApplicationStartMenuShortcut" Icon="DocumentIcon"
+                  Name="Document Translation" Description="Document Translation with Microsoft Azure" Target="[INSTALLFOLDER]DocumentTranslation.GUI.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Translator\DocumentTranslation" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponentsGUI" Directory="INSTALLFOLDER">
+      <Component Id="DocumentTranslation.GUI.runtimeconfig.json" Guid="e01c88ed-791d-4b78-8249-eb9218b8e04f">
+        <File Id="DocumentTranslation.GUI.runtimeconfig.json" Name="DocumentTranslation.GUI.runtimeconfig.json" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.runtimeconfig.json" />
+      </Component>
+      <Component Id="DocumentTranslationService.dll" Guid="54e6bc61-8bb8-4d5e-89d4-a73128f9a3d1">
+        <File Id="DocumentTranslationService.dll" Name="DocumentTranslationService.dll" Source="$(var.DocumentTranslationService_TargetDir)DocumentTranslationService.dll" />
+      </Component>
+      <Component Id="DocumentTranslation.GUI.dll" Guid="c3d60c1e-3c17-4f28-9aa5-6d36d07659f6">
+        <File Id="DocumentTranslation.GUI.dll" Name="DocumentTranslation.GUI.dll" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.dll" />
+      </Component>
+      <Component Id="DocumentTranslation.GUI.exe">
+        <File Id="DocumentTranslation.GUI.exe" Name="DocumentTranslation.GUI.exe" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.exe" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ProductComponentsCLI" Directory="INSTALLFOLDER">
+      <Component Id="doctr.dll" Guid="8325feec-d2d2-4058-886e-46face493d14">
+        <File Id="doctr.dll" Name="doctr.dll" Source="$(var.doctr_TargetDir)doctr.dll" />
+      </Component>
+      <Component Id="doctr.exe" >
+        <File Id="doctr.exe" Name="doctr.exe" Source="$(var.doctr_TargetDir)doctr.exe" />
+      </Component>
+      <Component Id="McMaster.Extensions.CommandLineUtils.dll" Guid="198f2c2d-e585-4a08-af76-7eed9e77f922">
+        <File Id="McMaster.Extensions.CommandLineUtils.dll" Name="McMaster.Extensions.CommandLineUtils.dll" Source="$(var.doctr_TargetDir)McMaster.Extensions.CommandLineUtils.dll" />
+      </Component>
+      <Component Id="doctr.runtimeconfig.json" Guid="91a39466-ff7a-4101-8925-49ed9ec25551">
+        <File Id="doctr.runtimeconfig.json" Name="doctr.runtimeconfig.json" Source="$(var.doctr_TargetDir)doctr.runtimeconfig.json" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ProductComponentsBase" Directory="INSTALLFOLDER">
+      <Component Id="Azure.Storage.Blobs.dll" Guid="d5f64bf8-f3d8-4330-be41-0c0a79395db5">
+        <File Id="Azure.Storage.Blobs.dll" Name="Azure.Storage.Blobs.dll" Source="$(var.doctr_TargetDir)Azure.Storage.Blobs.dll" />
+      </Component>
+      <Component Id="Azure.Core.dll" Guid="9f025167-0577-4556-bc99-77d849c0e66b">
+        <File Id="Azure.Core.dll" Name="Azure.Core.dll" Source="$(var.doctr_TargetDir)Azure.Core.dll" />
+      </Component>
+      <Component Id="AzureRegionsList.tsv">
+        <File Id="AzureRegionsList.tsv" Name="AzureRegionsList.tsv" Source="$(var.doctr_TargetDir)AzureRegionsList.tsv" />
+      </Component>
+      <Component Id="System.Memory.Data.dll" Guid="fceb9dd2-b09c-4cea-ad40-453cadc258c0">
+        <File Id="System.Memory.Data.dll" Name="System.Memory.Data.dll" Source="$(var.doctr_TargetDir)System.Memory.Data.dll" />
+      </Component>
+      <Component Id="Azure.Storage.Common.dll" Guid="e724eb7f-a02e-48fd-9861-84cf0209a114">
+        <File Id="Azure.Storage.Common.dll" Name="Azure.Storage.Common.dll" Source="$(var.doctr_TargetDir)Azure.Storage.Common.dll" />
+      </Component>
+      <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="885b0635-4475-42e4-8e09-c77569cd8eb0">
+        <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.doctr_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

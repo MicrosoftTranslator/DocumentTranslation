@@ -9,38 +9,76 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doctr", "DocumentTranslatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9A35F10-42E5-4DA4-B4DF-AF2A0FF5652E}"
 	ProjectSection(SolutionItems) = preProject
-		Solution Items\connectionstring.png = Solution Items\connectionstring.png
+		LICENSE.md = LICENSE.md
 		README.md = README.md
-		Solution Items\storageaccount1.png = Solution Items\storageaccount1.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslation.GUI", "DocumentTranslation.GUI\DocumentTranslation.GUI.csproj", "{23830242-C648-49B3-97D4-233775C218C5}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DocumentTranslation.Setup", "DocumentTranslation.Setup\DocumentTranslation.Setup.vdproj", "{A984407B-6CB1-4C2B-A9AE-273E8049362B}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "DocumentTranslation.Setup", "DocumentTranslation.Setup\DocumentTranslation.Setup.wixproj", "{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{204E769F-E6F0-441E-B8BA-80BB5B575CD1}"
+	ProjectSection(SolutionItems) = preProject
+		docs\index.md = docs\index.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30FE-48F7-443E-AFC8-76EB24108B82}"
+	ProjectSection(SolutionItems) = preProject
+		docs\connectionstring.png = docs\connectionstring.png
+		docs\images\Glossary.png = docs\images\Glossary.png
+		docs\images\Running.png = docs\images\Running.png
+		docs\images\SettingsDialog.png = docs\images\SettingsDialog.png
+		docs\storageaccount1.png = docs\storageaccount1.png
+		docs\images\TextTranslate.png = docs\images\TextTranslate.png
+		docs\images\TranslateDocuments.png = docs\images\TranslateDocuments.png
+		docs\translatoraccount.png = docs\translatoraccount.png
+		docs\translatorkey.png = docs\translatorkey.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|x86.Build.0 = Debug|Any CPU
 		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|x86.ActiveCfg = Release|Any CPU
+		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|x86.Build.0 = Release|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|x86.Build.0 = Debug|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Release|x86.Build.0 = Release|Any CPU
 		{23830242-C648-49B3-97D4-233775C218C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23830242-C648-49B3-97D4-233775C218C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23830242-C648-49B3-97D4-233775C218C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{23830242-C648-49B3-97D4-233775C218C5}.Debug|x86.Build.0 = Debug|Any CPU
 		{23830242-C648-49B3-97D4-233775C218C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23830242-C648-49B3-97D4-233775C218C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A984407B-6CB1-4C2B-A9AE-273E8049362B}.Debug|Any CPU.ActiveCfg = Debug
-		{A984407B-6CB1-4C2B-A9AE-273E8049362B}.Release|Any CPU.ActiveCfg = Release
+		{23830242-C648-49B3-97D4-233775C218C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{23830242-C648-49B3-97D4-233775C218C5}.Release|x86.Build.0 = Release|Any CPU
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Debug|x86.ActiveCfg = Debug|x86
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Debug|x86.Build.0 = Debug|x86
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|Any CPU.ActiveCfg = Release|x86
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|x86.ActiveCfg = Release|x86
+		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0EB30FE-48F7-443E-AFC8-76EB24108B82} = {204E769F-E6F0-441E-B8BA-80BB5B575CD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27CBFB4A-74CF-4B6D-AFC3-A99B8989BE17}

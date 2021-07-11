@@ -29,6 +29,12 @@ namespace DocumentTranslationService.Core
         public string SubscriptionKey { get; } = string.Empty;
 
         /// <summary>
+        /// The region of your Translator subscription.
+        /// Needed only for text translation; can remain empty for document translation.
+        /// </summary>
+        public string AzureRegion { get; set; }
+
+        /// <summary>
         /// The name of the Azure Translator resource
         /// </summary>
         public string AzureResourceName { get; } = string.Empty;

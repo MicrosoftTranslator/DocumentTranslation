@@ -19,13 +19,12 @@ namespace DocumentTranslation.GUI
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
-        public Language ToLanguage { get; set; }
-        public List<string> FilesToTranslate { get => filesToTranslate; set => filesToTranslate = value; }
+        public Language ToLanguage { get; init; }
+        public BindingList<string> FilesToTranslate { get; private set; } = new();
         public string TargetFolder { get; set; }
-        public List<string> GlossariesToUse { get; private set; } = new();
+        public BindingList<string> GlossariesToUse { get; set; } = new();
         public event EventHandler OnLanguagesUpdate;
 
-        private List<string> filesToTranslate = new();
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
         public readonly Categories categories = new();
 
@@ -45,6 +44,7 @@ namespace DocumentTranslation.GUI
                 throw new ArgumentNullException(e.ParamName);
             }
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
+            documentTranslationService.AzureRegion = Settings.AzureRegion;
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             _ = documentTranslationService.GetLanguagesAsync(Settings.ShowExperimental);
@@ -83,24 +83,14 @@ namespace DocumentTranslation.GUI
         {
             if (fromLanguageCode == "auto") fromLanguageCode = null;
             textTranslationService.AzureRegion = Settings.AzureRegion;
-            string result;
-            try
-            {
-                result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
-                Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
-            }
-            catch (AccessViolationException ex)
-            {
-                result = ex.Message;
-            }
-
+            string result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
+            Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
             return result;
         }
 
         #region Generate Filters
-        internal async Task<string> GetDocumentExtensionsFilter()
+        internal string GetDocumentExtensionsFilter()
         {
-            await documentTranslationService.GetDocumentFormatsAsync();
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Document Translation|");
             foreach (var format in documentTranslationService.FileFormats.value)
@@ -127,9 +117,18 @@ namespace DocumentTranslation.GUI
             return filterBuilder.ToString();
         }
 
-        internal async Task<string> GetGlossaryExtensionsFilter()
+        internal static int GetIndex(BindingList<AzureRegion> azureRegions, string azureRegion)
         {
-            await documentTranslationService.GetGlossaryFormatsAsync();
+            for (int i = 0; i < azureRegions.Count; i++)
+            {
+                AzureRegion item = azureRegions[i];
+                if (item.ID == azureRegion) return i;
+            }
+            return -1;
+        }
+
+        internal string GetGlossaryExtensionsFilter()
+        {
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Glossaries|");
             foreach (var format in documentTranslationService.GlossaryFormats.value)
@@ -146,10 +145,12 @@ namespace DocumentTranslation.GUI
         #region Credentials
         public async Task GetAzureRegions()
         {
+            if (AzureRegions.Count > 5) return;
             List<AzureRegion> azureRegions = await AzureRegionsList.ReadAzureRegionsAsync();
             AzureRegions.Clear();
             foreach (var region in azureRegions)
                 AzureRegions.Add(region);
+            return;
         }
         #endregion
         #region Settings.Categories
@@ -170,6 +171,7 @@ namespace DocumentTranslation.GUI
         {
             await categories.WriteAsync();
         }
+
         #endregion
     }
 }

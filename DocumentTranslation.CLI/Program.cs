@@ -103,6 +103,7 @@ namespace DocumentTranslation.CLI
                     catch (System.ArgumentNullException e)
                     {
                         Console.WriteLine(e.Message);
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
                     catch (System.ArgumentException e)
@@ -281,6 +282,11 @@ namespace DocumentTranslation.CLI
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
+                    if (translationService.FileFormats is null || translationService.FileFormats.value is null || translationService.FileFormats.value.Length < 2)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        return;
+                    }
                     foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
                     {
                         Console.Write($"{format.format}");
@@ -315,6 +321,11 @@ namespace DocumentTranslation.CLI
                     catch (System.UriFormatException)
                     {
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
+                        return;
+                    }
+                    if (translationService.GlossaryFormats is null || translationService.GlossaryFormats.value is null || translationService.GlossaryFormats.value.Length < 2)
+                    {
+                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
                     foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))

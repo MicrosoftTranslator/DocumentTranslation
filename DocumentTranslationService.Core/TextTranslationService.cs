@@ -1,15 +1,6 @@
-﻿// // ----------------------------------------------------------------------
-// // <copyright file="TranslationServiceFacade.cs" company="Microsoft Corporation">
-// // Copyright (c) Microsoft Corporation.
-// // All rights reserved.
-// // THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-// // KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-// // IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-// // PARTICULAR PURPOSE.
-// // </copyright>
-// // ----------------------------------------------------------------------
-// // <summary>TranslationServiceFacade.cs</summary>
-// // ----------------------------------------------------------------------
+﻿/*
+ * Text Translation Service Facade
+ */
 
 #region Usings
 using System;
@@ -28,7 +19,7 @@ namespace DocumentTranslationService.Core
 
     public class TextTranslationService
     {
-        #region Fields
+        #region Properties and fields
 
         private const int MillisecondsTimeout = 100;
 
@@ -38,8 +29,10 @@ namespace DocumentTranslationService.Core
         private const int maxelements = 100;
         private readonly DocumentTranslationService documentTranslationService;
 
-        private string categoryID;
-
+        /// <summary>
+        /// The category ID to use
+        /// </summary>
+        public string CategoryID { get; set; }
         /// <summary>
         /// End point address for the Translator API
         /// </summary>
@@ -48,9 +41,6 @@ namespace DocumentTranslationService.Core
         public static int Maxelements { get => maxelements; }
         public string AzureRegion { get; set; } = null;
         public string AzureCloud { get; set; } = String.Empty;
-        /// <summary>
-        /// Indicates whether the translation service has been successfully initialized.
-        /// </summary>
 
         public enum ContentType { plain, HTML };
         #endregion
@@ -102,7 +92,7 @@ namespace DocumentTranslationService.Core
         private void SetHeaders(HttpRequestMessage request)
         {
             request.Headers.Add("Ocp-Apim-Subscription-Key", documentTranslationService.SubscriptionKey);
-            if (!(AzureRegion.ToUpperInvariant() == "GLOBAL")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
+            if (!(AzureRegion?.ToLowerInvariant() == "global")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
         }
 
 
@@ -143,9 +133,7 @@ namespace DocumentTranslationService.Core
                 {
                     string[] teststring = { "Test" };
                     string remembercategory = documentTranslationService.Category;
-                    categoryID = category;
-                    Task<string[]> translateTask = TranslateTextAsync(teststring, "en", "he");
-                    categoryID = remembercategory;
+                    Task<string[]> translateTask = TranslateTextAsyncInternal(teststring, "en", "he", category, ContentType.plain);
                     await translateTask.ConfigureAwait(false);
                     if (translateTask.Result == null) return false; else return true;
                 }
@@ -167,7 +155,7 @@ namespace DocumentTranslationService.Core
         public TextTranslationService(DocumentTranslationService documentTranslationService)
         {
             this.documentTranslationService = documentTranslationService;
-            this.categoryID = documentTranslationService.Category;
+            this.CategoryID = documentTranslationService.Category;
         }
 
 
@@ -371,7 +359,7 @@ namespace DocumentTranslationService.Core
                     {
                         string[] str = new string[1];
                         str[0] = innertext;
-                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, categoryID, contentType).ConfigureAwait(false);
+                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, CategoryID, contentType).ConfigureAwait(false);
                         linetranslation += innertranslation[0];
                     }
                     resultlist.Add(linetranslation);
@@ -380,7 +368,7 @@ namespace DocumentTranslationService.Core
             }
             else
             {
-                return await TranslateTextAsyncInternal(texts, from, to, categoryID, contentType).ConfigureAwait(false);
+                return await TranslateTextAsyncInternal(texts, from, to, CategoryID, contentType).ConfigureAwait(false);
             }
         }
 
@@ -457,10 +445,12 @@ namespace DocumentTranslationService.Core
                     continue;
                 }
                 int status = (int)response.StatusCode;
+                if (status != 200) Debug.WriteLine($"TranslateText error: {response.ReasonPhrase}");
                 switch (status)
                 {
                     case 200:
                         break;
+                    case 400: throw new InvalidCategoryException(category);
                     case 401: throw new AccessViolationException("Invalid credentials. Check for key/region mismatch.");
                     case 408:       //Custom system is being loaded
                         Debug.WriteLine("Retry #" + retrycount + " Response: " + (int)response.StatusCode);
