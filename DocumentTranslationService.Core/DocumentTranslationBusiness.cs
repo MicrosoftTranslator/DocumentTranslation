@@ -50,6 +50,8 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public event EventHandler<List<string>> OnFilesDiscarded;
 
+        public event EventHandler<string> OnContainerCreationFailure;
+
         private readonly Logger logger = new();
 
         #endregion Properties
@@ -116,8 +118,17 @@ namespace DocumentTranslationService.Core
             #region Create the containers
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - container creation.");
             string containerNameBase = "doctr" + Guid.NewGuid().ToString();
-
-            BlobContainerClient sourceContainer = new(TranslationService.StorageConnectionString, containerNameBase + "src");
+            BlobContainerClient sourceContainer;
+            try
+            {
+                sourceContainer = new(TranslationService.StorageConnectionString, containerNameBase + "src");
+            }
+            catch(System.FormatException ex)
+            {
+                logger.WriteLine(ex.Message + ex.InnerException?.Message);
+                OnContainerCreationFailure?.Invoke(this, ex.Message);
+                return;
+            }
             var sourceContainerTask = sourceContainer.CreateIfNotExistsAsync();
             TranslationService.ContainerClientSource = sourceContainer;
             BlobContainerClient targetContainer = new(TranslationService.StorageConnectionString, containerNameBase + "tgt");

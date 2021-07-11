@@ -320,4 +320,7 @@
   <data name="Label_Testing" xml:space="preserve">
     <value>Testing...</value>
   </data>
+  <data name="msg_StorageContainerError" xml:space="preserve">
+    <value>Storage container error</value>
+  </data>
 </root>

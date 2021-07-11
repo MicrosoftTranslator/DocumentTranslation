@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 07/02/2021 11:45:51.81 
+        ///   Looks up a localized string similar to Sat 07/10/2021 22:19:57.39 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -427,6 +427,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_SettingsSaved {
             get {
                 return ResourceManager.GetString("msg_SettingsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage container error.
+        /// </summary>
+        public static string msg_StorageContainerError {
+            get {
+                return ResourceManager.GetString("msg_StorageContainerError", resourceCulture);
             }
         }
         
