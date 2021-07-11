@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 07/02/2021 11:45:51.81 
+        ///   Looks up a localized string similar to Sun 07/11/2021  9:44:23.20 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -431,6 +431,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Storage container error.
+        /// </summary>
+        public static string msg_StorageContainerError {
+            get {
+                return ResourceManager.GetString("msg_StorageContainerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test failed.
         /// </summary>
         public static string msg_TestFailed {
@@ -656,7 +665,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoke a test of teh above settings. Will show a pass or fail result. .
+        ///   Looks up a localized string similar to Invoke a test of the above settings. Will show a pass or fail result. .
         /// </summary>
         public static string tooltip_TestSettings {
             get {

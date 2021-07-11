@@ -63,7 +63,7 @@ namespace DocumentTranslation.GUI
             {
                 SettingsTab.IsSelected = true;
                 TranslateDocumentsTab.IsEnabled = false;
-                if (ex.ParamName == "SubscriptionKey") TranslateTextTab.IsEnabled = false;
+                if (ex.ParamName == "SubscriptionKey" || ex.ParamName == null) TranslateTextTab.IsEnabled = false;
             }
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
             CategoryTextBox.SelectedValue = ViewModel.UISettings.lastCategoryText;
@@ -103,7 +103,7 @@ namespace DocumentTranslation.GUI
             await ViewModel.GetAzureRegions();
             subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
             region.ItemsSource = ViewModel.AzureRegions;
-            region.SelectedIndex =  ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
+            region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
             storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
             resourceName.Text = ViewModel.Settings.AzureResourceName;
             experimentalCheckbox.IsChecked = ViewModel.Settings.ShowExperimental;
@@ -226,13 +226,23 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
+            documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
             foreach (var glossary in ViewModel.GlossariesToUse) glossariestouse.Add(glossary);
+            documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
             ProgressBar.IsIndeterminate = false;
-            ProgressBar.Value = 1;
+            ProgressBar.Value = 3;
+        }
+
+        private void DocumentTranslationBusiness_OnContainerCreationFailure(object sender, string e)
+        {
+            ResetUI();
+            StatusBarText1.Text = Properties.Resources.msg_StorageContainerError;
+            StatusBarText2.Text = e;
+            ProgressBar.Value = 0;
         }
 
         private async void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -306,7 +316,7 @@ namespace DocumentTranslation.GUI
             {
                 GlossariesListBox.Items.Clear();
                 foreach (Language lang in ViewModel.ToLanguageList)
-                    if (TargetTextBox.Text.ToLowerInvariant().EndsWith("."+lang.LangCode.ToLowerInvariant()))
+                    if (TargetTextBox.Text.ToLowerInvariant().EndsWith("." + lang.LangCode.ToLowerInvariant()))
                         TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + langCode;
             }
             GlossariesToUse_ListChanged(this, null);
@@ -331,7 +341,7 @@ namespace DocumentTranslation.GUI
         private void Region_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ViewModel.Settings.AzureRegion = (string)region.SelectedValue;
-            ViewModel.documentTranslationService.AzureRegion = (string)region.SelectedValue;
+            if (ViewModel.documentTranslationService is not null) ViewModel.documentTranslationService.AzureRegion = (string)region.SelectedValue;
         }
 
         private void ResourceName_TextChanged(object sender, TextChangedEventArgs e)
@@ -349,7 +359,7 @@ namespace DocumentTranslation.GUI
             _ = ViewModel.SaveAsync();
             EnableTabs();
             _ = ViewModel.Initialize();
-            await Task.Delay(500);
+            await Task.Delay(1000);
             SavedSettingsText.Visibility = Visibility.Hidden;
         }
 
@@ -422,6 +432,8 @@ namespace DocumentTranslation.GUI
         {
             TestSettingsText.Text = Properties.Resources.Label_Testing;
             TestSettingsText.Visibility = Visibility.Visible;
+            await ViewModel.SaveAsync();
+            await ViewModel.Initialize();
             try
             {
                 await ViewModel.documentTranslationService.TryCredentials();
@@ -429,9 +441,9 @@ namespace DocumentTranslation.GUI
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
             {
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ex.Message;
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
             }
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             TestSettingsText.Visibility = Visibility.Hidden;
         }
 

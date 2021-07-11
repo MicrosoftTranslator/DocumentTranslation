@@ -44,6 +44,7 @@ namespace DocumentTranslation.GUI
                 throw new ArgumentNullException(e.ParamName);
             }
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
+            documentTranslationService.AzureRegion = Settings.AzureRegion;
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             _ = documentTranslationService.GetLanguagesAsync(Settings.ShowExperimental);
