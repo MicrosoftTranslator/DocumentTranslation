@@ -433,13 +433,17 @@ namespace DocumentTranslation.GUI
             TestSettingsText.Text = Properties.Resources.Label_Testing;
             TestSettingsText.Visibility = Visibility.Visible;
             await ViewModel.SaveAsync();
-            await ViewModel.Initialize();
             try
             {
+                await ViewModel.Initialize();
                 await ViewModel.documentTranslationService.TryCredentials();
                 TestSettingsText.Text = Properties.Resources.msg_TestPassed;
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
+            {
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
+            }
+            catch (ArgumentNullException ex)
             {
                 TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
             }
