@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Net.Http;
 using System.Text;
 using System.Linq;
+using Azure.AI.Translation.Document;
 
 namespace DocumentTranslationService.Core
 {
@@ -49,6 +50,8 @@ namespace DocumentTranslationService.Core
         internal BlobContainerClient ContainerClientSource { get; set; }
         internal BlobContainerClient ContainerClientTarget { get; set; }
 
+        private DocumentTranslationClient documentTranslationClient;
+
         #endregion Properties
         #region Constants
         /// <summary>
@@ -80,8 +83,10 @@ namespace DocumentTranslationService.Core
         /// <returns></returns>
         public async Task InitializeAsync()
         {
-            List<Task> tasks = new();
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
+            if (String.IsNullOrEmpty(SubscriptionKey)) throw new CredentialsException("key");
+            documentTranslationClient = new(new Uri(AzureResourceName + baseUriTemplate), new Azure.AzureKeyCredential(SubscriptionKey));
+            List<Task> tasks = new();
             tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
             tasks.Add(GetLanguagesAsync());
