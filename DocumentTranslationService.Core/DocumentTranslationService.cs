@@ -50,7 +50,7 @@ namespace DocumentTranslationService.Core
         internal BlobContainerClient ContainerClientSource { get; set; }
         internal BlobContainerClient ContainerClientTarget { get; set; }
 
-        private DocumentTranslationClient documentTranslationClient;
+        private readonly DocumentTranslationClient documentTranslationClient;
 
         #endregion Properties
         #region Constants
@@ -58,7 +58,8 @@ namespace DocumentTranslationService.Core
         /// The base URL template for making translation requests.
         /// {0} is the name of the Translator resource.
         /// </summary>
-        private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0";
+        //private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0";
+        private const string baseUriTemplate = ".cognitiveservices.azure.com/";
         #endregion Constants
         #region Methods
 
@@ -70,6 +71,7 @@ namespace DocumentTranslationService.Core
             this.SubscriptionKey = SubscriptionKey;
             this.AzureResourceName = AzureResourceName;
             this.StorageConnectionString = StorageConnectionString;
+            documentTranslationClient = new(new Uri("https://" + AzureResourceName + baseUriTemplate), new Azure.AzureKeyCredential(SubscriptionKey));
         }
 
         /// <summary>
@@ -85,7 +87,6 @@ namespace DocumentTranslationService.Core
         {
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             if (String.IsNullOrEmpty(SubscriptionKey)) throw new CredentialsException("key");
-            documentTranslationClient = new(new Uri(AzureResourceName + baseUriTemplate), new Azure.AzureKeyCredential(SubscriptionKey));
             List<Task> tasks = new();
             tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());

@@ -139,13 +139,13 @@ namespace DocumentTranslation.GUI
             }
         }
 
-        private void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
+        private async void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
             ViewModel.FilesToTranslate.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
-            openFileDialog.Filter = ViewModel.GetDocumentExtensionsFilter();
+            openFileDialog.Filter = await ViewModel.GetDocumentExtensionsFilter();
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);

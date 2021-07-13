@@ -282,15 +282,15 @@ namespace DocumentTranslation.CLI
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
-                    if (translationService.FileFormats is null || translationService.FileFormats.value is null || translationService.FileFormats.value.Length < 2)
+                    if (translationService.FileFormats is null || translationService.FileFormats is null || translationService.FileFormats.Count < 2)
                     {
                         Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
-                    foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
+                    foreach (var format in translationService.FileFormats.OrderBy(x => x.Format))
                     {
-                        Console.Write($"{format.format}");
-                        foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");
+                        Console.Write($"{format.Format}");
+                        foreach (string ext in format.FileExtensions) Console.Write($"\t{ext}");
                         Console.WriteLine();
                     }
                 });
@@ -323,15 +323,15 @@ namespace DocumentTranslation.CLI
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
-                    if (translationService.GlossaryFormats is null || translationService.GlossaryFormats.value is null || translationService.GlossaryFormats.value.Length < 2)
+                    if (translationService.GlossaryFormats is null || translationService.GlossaryFormats is null || translationService.GlossaryFormats.Count < 2)
                     {
                         Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
-                    foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))
+                    foreach (var format in translationService.GlossaryFormats.OrderBy(x => x.Format))
                     {
-                        Console.Write($"{format.format}");
-                        foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");
+                        Console.Write($"{format.Format}");
+                        foreach (string ext in format.FileExtensions) Console.Write($"\t{ext}");
                         Console.WriteLine();
                     }
                 });

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FileFormatList.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.AI.Translation.Document" Version="1.0.0-beta.3" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
   </ItemGroup>
