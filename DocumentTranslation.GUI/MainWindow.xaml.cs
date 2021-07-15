@@ -266,22 +266,23 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if ((e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
-                || (e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed))
-                {
-                    StatusBarText1.Text = e.Status.Status.ToString();
-                    StatusBarText2.Text = e.Status.Status.ToString();
-                    ProgressBar.Value = 0;
-                    ProgressBar.IsIndeterminate = false;
-                    CancelButton.IsEnabled = false;
-                    CancelButton.Visibility = Visibility.Hidden;
-                    return;
-                }
+            if ((e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
+                || (e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed)
+                || !string.IsNullOrEmpty(e.Message))
+            {
+                StatusBarText1.Text = e.Status?.Status.ToString();
+                StatusBarText2.Text = e.Message;
+                ProgressBar.Value = 0;
+                ProgressBar.IsIndeterminate = false;
+                CancelButton.IsEnabled = false;
+                CancelButton.Visibility = Visibility.Hidden;
+                return;
+            }
             CancelButton.Background = Brushes.LightGray;
             StatusBarText1.Text = e.Status.Status.ToString();
             StringBuilder statusText = new();
             if (e.Status.DocumentsInProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.Status.DocumentsInProgress + '\t');
-            if (e.Status.DocumentsNotStarted> 0) statusText.Append(Properties.Resources.msg_Waiting + e.Status.DocumentsNotStarted + '\t');
+            if (e.Status.DocumentsNotStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.Status.DocumentsNotStarted + '\t');
             if (e.Status.DocumentsSucceeded > 0) statusText.Append(Properties.Resources.msg_Completed + e.Status.DocumentsSucceeded + '\t');
             if (e.Status.DocumentsFailed > 0) statusText.Append(Properties.Resources.msg_Failed + e.Status.DocumentsFailed + '\t');
             //TODO: Need to get more details from the status here....

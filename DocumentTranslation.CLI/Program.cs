@@ -110,7 +110,7 @@ namespace DocumentTranslation.CLI
                     {
                         Console.WriteLine(e.Message);
                     }
-                    catch (ServiceErrorException e)
+                    catch (Azure.RequestFailedException e)
                     {
                         Console.WriteLine(e.Message);
                         return;
@@ -383,10 +383,12 @@ namespace DocumentTranslation.CLI
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if (e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed
-                || e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
+            if (e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed
+                || e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed
+                || !String.IsNullOrEmpty(e.Message))
             {
                 Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status.Status}");
+                Console.WriteLine(e.Message);
             }
             else
             {

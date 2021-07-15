@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Compile Remove="FileFormatList.cs" />
+    <Compile Remove="ServiceErrorException.cs" />
   </ItemGroup>
 
   <ItemGroup>

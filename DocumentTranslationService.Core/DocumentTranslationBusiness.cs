@@ -203,13 +203,9 @@ namespace DocumentTranslationService.Core
                 string statusID = await TranslationService.SubmitTranslationRequestAsync(input);
                 logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request. StatusID: {statusID}");
             }
-            catch (ServiceErrorException ex)
-            {
-                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.Message));
-            }
             catch (Azure.RequestFailedException ex)
             {
-                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.Message));
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.ErrorCode + ": " + ex.Message));
             }
             if (TranslationService.DocumentTranslationOperation is null)
             {
