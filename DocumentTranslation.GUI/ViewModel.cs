@@ -47,7 +47,7 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureRegion = Settings.AzureRegion;
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            _ = documentTranslationService.GetLanguagesAsync(Settings.ShowExperimental);
+            documentTranslationService.ShowExperimental = Settings.ShowExperimental;
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
