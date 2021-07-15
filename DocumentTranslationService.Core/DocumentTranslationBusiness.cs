@@ -30,6 +30,12 @@ namespace DocumentTranslationService.Core
         public bool Nodelete { get; set; } = false;
 
         /// <summary>
+        /// Fires when final results are available;
+        /// Returns the sum of characters translated.
+        /// </summary>
+        public event EventHandler<long> OnFinalResults;
+
+        /// <summary>
         /// Fires during a translation run when there is an updated status. Approximately once per second. 
         /// </summary>
         public event EventHandler<StatusResponse> OnStatusUpdate;
@@ -233,8 +239,9 @@ namespace DocumentTranslationService.Core
             while (
                   (status.DocumentsInProgress != 0)
                 ||(!status.HasCompleted));
-            if (OnStatusUpdate is not null) OnStatusUpdate(this, new StatusResponse(status));
+            OnStatusUpdate?.Invoke(this, new StatusResponse(status));
             if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
+            Task<List<DocumentStatus>> finalResultsTask = TranslationService.GetFinalResultsAsync();
             #endregion
 
             #region Download the translations
@@ -262,12 +269,25 @@ namespace DocumentTranslationService.Core
             #endregion
             this.TargetFolder = directoryName;
             #region final
-            if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
+            OnDownloadComplete?.Invoke(this, (count, sizeInBytes));
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Documents downloaded: {sizeInBytes} bytes in {count} files.");
             if (!Nodelete) await DeleteContainersAsync();
+            var finalResults = await finalResultsTask;
+            OnFinalResults?.Invoke(this, CharactersCharged(finalResults));
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Run: Exiting.");
             logger.Close();
             #endregion
+        }
+
+        private long CharactersCharged(List<DocumentStatus> finalResults)
+        {
+            long characterscharged = 0;
+            foreach (var result in finalResults)
+            {
+                characterscharged += result.CharactersCharged;
+                logger.WriteLine(result.ToString());
+            }
+            return characterscharged;
         }
 
         /// <summary>

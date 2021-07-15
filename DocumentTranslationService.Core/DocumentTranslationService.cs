@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System.Net.Http;
-using System.Text;
-using System.Linq;
 using Azure.AI.Translation.Document;
 using System.Threading;
 
@@ -144,6 +141,18 @@ namespace DocumentTranslationService.Core
             }
             Debug.WriteLine("Translation Request submitted. Status: " + documentTranslationOperation.Status);
             return documentTranslationOperation.Id;
+        }
+
+        public async Task<List<DocumentStatus>> GetFinalResultsAsync()
+        {
+            List<DocumentStatus> documentStatuses = new();
+            await foreach (var document in documentTranslationOperation.GetValuesAsync(cancellationToken))
+            {
+                documentStatuses.Add(document);
+            }
+            Debug.WriteLine("Final results:");
+            Debug.WriteLine(JsonSerializer.Serialize(documentStatuses, new JsonSerializerOptions() { IncludeFields = true, WriteIndented = true }));
+            return documentStatuses;
         }
 
         #endregion Methods

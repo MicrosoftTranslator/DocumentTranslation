@@ -19,7 +19,6 @@ namespace DocumentTranslation.GUI
     {
         private readonly ViewModel ViewModel;
         private PerLanguageData perLanguageData = new();
-        private int charactersCharged;
 
         public MainWindow()
         {
@@ -227,6 +226,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
+            documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
@@ -285,11 +285,8 @@ namespace DocumentTranslation.GUI
             if (e.Status.DocumentsNotStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.Status.DocumentsNotStarted + '\t');
             if (e.Status.DocumentsSucceeded > 0) statusText.Append(Properties.Resources.msg_Completed + e.Status.DocumentsSucceeded + '\t');
             if (e.Status.DocumentsFailed > 0) statusText.Append(Properties.Resources.msg_Failed + e.Status.DocumentsFailed + '\t');
-            //TODO: Need to get more details from the status here....
-            //if (e.Status. > 0) statusText.Append(Properties.Resources.msg_CharactersCharged + e.summary.totalCharacterCharged);
             ProgressBar.Value = 10 + (e.Status.DocumentsInProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.Status.DocumentsSucceeded + e.Status.DocumentsFailed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
-            //charactersCharged = e.summary.totalCharacterCharged;
         }
 
 
@@ -298,10 +295,14 @@ namespace DocumentTranslation.GUI
             ProgressBar.Value = 100;
             StatusBarText1.Text = Properties.Resources.msg_Done;
             StatusBarText2.Text = $"{e.Item2} {Properties.Resources.msg_Bytes} {e.Item1} {Properties.Resources.msg_DocumentsTranslated} \t";
-            if (charactersCharged > 0) StatusBarText2.Text += $" |\t{Properties.Resources.msg_CharactersCharged}{charactersCharged}";
             CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
             TargetOpenButton.Visibility = Visibility.Visible;
+        }
+
+        private void DocumentTranslationBusiness_OnFinalResults(object sender, long e)
+        {
+            StatusBarText2.Text += $" |\t{Properties.Resources.msg_CharactersCharged}{e}";
         }
 
         private void ToLanguageBoxDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
