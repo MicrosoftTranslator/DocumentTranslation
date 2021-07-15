@@ -285,8 +285,8 @@ namespace DocumentTranslationService.Core
             foreach (var result in finalResults)
             {
                 characterscharged += result.CharactersCharged;
-                logger.WriteLine(result.ToString());
             }
+            logger.WriteLine($"Total characters charged: {characterscharged}");
             return characterscharged;
         }
 

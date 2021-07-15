@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
@@ -37,7 +38,7 @@ namespace DocumentTranslationService.Core
                 Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedDocumentFormatsAsync();
                 if (result?.Value.Count > 0)
                 {
-                    Debug.WriteLine($"GetFormats: Response: {result.GetRawResponse()}");
+                    Debug.WriteLine($"GetFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
                     FileFormats = result.Value;
                     foreach (var item in result.Value)
                     {
@@ -71,7 +72,7 @@ namespace DocumentTranslationService.Core
                 Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedGlossaryFormatsAsync();
                 if (result.Value.Count > 0)
                 {
-                    Debug.WriteLine($"GetGlossaryFormats: Response: {result.GetRawResponse()}");
+                    Debug.WriteLine($"GetGlossaryFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
                     GlossaryFormats = result.Value;
                     foreach (var item in result.Value)
                     {
