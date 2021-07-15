@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Azure.AI.Translation.Document;
 
 namespace DocumentTranslationService.Core
 {
@@ -16,7 +17,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// Distionary of Glossary Filename and various glossary information
         /// </summary>
-        public Dictionary<string, ServiceGlossary> Glossaries { get; private set; } = new();
+        public Dictionary<string, TranslationGlossary> Glossaries { get; private set; } = new();
 
         public Uri ContainerClientSasUri { get => containerClientSasUri; }
 
@@ -52,7 +53,7 @@ namespace DocumentTranslationService.Core
             }
             foreach (string file in glossaryFiles)
             {
-                Glossaries.Add(file, null);
+                Glossaries.TryAdd(file, null);
             }
             this.translationService = translationService;
         }
@@ -103,12 +104,14 @@ namespace DocumentTranslationService.Core
             }
 
             //Create glossary container
+            Debug.WriteLine("START - glossary container creation.");
             BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
             await glossaryContainer.CreateIfNotExistsAsync();
             this.containerClient = glossaryContainer;
             this.containerClientSasUri = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
 
             //Do the upload
+            Debug.WriteLine("START - glossary upload.");
             System.Threading.SemaphoreSlim semaphore = new(10); //limit the number of concurrent uploads
             int fileCounter = 0;
             long uploadSize = 0;
@@ -120,8 +123,8 @@ namespace DocumentTranslationService.Core
                 BlobClient blobClient = new(translationService.StorageConnectionString, glossaryContainer.Name, DocumentTranslationBusiness.Normalize(glossary.Key));
                 uploads.Add(blobClient.UploadAsync(fileStream, true));
                 var sasUriGlossaryBlob = blobClient.GenerateSasUri(BlobSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
-                ServiceGlossary serviceGlossary = new(sasUriGlossaryBlob.AbsoluteUri, Path.GetExtension(glossary.Key)[1..].ToUpperInvariant());
-                Glossaries[glossary.Key] = serviceGlossary;
+                TranslationGlossary translationGlossary = new(sasUriGlossaryBlob, Path.GetExtension(glossary.Key)[1..].ToUpperInvariant());
+                Glossaries[glossary.Key] = translationGlossary;
                 fileCounter++;
                 uploadSize += new FileInfo(fileStream.Name).Length;
                 semaphore.Release();
@@ -142,7 +145,11 @@ namespace DocumentTranslationService.Core
                 {
                     response = await containerClient.DeleteAsync();
                 }
-                catch (Azure.RequestFailedException) { throw; }
+                catch (Azure.RequestFailedException)
+                {
+                    Debug.WriteLine("Glossary deletion failed.");
+                    throw;
+                }
                 return response;
             }
             return null;

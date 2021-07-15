@@ -1,5 +1,4 @@
 ﻿using Azure.AI.Translation.Document;
-using System.Collections.Generic;
 
 namespace DocumentTranslationService.Core
 {
@@ -7,26 +6,13 @@ namespace DocumentTranslationService.Core
 
     public class StatusResponse
     {
-        public Azure.AI.Translation.Document.DocumentTranslationOperation Status;
+        public DocumentTranslationOperation Status;
+        public string Message;
 
-        public StatusResponse(DocumentTranslationOperation documentTranslationOperation)
+        public StatusResponse(DocumentTranslationOperation documentTranslationOperation, string message = null)
         {
             Status = documentTranslationOperation;
-        }
-    }
-
-
-    public class ServiceGlossary
-    {
-        public string format;
-        public string glossaryUrl;
-        public string storageSource;
-
-        public ServiceGlossary(string glossaryUrl, string format)
-        {
-            this.format = format;
-            this.glossaryUrl = glossaryUrl;
-            this.storageSource = "AzureBlob";
+            Message = message;
         }
     }
     #endregion Helperclasses

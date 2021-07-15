@@ -185,39 +185,31 @@ namespace DocumentTranslationService.Core
                 if (fromlanguage.ToLowerInvariant() == "auto") fromlanguage = null;
                 else translationSource.LanguageCode = fromlanguage;
             }
-            TranslationTarget translationTarget;
+            TranslationTarget translationTarget = new(sasUriTarget, tolanguage);
             if (glossary.Glossaries is not null)
             {
-                TranslationGlossary translationGlossary = new(glossary.ContainerClientSasUri, ""); //format cannot be null
-                translationTarget = new(sasUriTarget, tolanguage) { Glossaries = { translationGlossary } };
+                foreach (var glos in glossary.Glossaries) translationTarget.Glossaries.Add(glos.Value);
             }
-            else
-            {
-                translationTarget = new(sasUriTarget, tolanguage);
-            }
-
             if (TranslationService.Category is not null)
             {
                 translationTarget.CategoryId = TranslationService.Category;
             }
-
-            DocumentTranslationInput input;
             List<TranslationTarget> translationTargets = new();
             translationTargets.Add(translationTarget);
-            input = new(translationSource, translationTargets);
+            DocumentTranslationInput input = new(translationSource, translationTargets);
 
             try
             {
                 string statusID = await TranslationService.SubmitTranslationRequestAsync(input);
                 logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request. StatusID: {statusID}");
             }
-            catch (ServiceErrorException)
+            catch (ServiceErrorException ex)
             {
-                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation));
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.Message));
             }
             catch (Azure.RequestFailedException ex)
             {
-                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation));
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.Message));
             }
             if (TranslationService.DocumentTranslationOperation is null)
             {
