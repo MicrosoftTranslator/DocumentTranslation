@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.AI.Translation.Document;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using System;
@@ -178,38 +179,47 @@ namespace DocumentTranslationService.Core
             Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             await targetContainerTask;
             Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
-            DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
+            TranslationSource translationSource = new(sasUriSource);
             if (!(string.IsNullOrEmpty(fromlanguage)))
             {
                 if (fromlanguage.ToLowerInvariant() == "auto") fromlanguage = null;
-                else documentTranslationSource.Language = fromlanguage;
+                else translationSource.LanguageCode = fromlanguage;
             }
-            DocumentTranslationTarget documentTranslationTarget = new(language: tolanguage, targetUrl: sasUriTarget.ToString());
-            List<ServiceGlossary> serviceGlossaries = new();
+            TranslationTarget translationTarget;
             if (glossary.Glossaries is not null)
-                foreach (var glos in glossary.Glossaries)
-                    serviceGlossaries.Add(glos.Value);
-            documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
+            {
+                TranslationGlossary translationGlossary = new(glossary.ContainerClientSasUri, ""); //format cannot be null
+                translationTarget = new(sasUriTarget, tolanguage) { Glossaries = { translationGlossary } };
+            }
+            else
+            {
+                translationTarget = new(sasUriTarget, tolanguage);
+            }
+
             if (TranslationService.Category is not null)
             {
-                documentTranslationTarget.category = TranslationService.Category;
+                translationTarget.CategoryId = TranslationService.Category;
             }
 
-            List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
+            DocumentTranslationInput input;
+            List<TranslationTarget> translationTargets = new();
+            translationTargets.Add(translationTarget);
+            input = new(translationSource, translationTargets);
 
-            DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
             try
             {
-                TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
-                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request.");
-                logger.WriteLine(System.Text.Json.JsonSerializer.Serialize<DocumentTranslationInput>(input, new System.Text.Json.JsonSerializerOptions() { WriteIndented = true, IncludeFields=true }));
+                string statusID = await TranslationService.SubmitTranslationRequestAsync(input);
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request. StatusID: {statusID}");
             }
             catch (ServiceErrorException)
             {
-                OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation));
             }
-            logger.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
-            if (string.IsNullOrEmpty(TranslationService.ProcessingLocation))
+            catch (Azure.RequestFailedException ex)
+            {
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation));
+            }
+            if (TranslationService.DocumentTranslationOperation is null)
             {
                 logger.WriteLine("ERROR: Start of translation job failed.");
                 if (!Nodelete) await DeleteContainersAsync();
@@ -217,27 +227,25 @@ namespace DocumentTranslationService.Core
             }
 
             //Check on status until status is in a final state
-            StatusResponse statusResult;
-            string lastActionTime = string.Empty;
+            DocumentTranslationOperation status;
+            DateTimeOffset lastActionTime = DateTimeOffset.MinValue;
             do
             {
                 await Task.Delay(1000);
-                statusResult = await TranslationService.CheckStatusAsync();
-                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Service status: {statusResult.createdDateTimeUtc} {statusResult.status}");
-                if (statusResult.lastActionDateTimeUtc != lastActionTime)
+                status = await TranslationService.CheckStatusAsync();
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Service status: {status.CreatedOn} {status.Status}");
+                if (status.LastModified != lastActionTime)
                 {
                     //Raise the update event
-                    if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
-                    lastActionTime = statusResult.lastActionDateTimeUtc;
+                    OnStatusUpdate?.Invoke(this, new StatusResponse(status));
+                    lastActionTime = status.LastModified;
                 }
             }
             while (
-                  (statusResult.summary.inProgress != 0)
-                || (statusResult.status == "NotStarted")
-                || (statusResult.summary.notYetStarted != 0)
-                || (statusResult.status == "Canceled"));
-            if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
-            if (statusResult.status.Contains("Failed.")) return;
+                  (status.DocumentsInProgress != 0)
+                ||(!status.HasCompleted));
+            if (OnStatusUpdate is not null) OnStatusUpdate(this, new StatusResponse(status));
+            if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
             #endregion
 
             #region Download the translations

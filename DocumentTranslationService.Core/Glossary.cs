@@ -18,11 +18,13 @@ namespace DocumentTranslationService.Core
         /// </summary>
         public Dictionary<string, ServiceGlossary> Glossaries { get; private set; } = new();
 
+        public Uri ContainerClientSasUri { get => containerClientSasUri; }
+
         /// <summary>
         /// Holds the Container for the glossary files
         /// </summary>
         private BlobContainerClient containerClient;
-
+        private Uri containerClientSasUri;
         private readonly DocumentTranslationService translationService;
 
         /// <summary>
@@ -104,6 +106,7 @@ namespace DocumentTranslationService.Core
             BlobContainerClient glossaryContainer = new(storageConnectionString, containerNameBase + "gls");
             await glossaryContainer.CreateIfNotExistsAsync();
             this.containerClient = glossaryContainer;
+            this.containerClientSasUri = containerClient.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
 
             //Do the upload
             System.Threading.SemaphoreSlim semaphore = new(10); //limit the number of concurrent uploads

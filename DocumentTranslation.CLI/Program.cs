@@ -383,14 +383,15 @@ namespace DocumentTranslation.CLI
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if (e.error is not null)
+            if (e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed
+                || e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
             {
-                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status.Status}");
             }
             else
             {
-                var time = DateTime.Parse(e.lastActionDateTimeUtc);
-                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
+                var time = e.Status.LastModified;           //lastActionDateTimeUtc);
+                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.Status}\tIn progress: {e.Status.DocumentsInProgress}\tSuccess: {e.Status.DocumentsSucceeded}\tFail: {e.Status.DocumentsFailed}\tCharged: {null} chars");
             }
         }
     }

@@ -266,11 +266,11 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if (e.error is not null)
-                if (!string.IsNullOrEmpty(e.error.code))
+            if ((e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
+                || (e.Status.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed))
                 {
-                    StatusBarText1.Text = e.error.code;
-                    StatusBarText2.Text = e.error.message;
+                    StatusBarText1.Text = e.Status.Status.ToString();
+                    StatusBarText2.Text = e.Status.Status.ToString();
                     ProgressBar.Value = 0;
                     ProgressBar.IsIndeterminate = false;
                     CancelButton.IsEnabled = false;
@@ -278,16 +278,17 @@ namespace DocumentTranslation.GUI
                     return;
                 }
             CancelButton.Background = Brushes.LightGray;
-            StatusBarText1.Text = e.status;
+            StatusBarText1.Text = e.Status.Status.ToString();
             StringBuilder statusText = new();
-            if (e.summary.inProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.summary.inProgress + '\t');
-            if (e.summary.notYetStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.summary.notYetStarted + '\t');
-            if (e.summary.success > 0) statusText.Append(Properties.Resources.msg_Completed + e.summary.success + '\t');
-            if (e.summary.failed > 0) statusText.Append(Properties.Resources.msg_Failed + e.summary.failed + '\t');
-            if (e.summary.totalCharacterCharged > 0) statusText.Append(Properties.Resources.msg_CharactersCharged + e.summary.totalCharacterCharged);
-            ProgressBar.Value = 10 + (e.summary.inProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
+            if (e.Status.DocumentsInProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.Status.DocumentsInProgress + '\t');
+            if (e.Status.DocumentsNotStarted> 0) statusText.Append(Properties.Resources.msg_Waiting + e.Status.DocumentsNotStarted + '\t');
+            if (e.Status.DocumentsSucceeded > 0) statusText.Append(Properties.Resources.msg_Completed + e.Status.DocumentsSucceeded + '\t');
+            if (e.Status.DocumentsFailed > 0) statusText.Append(Properties.Resources.msg_Failed + e.Status.DocumentsFailed + '\t');
+            //TODO: Need to get more details from the status here....
+            //if (e.Status. > 0) statusText.Append(Properties.Resources.msg_CharactersCharged + e.summary.totalCharacterCharged);
+            ProgressBar.Value = 10 + (e.Status.DocumentsInProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.Status.DocumentsSucceeded + e.Status.DocumentsFailed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
-            charactersCharged = e.summary.totalCharacterCharged;
+            //charactersCharged = e.summary.totalCharacterCharged;
         }
 
 
