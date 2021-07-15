@@ -173,12 +173,12 @@ namespace DocumentTranslationService.Core
                     logger.WriteLine($"File {filename} uploaded.");
                 }
             }
-            Debug.WriteLine("Awaiting upload task completion.");
+            Debug.WriteLine("Awaiting document upload task completion.");
             await Task.WhenAll(uploadTasks);
             //Upload Glossaries
             var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
             if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
-            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document and glossary upload: {sizeInBytes} bytes in {count} files.");
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document upload. {sizeInBytes} bytes in {count} documents.");
             #endregion
 
             #region Translate the container content
