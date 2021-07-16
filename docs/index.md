@@ -31,7 +31,7 @@ It will install the document translation tool on your Windows computer.
 
 ### Minimum requirements
 - An Azure subscription
-- A Translator resource in your Azure subscription
+- A Translator resource with a pricing tier of S1 or higher
 - A Blob storage resource in your Azure subscription
 - A Windows 10 or later operating system able to run .Net 5. If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/dotnet/5.0.
 
@@ -39,11 +39,12 @@ It will install the document translation tool on your Windows computer.
 
 ##### Translator resource key and name
 
-You can use an existing Azure Translator resource. 
+You can use an existing paid Azure Translator resource. Document translation will not work with the free subscription.
 If you don't have a Translator resource, create one:
 
 ------------------------------
 ![Translator Account](images/translatoraccount.png)
+Make sure you pick a pricing tier of S1 or higher. 
 
 ------------------------------
 Visit the properties of your Translator resource.
