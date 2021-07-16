@@ -107,6 +107,9 @@
       <Component Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="885b0635-4475-42e4-8e09-c77569cd8eb0">
         <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.doctr_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
       </Component>
+      <Component Id="Azure.AI.Translation.Document.dll" Guid="D872C38E-B4CD-40D9-8290-D7F28F5C5CF5">
+        <File Id="Azure.AI.Translation.Document.dll" Name="Azure.AI.Translation.Document.dll" Source="$(var.doctr_TargetDir)Azure.AI.Translation.Document.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>
