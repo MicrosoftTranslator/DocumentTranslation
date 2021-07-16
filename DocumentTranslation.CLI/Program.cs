@@ -91,6 +91,7 @@ namespace DocumentTranslation.CLI
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
                     translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
+                    translationBusiness.OnFinalResults += TranslationBusiness_OnFinalResults;
                     Timer timer = new(500) { AutoReset = true, Enabled = true };
                     timer.Elapsed += Timer_Elapsed;
                     Console.WriteLine($"Starting translation of {sourceFiles.Value} to {toLang.Value()}. Press Esc to cancel.");
@@ -351,6 +352,11 @@ namespace DocumentTranslation.CLI
             return result;
         }
 
+        private static void TranslationBusiness_OnFinalResults(object sender, long e)
+        {
+            Console.WriteLine($"Characters charged: {e}");
+        }
+
         private static void TranslationBusiness_OnUploadComplete(object sender, (int count, long sizeInBytes) e)
         {
             Console.WriteLine($"Submitted: {e.count} documents, {e.sizeInBytes} bytes.");
@@ -387,14 +393,15 @@ namespace DocumentTranslation.CLI
                 || e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed
                 || !String.IsNullOrEmpty(e.Message))
             {
-                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status.Status}");
+                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status?.Status}");
                 Console.WriteLine(e.Message);
             }
             else
             {
                 var time = e.Status.LastModified;           //lastActionDateTimeUtc);
-                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.Status}\tIn progress: {e.Status.DocumentsInProgress}\tSuccess: {e.Status.DocumentsSucceeded}\tFail: {e.Status.DocumentsFailed}\tCharged: {null} chars");
+                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.Status.Status}\tIn progress: {e.Status.DocumentsInProgress}\tSuccess: {e.Status.DocumentsSucceeded}\tFail: {e.Status.DocumentsFailed}");
             }
         }
+
     }
 }
