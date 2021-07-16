@@ -126,10 +126,11 @@ namespace DocumentTranslation.GUI
             return -1;
         }
 
-        internal string GetGlossaryExtensionsFilter()
+        internal async Task<string> GetGlossaryExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Glossaries|");
+            await documentTranslationService.GetGlossaryFormatsAsync();
             foreach (var format in documentTranslationService.GlossaryFormats)
             {
                 foreach (var ext in format.FileExtensions)

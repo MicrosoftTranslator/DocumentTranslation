@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sun 07/11/2021  9:44:23.20 
+        ///   Looks up a localized string similar to Fri 07/16/2021 12:40:56.87 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -386,6 +386,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string msg_Error {
+            get {
+                return ResourceManager.GetString("msg_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed: .
         /// </summary>
         public static string msg_Failed {
@@ -418,6 +427,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_InvalidCredentialsTip {
             get {
                 return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to S1 or higher tier subscription is required..
+        /// </summary>
+        public static string msg_S1OrHigherTierRequired {
+            get {
+                return ResourceManager.GetString("msg_S1OrHigherTierRequired", resourceCulture);
             }
         }
         

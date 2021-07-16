@@ -323,4 +323,10 @@
   <data name="msg_StorageContainerError" xml:space="preserve">
     <value>Storage container error</value>
   </data>
+  <data name="msg_S1OrHigherTierRequired" xml:space="preserve">
+    <value>S1 or higher tier subscription is required.</value>
+  </data>
+  <data name="msg_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

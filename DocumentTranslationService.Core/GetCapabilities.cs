@@ -35,7 +35,16 @@ namespace DocumentTranslationService.Core
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             for (int i = 0; i < 3; i++)
             {
-                Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedDocumentFormatsAsync();
+                Azure.Response<IReadOnlyList<FileFormat>> result = null;
+                try
+                {
+                    result = await documentTranslationClient.GetSupportedDocumentFormatsAsync();
+                }
+                catch (Azure.RequestFailedException ex)
+                {
+                    if (ex.Status == 401 || ex.Status == 403) throw;
+                }
+
                 if (result?.Value.Count > 0)
                 {
                     Debug.WriteLine($"GetFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
@@ -69,8 +78,17 @@ namespace DocumentTranslationService.Core
         {
             for (int i = 0; i < 3; i++)
             {
-                Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedGlossaryFormatsAsync();
-                if (result.Value.Count > 0)
+                Azure.Response<IReadOnlyList<FileFormat>> result = null;
+                try
+                {
+                    result = await documentTranslationClient.GetSupportedGlossaryFormatsAsync();
+                }
+                catch(Azure.RequestFailedException ex)
+                {
+                    if (ex.Status == 401 || ex.Status == 403) throw;
+                }
+
+                if (result?.Value.Count > 0)
                 {
                     Debug.WriteLine($"GetGlossaryFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
                     GlossaryFormats = result.Value;

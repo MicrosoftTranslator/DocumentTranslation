@@ -144,7 +144,20 @@ namespace DocumentTranslation.GUI
             ViewModel.FilesToTranslate.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
-            openFileDialog.Filter = await ViewModel.GetDocumentExtensionsFilter();
+            try
+            {
+                openFileDialog.Filter = await ViewModel.GetDocumentExtensionsFilter();
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                if (ex.Status == 401 || ex.Status == 403) StatusBarText2.Text = DocumentTranslation.GUI.Properties.Resources.msg_S1OrHigherTierRequired;
+                else StatusBarText2.Text = ex.Message;
+                await Task.Delay(2000);
+                StatusBarText1.Text = string.Empty;
+                StatusBarText2.Text = string.Empty;
+                return;
+            }
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
@@ -168,12 +181,25 @@ namespace DocumentTranslation.GUI
             TargetOpenButton.Visibility = Visibility.Hidden;
         }
 
-        private void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
+        private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
             GlossariesListBox.Items.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
-            openFileDialog.Filter = ViewModel.GetGlossaryExtensionsFilter();
+            try
+            {
+                openFileDialog.Filter = await ViewModel.GetGlossaryExtensionsFilter();
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                if (ex.Status == 401 || ex.Status == 403) StatusBarText2.Text = DocumentTranslation.GUI.Properties.Resources.msg_S1OrHigherTierRequired;
+                else StatusBarText2.Text = ex.Message;
+                await Task.Delay(2000);
+                StatusBarText1.Text = string.Empty;
+                StatusBarText2.Text = string.Empty;
+                return;
+            }
             if (perLanguageData?.lastGlossariesFolder is not null) openFileDialog.InitialDirectory = perLanguageData.lastGlossariesFolder;
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
