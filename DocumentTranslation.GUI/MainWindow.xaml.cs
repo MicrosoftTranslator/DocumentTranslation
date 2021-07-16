@@ -19,7 +19,6 @@ namespace DocumentTranslation.GUI
     {
         private readonly ViewModel ViewModel;
         private PerLanguageData perLanguageData = new();
-        private int charactersCharged;
 
         public MainWindow()
         {
@@ -139,13 +138,13 @@ namespace DocumentTranslation.GUI
             }
         }
 
-        private void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
+        private async void DocumentBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
             ViewModel.FilesToTranslate.Clear();
             OpenFileDialog openFileDialog = new() { RestoreDirectory = true, CheckFileExists = true, Multiselect = true };
             if (ViewModel.UISettings.lastDocumentsFolder is not null) openFileDialog.InitialDirectory = ViewModel.UISettings.lastDocumentsFolder;
-            openFileDialog.Filter = ViewModel.GetDocumentExtensionsFilter();
+            openFileDialog.Filter = await ViewModel.GetDocumentExtensionsFilter();
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
@@ -227,6 +226,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
+            documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
@@ -266,28 +266,27 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if (e.error is not null)
-                if (!string.IsNullOrEmpty(e.error.code))
-                {
-                    StatusBarText1.Text = e.error.code;
-                    StatusBarText2.Text = e.error.message;
-                    ProgressBar.Value = 0;
-                    ProgressBar.IsIndeterminate = false;
-                    CancelButton.IsEnabled = false;
-                    CancelButton.Visibility = Visibility.Hidden;
-                    return;
-                }
+            if ((e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed)
+                || (e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed)
+                || !string.IsNullOrEmpty(e.Message))  //an error occurred, cannot continue
+            {
+                StatusBarText1.Text = e.Status?.Status.ToString();
+                StatusBarText2.Text = e.Message;
+                ProgressBar.Value = 0;
+                ProgressBar.IsIndeterminate = false;
+                CancelButton.IsEnabled = false;
+                CancelButton.Visibility = Visibility.Hidden;
+                return;
+            }
             CancelButton.Background = Brushes.LightGray;
-            StatusBarText1.Text = e.status;
+            StatusBarText1.Text = e.Status.Status.ToString();
             StringBuilder statusText = new();
-            if (e.summary.inProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.summary.inProgress + '\t');
-            if (e.summary.notYetStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.summary.notYetStarted + '\t');
-            if (e.summary.success > 0) statusText.Append(Properties.Resources.msg_Completed + e.summary.success + '\t');
-            if (e.summary.failed > 0) statusText.Append(Properties.Resources.msg_Failed + e.summary.failed + '\t');
-            if (e.summary.totalCharacterCharged > 0) statusText.Append(Properties.Resources.msg_CharactersCharged + e.summary.totalCharacterCharged);
-            ProgressBar.Value = 10 + (e.summary.inProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.summary.success + e.summary.failed) / ViewModel.FilesToTranslate.Count * 0.85);
+            if (e.Status.DocumentsInProgress > 0) statusText.Append(Properties.Resources.msg_InProgress + e.Status.DocumentsInProgress + '\t');
+            if (e.Status.DocumentsNotStarted > 0) statusText.Append(Properties.Resources.msg_Waiting + e.Status.DocumentsNotStarted + '\t');
+            if (e.Status.DocumentsSucceeded > 0) statusText.Append(Properties.Resources.msg_Completed + e.Status.DocumentsSucceeded + '\t');
+            if (e.Status.DocumentsFailed > 0) statusText.Append(Properties.Resources.msg_Failed + e.Status.DocumentsFailed + '\t');
+            ProgressBar.Value = 10 + (e.Status.DocumentsInProgress / ViewModel.FilesToTranslate.Count * 0.2) + ((e.Status.DocumentsSucceeded + e.Status.DocumentsFailed) / ViewModel.FilesToTranslate.Count * 0.85);
             StatusBarText2.Text = statusText.ToString();
-            charactersCharged = e.summary.totalCharacterCharged;
         }
 
 
@@ -296,10 +295,14 @@ namespace DocumentTranslation.GUI
             ProgressBar.Value = 100;
             StatusBarText1.Text = Properties.Resources.msg_Done;
             StatusBarText2.Text = $"{e.Item2} {Properties.Resources.msg_Bytes} {e.Item1} {Properties.Resources.msg_DocumentsTranslated} \t";
-            if (charactersCharged > 0) StatusBarText2.Text += $" |\t{Properties.Resources.msg_CharactersCharged}{charactersCharged}";
             CancelButton.IsEnabled = false;
             CancelButton.Visibility = Visibility.Hidden;
             TargetOpenButton.Visibility = Visibility.Visible;
+        }
+
+        private void DocumentTranslationBusiness_OnFinalResults(object sender, long e)
+        {
+            StatusBarText2.Text += $" |\t{Properties.Resources.msg_CharactersCharged}{e}";
         }
 
         private void ToLanguageBoxDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)

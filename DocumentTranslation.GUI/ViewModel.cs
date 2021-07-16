@@ -47,13 +47,11 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureRegion = Settings.AzureRegion;
             this.documentTranslationService = documentTranslationService;
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            _ = documentTranslationService.GetLanguagesAsync(Settings.ShowExperimental);
+            documentTranslationService.ShowExperimental = Settings.ShowExperimental;
             textTranslationService = new(documentTranslationService);
             UISettings = await UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
-            _ = documentTranslationService.GetDocumentFormatsAsync();
-            _ = documentTranslationService.GetGlossaryFormatsAsync();
-
+            _ = this.documentTranslationService.InitializeAsync();
             return;
         }
 
@@ -89,13 +87,14 @@ namespace DocumentTranslation.GUI
         }
 
         #region Generate Filters
-        internal string GetDocumentExtensionsFilter()
+        internal async Task<string> GetDocumentExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Document Translation|");
-            foreach (var format in documentTranslationService.FileFormats.value)
+            await documentTranslationService.GetDocumentFormatsAsync();
+            foreach (var format in documentTranslationService.FileFormats)
             {
-                foreach (var ext in format.fileExtensions)
+                foreach (var ext in format.FileExtensions)
                 {
                     filterBuilder.Append("*" + ext + ";");
                 }
@@ -103,10 +102,10 @@ namespace DocumentTranslation.GUI
             filterBuilder.Remove(filterBuilder.Length - 1, 1);
             filterBuilder.Append('|');
 
-            foreach (var format in documentTranslationService.FileFormats.value)
+            foreach (var format in documentTranslationService.FileFormats)
             {
-                filterBuilder.Append(format.format + "|");
-                foreach (var ext in format.fileExtensions)
+                filterBuilder.Append(format.Format + "|");
+                foreach (var ext in format.FileExtensions)
                 {
                     filterBuilder.Append("*" + ext + ";");
                 }
@@ -131,9 +130,9 @@ namespace DocumentTranslation.GUI
         {
             StringBuilder filterBuilder = new();
             filterBuilder.Append("Glossaries|");
-            foreach (var format in documentTranslationService.GlossaryFormats.value)
+            foreach (var format in documentTranslationService.GlossaryFormats)
             {
-                foreach (var ext in format.fileExtensions)
+                foreach (var ext in format.FileExtensions)
                 {
                     filterBuilder.Append("*" + ext + ";");
                 }

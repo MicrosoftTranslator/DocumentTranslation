@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.AI.Translation.Document;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
-    public class DocumentTranslationBusiness
+    public partial class DocumentTranslationBusiness
     {
         #region Properties
         public DocumentTranslationService TranslationService { get; }
@@ -27,6 +28,12 @@ namespace DocumentTranslationService.Core
         /// Prevent deletion of storage container. For debugging.
         /// </summary>
         public bool Nodelete { get; set; } = false;
+
+        /// <summary>
+        /// Fires when final results are available;
+        /// Returns the sum of characters translated.
+        /// </summary>
+        public event EventHandler<long> OnFinalResults;
 
         /// <summary>
         /// Fires during a translation run when there is an updated status. Approximately once per second. 
@@ -166,50 +173,48 @@ namespace DocumentTranslationService.Core
                     logger.WriteLine($"File {filename} uploaded.");
                 }
             }
-            Debug.WriteLine("Awaiting upload task completion.");
+            Debug.WriteLine("Awaiting document upload task completion.");
             await Task.WhenAll(uploadTasks);
             //Upload Glossaries
             var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
             if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
-            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document and glossary upload: {sizeInBytes} bytes in {count} files.");
+            logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document upload. {sizeInBytes} bytes in {count} documents.");
             #endregion
 
             #region Translate the container content
             Uri sasUriSource = sourceContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
             await targetContainerTask;
             Uri sasUriTarget = targetContainer.GenerateSasUri(BlobContainerSasPermissions.All, DateTimeOffset.UtcNow + TimeSpan.FromHours(5));
-            DocumentTranslationSource documentTranslationSource = new() { SourceUrl = sasUriSource.ToString() };
+            TranslationSource translationSource = new(sasUriSource);
             if (!(string.IsNullOrEmpty(fromlanguage)))
             {
                 if (fromlanguage.ToLowerInvariant() == "auto") fromlanguage = null;
-                else documentTranslationSource.Language = fromlanguage;
+                else translationSource.LanguageCode = fromlanguage;
             }
-            DocumentTranslationTarget documentTranslationTarget = new(language: tolanguage, targetUrl: sasUriTarget.ToString());
-            List<ServiceGlossary> serviceGlossaries = new();
+            TranslationTarget translationTarget = new(sasUriTarget, tolanguage);
             if (glossary.Glossaries is not null)
-                foreach (var glos in glossary.Glossaries)
-                    serviceGlossaries.Add(glos.Value);
-            documentTranslationTarget.glossaries = serviceGlossaries.ToArray();
+            {
+                foreach (var glos in glossary.Glossaries) translationTarget.Glossaries.Add(glos.Value);
+            }
             if (TranslationService.Category is not null)
             {
-                documentTranslationTarget.category = TranslationService.Category;
+                translationTarget.CategoryId = TranslationService.Category;
             }
+            List<TranslationTarget> translationTargets = new();
+            translationTargets.Add(translationTarget);
+            DocumentTranslationInput input = new(translationSource, translationTargets);
 
-            List<DocumentTranslationTarget> documentTranslationTargets = new() { documentTranslationTarget };
-
-            DocumentTranslationInput input = new() { storageType = "folder", source = documentTranslationSource, targets = documentTranslationTargets };
             try
             {
-                TranslationService.ProcessingLocation = await TranslationService.SubmitTranslationRequestAsync(input);
-                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request.");
-                logger.WriteLine(System.Text.Json.JsonSerializer.Serialize<DocumentTranslationInput>(input, new System.Text.Json.JsonSerializerOptions() { WriteIndented = true, IncludeFields=true }));
+                string statusID = await TranslationService.SubmitTranslationRequestAsync(input);
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Translation service request. StatusID: {statusID}");
             }
-            catch (ServiceErrorException)
+            catch (Azure.RequestFailedException ex)
             {
-                OnStatusUpdate?.Invoke(this, TranslationService.ErrorResponse);
+                OnStatusUpdate?.Invoke(this, new StatusResponse(TranslationService.DocumentTranslationOperation, ex.ErrorCode + ": " + ex.Message));
+                logger.WriteLine(ex.ToString());
             }
-            logger.WriteLine("Processing-Location: " + TranslationService.ProcessingLocation);
-            if (string.IsNullOrEmpty(TranslationService.ProcessingLocation))
+            if (TranslationService.DocumentTranslationOperation is null)
             {
                 logger.WriteLine("ERROR: Start of translation job failed.");
                 if (!Nodelete) await DeleteContainersAsync();
@@ -217,27 +222,26 @@ namespace DocumentTranslationService.Core
             }
 
             //Check on status until status is in a final state
-            StatusResponse statusResult;
-            string lastActionTime = string.Empty;
+            DocumentTranslationOperation status;
+            DateTimeOffset lastActionTime = DateTimeOffset.MinValue;
             do
             {
                 await Task.Delay(1000);
-                statusResult = await TranslationService.CheckStatusAsync();
-                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Service status: {statusResult.createdDateTimeUtc} {statusResult.status}");
-                if (statusResult.lastActionDateTimeUtc != lastActionTime)
+                status = await TranslationService.CheckStatusAsync();
+                logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Service status: {status.CreatedOn} {status.Status}");
+                if (status.LastModified != lastActionTime)
                 {
                     //Raise the update event
-                    if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
-                    lastActionTime = statusResult.lastActionDateTimeUtc;
+                    OnStatusUpdate?.Invoke(this, new StatusResponse(status));
+                    lastActionTime = status.LastModified;
                 }
             }
             while (
-                  (statusResult.summary.inProgress != 0)
-                || (statusResult.status == "NotStarted")
-                || (statusResult.summary.notYetStarted != 0)
-                || (statusResult.status == "Canceled"));
-            if (OnStatusUpdate is not null) OnStatusUpdate(this, statusResult);
-            if (statusResult.status.Contains("Failed.")) return;
+                  (status.DocumentsInProgress != 0)
+                ||(!status.HasCompleted));
+            OnStatusUpdate?.Invoke(this, new StatusResponse(status));
+            if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
+            Task<List<DocumentStatus>> finalResultsTask = TranslationService.GetFinalResultsAsync();
             #endregion
 
             #region Download the translations
@@ -265,12 +269,25 @@ namespace DocumentTranslationService.Core
             #endregion
             this.TargetFolder = directoryName;
             #region final
-            if (OnDownloadComplete is not null) OnDownloadComplete(this, (count, sizeInBytes));
+            OnDownloadComplete?.Invoke(this, (count, sizeInBytes));
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Documents downloaded: {sizeInBytes} bytes in {count} files.");
             if (!Nodelete) await DeleteContainersAsync();
+            var finalResults = await finalResultsTask;
+            OnFinalResults?.Invoke(this, CharactersCharged(finalResults));
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Run: Exiting.");
             logger.Close();
             #endregion
+        }
+
+        private long CharactersCharged(List<DocumentStatus> finalResults)
+        {
+            long characterscharged = 0;
+            foreach (var result in finalResults)
+            {
+                characterscharged += result.CharactersCharged;
+            }
+            logger.WriteLine($"Total characters charged: {characterscharged}");
+            return characterscharged;
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Azure.AI.Translation.Document;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// Holds the list of file formats after initial retrieval from Service
         /// </summary>
-        public FileFormatList FileFormats { get; private set; }
+        public IReadOnlyList<FileFormat> FileFormats { get; private set; }
 
         public HashSet<string> Extensions { get; private set; } = new();
 
@@ -20,42 +20,34 @@ namespace DocumentTranslationService.Core
 
         public event EventHandler OnFileFormatsUpdate;
 
-        public FileFormatList GlossaryFormats { get; private set; }
+        public IReadOnlyList<FileFormat> GlossaryFormats { get; private set; }
 
         public event EventHandler OnGlossaryFormatsUpdate;
 
-        public async Task<FileFormatList> GetDocumentFormatsAsync()
+        public async Task<IReadOnlyList<FileFormat>> GetDocumentFormatsAsync()
         {
-            if (FileFormats?.value.Length > 0) return FileFormats;
+            if (FileFormats?.Count > 0) return FileFormats;
             else return await GetFormatsInternal();
         }
 
-        private async Task<FileFormatList> GetFormatsInternal()
+        private async Task<IReadOnlyList<FileFormat>> GetFormatsInternal()
         {
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             for (int i = 0; i < 3; i++)
             {
-                HttpRequestMessage request = new();
-                request.Method = HttpMethod.Get;
-                request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate + "/documents/formats");
-                request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-
-                HttpClient client = new();
-                HttpResponseMessage response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
+                Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedDocumentFormatsAsync();
+                if (result?.Value.Count > 0)
                 {
-                    string responseJson = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"GetFormats: Response: {responseJson}");
-                    FileFormats = JsonSerializer.Deserialize<FileFormatList>(responseJson, new JsonSerializerOptions { IncludeFields = true });
-                    foreach (Value item in FileFormats.value)
+                    Debug.WriteLine($"GetFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
+                    FileFormats = result.Value;
+                    foreach (var item in result.Value)
                     {
-                        foreach (string ext in item.fileExtensions)
+                        foreach (string ext in item.FileExtensions)
                         {
                             Extensions.Add(ext.ToLowerInvariant());
                         }
                     }
-                    if (OnFileFormatsUpdate is not null) OnFileFormatsUpdate(this, EventArgs.Empty);
+                    OnFileFormatsUpdate?.Invoke(this, EventArgs.Empty);
                     return FileFormats;
                 }
                 else
@@ -67,38 +59,29 @@ namespace DocumentTranslationService.Core
             return null;
         }
 
-        public async Task<FileFormatList> GetGlossaryFormatsAsync()
+        public async Task<IReadOnlyList<FileFormat>> GetGlossaryFormatsAsync()
         {
-            if (GlossaryFormats?.value.Length > 0) return GlossaryFormats;
+            if (GlossaryFormats?.Count > 0) return GlossaryFormats;
             else return await GetGlossaryFormatsInternal();
         }
 
-        private async Task<FileFormatList> GetGlossaryFormatsInternal()
+        private async Task<IReadOnlyList<FileFormat>> GetGlossaryFormatsInternal()
         {
             for (int i = 0; i < 3; i++)
             {
-                HttpRequestMessage request = new();
-                request.Method = HttpMethod.Get;
-                request.RequestUri = new Uri("https://" + AzureResourceName + baseUriTemplate + "/glossaries/formats");
-                request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
-
-                HttpClient client = new();
-                HttpResponseMessage response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
+                Azure.Response<IReadOnlyList<FileFormat>> result = await documentTranslationClient.GetSupportedGlossaryFormatsAsync();
+                if (result.Value.Count > 0)
                 {
-                    string responseJson = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine($"GetGlossaryFormats: Response: {responseJson}");
-                    GlossaryFormats = JsonSerializer.Deserialize<FileFormatList>(responseJson, new JsonSerializerOptions { IncludeFields = true });
-                    foreach (Value item in GlossaryFormats.value)
+                    Debug.WriteLine($"GetGlossaryFormats: Response: {JsonSerializer.Serialize(result, new JsonSerializerOptions() { IncludeFields = true })}");
+                    GlossaryFormats = result.Value;
+                    foreach (var item in result.Value)
                     {
-                        foreach (string ext in item.fileExtensions)
+                        foreach (string ext in item.FileExtensions)
                         {
                             GlossaryExtensions.Add(ext.ToLowerInvariant());
                         }
                     }
-
-                    if (OnGlossaryFormatsUpdate is not null) OnGlossaryFormatsUpdate(this, EventArgs.Empty);
+                    OnGlossaryFormatsUpdate?.Invoke(this, EventArgs.Empty);
                     return GlossaryFormats;
                 }
                 else

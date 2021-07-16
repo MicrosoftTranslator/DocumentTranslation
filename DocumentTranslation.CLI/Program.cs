@@ -91,6 +91,7 @@ namespace DocumentTranslation.CLI
                     translationBusiness.OnDownloadComplete += TranslationBusiness_OnDownloadComplete;
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
                     translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
+                    translationBusiness.OnFinalResults += TranslationBusiness_OnFinalResults;
                     Timer timer = new(500) { AutoReset = true, Enabled = true };
                     timer.Elapsed += Timer_Elapsed;
                     Console.WriteLine($"Starting translation of {sourceFiles.Value} to {toLang.Value()}. Press Esc to cancel.");
@@ -110,7 +111,7 @@ namespace DocumentTranslation.CLI
                     {
                         Console.WriteLine(e.Message);
                     }
-                    catch (ServiceErrorException e)
+                    catch (Azure.RequestFailedException e)
                     {
                         Console.WriteLine(e.Message);
                         return;
@@ -282,15 +283,15 @@ namespace DocumentTranslation.CLI
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
-                    if (translationService.FileFormats is null || translationService.FileFormats.value is null || translationService.FileFormats.value.Length < 2)
+                    if (translationService.FileFormats is null || translationService.FileFormats is null || translationService.FileFormats.Count < 2)
                     {
                         Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
-                    foreach (var format in translationService.FileFormats.value.OrderBy(x => x.format))
+                    foreach (var format in translationService.FileFormats.OrderBy(x => x.Format))
                     {
-                        Console.Write($"{format.format}");
-                        foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");
+                        Console.Write($"{format.Format}");
+                        foreach (string ext in format.FileExtensions) Console.Write($"\t{ext}");
                         Console.WriteLine();
                     }
                 });
@@ -323,15 +324,15 @@ namespace DocumentTranslation.CLI
                         Console.WriteLine(Properties.Resources.msg_WrongResourceName);
                         return;
                     }
-                    if (translationService.GlossaryFormats is null || translationService.GlossaryFormats.value is null || translationService.GlossaryFormats.value.Length < 2)
+                    if (translationService.GlossaryFormats is null || translationService.GlossaryFormats is null || translationService.GlossaryFormats.Count < 2)
                     {
                         Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
-                    foreach (var format in translationService.GlossaryFormats.value.OrderBy(x => x.format))
+                    foreach (var format in translationService.GlossaryFormats.OrderBy(x => x.Format))
                     {
-                        Console.Write($"{format.format}");
-                        foreach (string ext in format.fileExtensions) Console.Write($"\t{ext}");
+                        Console.Write($"{format.Format}");
+                        foreach (string ext in format.FileExtensions) Console.Write($"\t{ext}");
                         Console.WriteLine();
                     }
                 });
@@ -349,6 +350,11 @@ namespace DocumentTranslation.CLI
             }
 
             return result;
+        }
+
+        private static void TranslationBusiness_OnFinalResults(object sender, long e)
+        {
+            Console.WriteLine($"Characters charged: {e}");
         }
 
         private static void TranslationBusiness_OnUploadComplete(object sender, (int count, long sizeInBytes) e)
@@ -383,15 +389,19 @@ namespace DocumentTranslation.CLI
 
         private static void TranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)
         {
-            if (e.error is not null)
+            if (e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed
+                || e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed
+                || !String.IsNullOrEmpty(e.Message))
             {
-                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.error.code}: {e.error.message}\t{e.error.innerError.code}: {e.error.innerError.message}");
+                Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status?.Status}");
+                Console.WriteLine(e.Message);
             }
             else
             {
-                var time = DateTime.Parse(e.lastActionDateTimeUtc);
-                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.status}\tIn progress: {e.summary.inProgress}\tSuccess: {e.summary.success}\tFail: {e.summary.failed}\tCharged: {e.summary.totalCharacterCharged} chars");
+                var time = e.Status.LastModified;           //lastActionDateTimeUtc);
+                Console.WriteLine($"{time.TimeOfDay}\tStatus: {e.Status.Status}\tIn progress: {e.Status.DocumentsInProgress}\tSuccess: {e.Status.DocumentsSucceeded}\tFail: {e.Status.DocumentsFailed}");
             }
         }
+
     }
 }

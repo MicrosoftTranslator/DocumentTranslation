@@ -19,7 +19,7 @@ namespace DocumentTranslationService.Core
         /// Fires when the 'Languages' list finished updating. 
         /// </summary>
         public event EventHandler OnLanguagesUpdate;
-        public bool ShowExperimental { get; private set; }
+        public bool ShowExperimental { get; set; }
 
         private bool? lastShowExperimental = null;
         private string lastLanguage;
@@ -30,19 +30,19 @@ namespace DocumentTranslationService.Core
         /// </summary>
         /// <param name="acceptLanguage">The language you want the language list in. Default is the thread locale</param>
         /// <returns>Task</returns>
-        public async Task GetLanguagesAsync(bool showExperimental = false, string acceptLanguage = null)
+        public async Task GetLanguagesAsync(string acceptLanguage = null)
         {
             if (acceptLanguage is null) acceptLanguage = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
             //Cut this call short if we have everything and no change in language of the language names, or in the experimental state.
-            if ((acceptLanguage == lastLanguage) && (showExperimental == lastShowExperimental) && (Languages.Count > 10)) return;
+            if ((acceptLanguage == lastLanguage) && (ShowExperimental == lastShowExperimental) && (Languages.Count > 10)) return;
             lastLanguage = acceptLanguage;
-            lastShowExperimental = showExperimental;
+            lastShowExperimental = ShowExperimental;
             for (int i = 0; i < 3; i++) //retry loop
             {
                 HttpRequestMessage request = new();
                 request.Method = HttpMethod.Get;
                 request.Headers.AcceptLanguage.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue(acceptLanguage));
-                request.RequestUri = showExperimental
+                request.RequestUri = ShowExperimental
                     ? new Uri("https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation&flight=experimental")
                     : new Uri("https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation");
                 HttpClient client = new();
@@ -81,9 +81,8 @@ namespace DocumentTranslationService.Core
                         if (!Languages.TryAdd(langCode, langEntry))
                             Debug.WriteLine($"Duplicate language entry: {langCode}");
                     }
-                    Debug.WriteLine($"Languages received: {Languages.Count}, Experimental: {showExperimental}");
-                    ShowExperimental = showExperimental;
-                    if (OnLanguagesUpdate is not null) OnLanguagesUpdate(this, EventArgs.Empty);
+                    Debug.WriteLine($"Languages received: {Languages.Count}, Experimental: {ShowExperimental}");
+                    OnLanguagesUpdate?.Invoke(this, EventArgs.Empty);
                     return;
                 }
                 else await Task.Delay(2000); //wait two seconds before retry
