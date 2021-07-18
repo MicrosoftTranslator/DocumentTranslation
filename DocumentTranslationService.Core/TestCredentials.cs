@@ -43,7 +43,7 @@ namespace DocumentTranslationService.Core
             }
             catch (Exception ex)
             {
-                throw new CredentialsException("storage\n" + ex.Message);
+                throw new CredentialsException("storage", ex);
             }
         }
 
@@ -56,13 +56,13 @@ namespace DocumentTranslationService.Core
                 HttpResponseMessage response;
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                throw new CredentialsException("name");
+                throw new CredentialsException("name", ex);
             }
-            catch (System.UriFormatException)
+            catch (System.UriFormatException ex)
             {
-                throw new CredentialsException("name");
+                throw new CredentialsException("name", ex);
             }
         }
 

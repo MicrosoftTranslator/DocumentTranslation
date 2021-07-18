@@ -329,4 +329,7 @@
   <data name="msg_Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="msg_ResourceNameIncorrect" xml:space="preserve">
+    <value>Resource name incorrect or not a paid subscription</value>
+  </data>
 </root>

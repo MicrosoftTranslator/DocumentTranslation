@@ -35,9 +35,9 @@ namespace DocumentTranslation.CLI
                         int deletedCount = await translationBusiness.ClearOldContainersAsync();
                         Console.WriteLine($"Number of old containers deleted: {deletedCount}.");
                     }
-                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException)
+                    catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
                     {
-                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
+                        Console.WriteLine($"{Properties.Resources.msg_MissingCredentials}: {ex.Message} {ex.InnerException?.Message}");
                         return;
                     }
                 });
@@ -146,7 +146,7 @@ namespace DocumentTranslation.CLI
                                     Console.WriteLine("FAIL: Resource name not found.");
                                     break;
                                 default:
-                                    Console.WriteLine($"Exception: {ex.Message}");
+                                    Console.WriteLine($"Exception: {ex.Message} {ex.InnerException?.Message}");
                                     break;
                             }
                             return;

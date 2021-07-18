@@ -9,6 +9,7 @@ namespace DocumentTranslationService.Core
         {
             public CredentialsException() : base() { }
             public CredentialsException(string reason) : base(reason) { }
+            public CredentialsException(string reason, Exception innerException) : base(reason, innerException) { }
         }
     }
 }

@@ -470,7 +470,10 @@ namespace DocumentTranslation.GUI
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
             {
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
+                string message;
+                if (ex.Message == "name") message = Properties.Resources.msg_ResourceNameIncorrect;
+                else message = ex.Message;
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + message;
             }
             catch (ArgumentNullException ex)
             {

@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 07/16/2021 12:40:56.87 
+        ///   Looks up a localized string similar to Sat 07/17/2021 18:10:42.51 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -427,6 +427,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_InvalidCredentialsTip {
             get {
                 return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource name incorrect or not a paid subscription.
+        /// </summary>
+        public static string msg_ResourceNameIncorrect {
+            get {
+                return ResourceManager.GetString("msg_ResourceNameIncorrect", resourceCulture);
             }
         }
         
