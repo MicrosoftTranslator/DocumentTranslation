@@ -18,13 +18,13 @@ namespace DocumentTranslation.GUI
         const string AppName = "Document Translation";
         const string AppSettingsFileName = "uisettings.json";
 
-        public static async Task<UISettings> Read(string filename = null)
+        public static UISettings Read(string filename = null)
         {
             string appsettingsJson;
             try
             {
                 if (string.IsNullOrEmpty(filename)) filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
-                appsettingsJson = await File.ReadAllTextAsync(filename);
+                appsettingsJson = File.ReadAllText(filename);
             }
 
             catch (FileNotFoundException)
@@ -39,14 +39,14 @@ namespace DocumentTranslation.GUI
             return JsonSerializer.Deserialize<UISettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
         }
 
-        public static async Task WriteAsync(string filename, UISettings settings)
+        public static void Write(string filename, UISettings settings)
         {
             if (string.IsNullOrEmpty(filename))
             {
                 Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName);
                 filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
             }
-            await File.WriteAllTextAsync(filename, JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true }));
+            File.WriteAllText(filename, JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true }));
         }
     }
 

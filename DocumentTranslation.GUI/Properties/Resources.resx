@@ -332,4 +332,13 @@
   <data name="msg_ResourceNameIncorrect" xml:space="preserve">
     <value>Resource name incorrect or not a paid subscription</value>
   </data>
+  <data name="label_NewCategorySample" xml:space="preserve">
+    <value>New category name</value>
+  </data>
+  <data name="label_NewCategoryIDSample" xml:space="preserve">
+    <value>New category ID</value>
+  </data>
+  <data name="label_AutoDetect" xml:space="preserve">
+    <value>Auto-Detect</value>
+  </data>
 </root>

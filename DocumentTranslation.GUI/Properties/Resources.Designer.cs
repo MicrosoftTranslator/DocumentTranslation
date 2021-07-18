@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sat 07/17/2021 18:10:42.51 
+        ///   Looks up a localized string similar to Sat 07/17/2021 21:32:45.44 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -161,6 +161,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-Detect.
+        /// </summary>
+        public static string label_AutoDetect {
+            get {
+                return ResourceManager.GetString("label_AutoDetect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Azure Region:.
         /// </summary>
         public static string label_AzureRegion {
@@ -229,6 +238,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Input {
             get {
                 return ResourceManager.GetString("label_Input", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New category ID.
+        /// </summary>
+        public static string label_NewCategoryIDSample {
+            get {
+                return ResourceManager.GetString("label_NewCategoryIDSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New category name.
+        /// </summary>
+        public static string label_NewCategorySample {
+            get {
+                return ResourceManager.GetString("label_NewCategorySample", resourceCulture);
             }
         }
         
