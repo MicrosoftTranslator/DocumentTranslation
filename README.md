@@ -10,7 +10,7 @@ It comes with a command line utility that does the same thing using a command li
 Document Translation uses the Azure Translator Service to perform the translations. You need a subscription to Azure, and register
 a Translator resource as well as a storage resource. [The documentation](https://microsofttranslator.github.io/DocumentTranslation) gives detailed instructions on how to obtain those. 
 
-For the translation you can specifiy a glossary (custom distionary) to use. You can also make use of a custom translation system
+For the translation you can specify a glossary (custom dictionary) to use. You can also make use of a custom translation system
 you may have built with [Custom Translator](http://customtranslator.ai).
 
 **Main UI**
