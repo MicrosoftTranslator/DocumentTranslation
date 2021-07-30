@@ -52,11 +52,11 @@ namespace DocumentTranslation.GUI
             EnableTabs();
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                await ViewModel.Initialize();
+                ViewModel.Initialize();
             }
             catch (ArgumentNullException ex)
             {
@@ -84,7 +84,7 @@ namespace DocumentTranslation.GUI
             }
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ViewModel.UISettings.lastToLanguage = toLanguageBox.SelectedValue as string;
             ViewModel.UISettings.lastFromLanguage = fromLanguageBox.SelectedValue as string;
@@ -94,7 +94,7 @@ namespace DocumentTranslation.GUI
             else ViewModel.UISettings.lastCategoryDocuments = null;
             if (CategoryTextBox.SelectedItem is not null) ViewModel.UISettings.lastCategoryText = ((MyCategory)CategoryTextBox.SelectedItem).Name ?? string.Empty;
             else ViewModel.UISettings.lastCategoryText = null;
-            await ViewModel.SaveAsync();
+            ViewModel.Save();
         }
 
         private async void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
@@ -244,7 +244,7 @@ namespace DocumentTranslation.GUI
                 ViewModel.UISettings.PerLanguageFolders.Remove(toLanguageBoxDocuments.SelectedValue as string);
             }
             ViewModel.UISettings.PerLanguageFolders.Add(toLanguageBoxDocuments.SelectedValue as string, perLanguageData);
-            _ = ViewModel.SaveAsync();
+            ViewModel.Save();
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
             else ViewModel.documentTranslationService.Category = null;
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
@@ -385,9 +385,9 @@ namespace DocumentTranslation.GUI
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
             SavedSettingsText.Visibility = Visibility.Visible;
-            _ = ViewModel.SaveAsync();
+            ViewModel.Save();
             EnableTabs();
-            _ = ViewModel.Initialize();
+            ViewModel.Initialize();
             await Task.Delay(1000);
             SavedSettingsText.Visibility = Visibility.Hidden;
         }
@@ -461,10 +461,10 @@ namespace DocumentTranslation.GUI
         {
             TestSettingsText.Text = Properties.Resources.Label_Testing;
             TestSettingsText.Visibility = Visibility.Visible;
-            await ViewModel.SaveAsync();
+            ViewModel.Save();
             try
             {
-                await ViewModel.Initialize();
+                ViewModel.Initialize();
                 await ViewModel.documentTranslationService.TryCredentials();
                 TestSettingsText.Text = Properties.Resources.msg_TestPassed;
             }

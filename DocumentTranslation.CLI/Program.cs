@@ -27,7 +27,7 @@ namespace DocumentTranslation.CLI
                 clearCmd.Description = "Delete containers potentially left over from previous failed runs, in the given storage account, which are older than a week.";
                 clearCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
-                    DocTransAppSettings settings = await AppSettingsSetter.Read();
+                    DocTransAppSettings settings = AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
                     try
@@ -70,7 +70,7 @@ namespace DocumentTranslation.CLI
                                                    CommandOptionType.NoValue);
                 translateCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
-                    DocTransAppSettings settings = await AppSettingsSetter.Read();
+                    DocTransAppSettings settings = AppSettingsSetter.Read();
                     if (key.HasValue()) settings.SubscriptionKey = key.Value();
                     try { AppSettingsSetter.CheckSettings(settings); }
                     catch (ArgumentException e)
@@ -129,7 +129,7 @@ namespace DocumentTranslation.CLI
                     configTestCmd.Description = "Provide test result whether the configuration settings are functional. PASS if no problem found.";
                     configTestCmd.OnExecuteAsync(async (cancellationToken) =>
                     {
-                        DocTransAppSettings docTransAppSettings = await AppSettingsSetter.Read(null);
+                        DocTransAppSettings docTransAppSettings = AppSettingsSetter.Read(null);
                         DocumentTranslationService.Core.DocumentTranslationService translationService = new(docTransAppSettings.SubscriptionKey, docTransAppSettings.AzureResourceName, docTransAppSettings.ConnectionStrings.StorageConnectionString);
                         try { await translationService.TryCredentials(); }
                         catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
@@ -163,10 +163,10 @@ namespace DocumentTranslation.CLI
                     var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages. 'clear' to remove.", CommandOptionType.SingleValue);
                     var cat = configSetCmd.Option("--category", "Set the Custom Translator category to use for translations. 'clear' to remove.", CommandOptionType.SingleValue);
                     configSetCmd.Description = "Set the values of configuration parameters. Required before using Document Translation.";
-                    configSetCmd.OnExecuteAsync(async (cancellationToken) =>
+                    configSetCmd.OnExecute(() =>
                     {
                         if (!(key.HasValue() || storage.HasValue() || name.HasValue() || exp.HasValue() || cat.HasValue())) configSetCmd.ShowHelp();
-                        DocTransAppSettings docTransAppSettings = await AppSettingsSetter.Read(null);
+                        DocTransAppSettings docTransAppSettings = AppSettingsSetter.Read(null);
                         if (key.HasValue())
                         {
                             if (key.Value().ToLowerInvariant() == "clear") docTransAppSettings.SubscriptionKey = string.Empty;
@@ -213,7 +213,7 @@ namespace DocumentTranslation.CLI
                                     break;
                             }
                         }
-                        await AppSettingsSetter.WriteAsync(null, docTransAppSettings);
+                        AppSettingsSetter.Write(null, docTransAppSettings);
                         return 0;
                     });
                     configSetCmd.OnValidationError((i) =>
@@ -225,10 +225,10 @@ namespace DocumentTranslation.CLI
                 configCmd.Command("list", configListCmd =>
                 {
                     configListCmd.Description = "List the configuration settings.";
-                    configListCmd.OnExecuteAsync(async (cancellationToken) =>
+                    configListCmd.OnExecute(() =>
                     {
                         DocTransAppSettings docTransAppSettings = new();
-                        docTransAppSettings = await AppSettingsSetter.Read();
+                        docTransAppSettings = AppSettingsSetter.Read();
                         Console.WriteLine(AppSettingsSetter.GetJson(docTransAppSettings));
                         return 0;
                     });
@@ -262,7 +262,7 @@ namespace DocumentTranslation.CLI
                 formatsCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
                     DocTransAppSettings settings = new();
-                    settings = await AppSettingsSetter.Read();
+                    settings = AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     try
                     {
@@ -303,7 +303,7 @@ namespace DocumentTranslation.CLI
                 glosCmd.OnExecuteAsync(async (cancellationToken) =>
                 {
                     DocTransAppSettings settings = new();
-                    settings = await AppSettingsSetter.Read();
+                    settings = AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     try
                     {

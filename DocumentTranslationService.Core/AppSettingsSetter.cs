@@ -27,13 +27,13 @@ namespace DocumentTranslationService.Core
             return JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true });
         }
 
-        public static async Task<DocTransAppSettings> Read(string filename = null)
+        public static DocTransAppSettings Read(string filename = null)
         {
             string appsettingsJson;
             try
             {
                 if (string.IsNullOrEmpty(filename)) filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
-                appsettingsJson = await File.ReadAllTextAsync(filename);
+                appsettingsJson = File.ReadAllText(filename);
             }
 
             catch (Exception ex)
@@ -53,14 +53,15 @@ namespace DocumentTranslationService.Core
             return result;
         }
 
-        public static async Task WriteAsync(string filename, DocTransAppSettings settings)
+        public static void Write(string filename, DocTransAppSettings settings)
         {
             if (string.IsNullOrEmpty(filename))
             {
                 Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName);
                 filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
             }
-            await File.WriteAllTextAsync(filename, GetJson(settings));
+            File.WriteAllText(filename, GetJson(settings));
+            return;
         }
 
 

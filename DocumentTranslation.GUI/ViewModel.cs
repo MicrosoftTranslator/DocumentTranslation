@@ -32,9 +32,9 @@ namespace DocumentTranslation.GUI
         {
         }
 
-        public async Task Initialize()
+        public void Initialize()
         {
-            Settings = await AppSettingsSetter.Read();
+            Settings = AppSettingsSetter.Read();
             try
             {
                 AppSettingsSetter.CheckSettings(Settings);
@@ -49,25 +49,23 @@ namespace DocumentTranslation.GUI
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             documentTranslationService.ShowExperimental = Settings.ShowExperimental;
             textTranslationService = new(documentTranslationService);
-            UISettings = await UISettingsSetter.Read();
+            UISettings = UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
             _ = this.documentTranslationService.InitializeAsync();
             return;
         }
 
-        public async Task SaveAsync()
+        public void Save()
         {
-            List<Task> tasks = new();
-            tasks.Add(UISettingsSetter.WriteAsync(null, UISettings));
-            tasks.Add(AppSettingsSetter.WriteAsync(null, Settings));
-            await Task.WhenAll();
+            UISettingsSetter.Write(null, UISettings);
+            AppSettingsSetter.Write(null, Settings);
         }
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
             ToLanguageList.Clear();
             FromLanguageList.Clear();
-            FromLanguageList.Add(new Language("auto", "Auto-Detect"));
+            FromLanguageList.Add(new Language("auto", Properties.Resources.label_AutoDetect));
             var list = documentTranslationService.Languages.OrderBy((x) => x.Value.Name);
             foreach (var lang in list)
             {
@@ -158,7 +156,7 @@ namespace DocumentTranslation.GUI
         internal void AddCategory(DataGridViewSelectedCellCollection selectedCells)
         {
             foreach (DataGridViewCell cell in selectedCells)
-                categories.MyCategoryList.Insert(cell.RowIndex, new MyCategory("New category name", "New category ID"));
+                categories.MyCategoryList.Insert(cell.RowIndex, new MyCategory(Properties.Resources.label_NewCategorySample, Properties.Resources.label_NewCategoryIDSample));
         }
 
         internal void DeleteCategory(DataGridViewSelectedCellCollection selectedCells)
@@ -167,9 +165,9 @@ namespace DocumentTranslation.GUI
                 categories.MyCategoryList.RemoveAt(cell.RowIndex);
         }
 
-        internal async void SaveCategories()
+        internal void SaveCategories()
         {
-            await categories.WriteAsync();
+            categories.Write();
         }
 
         #endregion
