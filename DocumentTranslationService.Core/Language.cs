@@ -25,24 +25,40 @@ namespace DocumentTranslationService.Core
         private string lastLanguage;
 
 
+        public async Task GetLanguagesAsync(string acceptLanguage = null)
+        {
+            await GetLanguagesAsyncInternal(acceptLanguage, false);
+            if (ShowExperimental)
+            {
+                Dictionary<string, Language> nonExpLangs = new(Languages);
+                await GetLanguagesAsyncInternal(acceptLanguage, true);
+                foreach (var lang in Languages)
+                    if (nonExpLangs.ContainsKey(lang.Key)) lang.Value.Experimental = false;
+                    else lang.Value.Experimental = true;
+            }
+            OnLanguagesUpdate?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+
         /// <summary>
         /// Read the set of languages from the service and store in the Languages list
         /// </summary>
         /// <param name="acceptLanguage">The language you want the language list in. Default is the thread locale</param>
         /// <returns>Task</returns>
-        public async Task GetLanguagesAsync(string acceptLanguage = null)
+        private async Task GetLanguagesAsyncInternal(string acceptLanguage = null, bool showExperimental = false)
         {
             if (acceptLanguage is null) acceptLanguage = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
             //Cut this call short if we have everything and no change in language of the language names, or in the experimental state.
-            if ((acceptLanguage == lastLanguage) && (ShowExperimental == lastShowExperimental) && (Languages.Count > 10)) return;
+            if ((acceptLanguage == lastLanguage) && (showExperimental == lastShowExperimental) && (Languages.Count > 10)) return;
             lastLanguage = acceptLanguage;
-            lastShowExperimental = ShowExperimental;
+            lastShowExperimental = showExperimental;
             for (int i = 0; i < 3; i++) //retry loop
             {
                 HttpRequestMessage request = new();
                 request.Method = HttpMethod.Get;
                 request.Headers.AcceptLanguage.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue(acceptLanguage));
-                request.RequestUri = ShowExperimental
+                request.RequestUri = showExperimental
                     ? new Uri("https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation&flight=experimental")
                     : new Uri("https://api.cognitive.microsofttranslator.com/languages?api-version=3.0&scope=translation");
                 HttpClient client = new();
@@ -81,8 +97,7 @@ namespace DocumentTranslationService.Core
                         if (!Languages.TryAdd(langCode, langEntry))
                             Debug.WriteLine($"Duplicate language entry: {langCode}");
                     }
-                    Debug.WriteLine($"Languages received: {Languages.Count}, Experimental: {ShowExperimental}");
-                    OnLanguagesUpdate?.Invoke(this, EventArgs.Empty);
+                    Debug.WriteLine($"Languages received: {Languages.Count}, Experimental: {showExperimental}");
                     return;
                 }
                 else await Task.Delay(2000); //wait two seconds before retry
@@ -94,7 +109,7 @@ namespace DocumentTranslationService.Core
     /// <summary>
     /// Holds information about a language
     /// </summary>
-    public class Language
+    public class Language :ICloneable
     {
         public Language(string langCode, string name)
         {
@@ -118,5 +133,15 @@ namespace DocumentTranslationService.Core
         /// Is this a bidirectional language?
         /// </summary>
         public bool Bidi { get; set; }
+
+        /// <summary>
+        /// Is this an experimental language? 
+        /// </summary>
+        public bool Experimental;
+
+        public object Clone()
+        {
+            return (Language)MemberwiseClone();
+        }
     }
 }

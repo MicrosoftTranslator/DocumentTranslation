@@ -24,10 +24,10 @@
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top">
                         <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode">
+                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode">
                         </ComboBox>
                         <Label Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageList}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
+                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
                         <Label Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
                         <ComboBox x:Name="CategoryDocumentsBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
                         <Button x:Name="CategoryDocumentsClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
