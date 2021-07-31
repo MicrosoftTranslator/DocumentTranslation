@@ -341,4 +341,7 @@
   <data name="label_AutoDetect" xml:space="preserve">
     <value>Auto-Detect</value>
   </data>
+  <data name="label_Experimental" xml:space="preserve">
+    <value>Experimental</value>
+  </data>
 </root>

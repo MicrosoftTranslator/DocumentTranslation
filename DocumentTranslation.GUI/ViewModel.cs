@@ -15,6 +15,9 @@ namespace DocumentTranslation.GUI
         public BindingList<Language> ToLanguageList { get; private set; } = new();
         public BindingList<Language> FromLanguageList { get; private set; } = new();
         internal UISettings UISettings = new();
+        public BindingList<Language> ToLanguageListForDocuments { get; private set; } = new();
+        public BindingList<Language> FromLanguageListForDocuments { get; private set; } = new();
+
         public DocTransAppSettings Settings { get; set; } = new();
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
@@ -63,14 +66,26 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
+            //Document translation does not support experimental langauges. Maintain two separate language lists between document and text translation
             ToLanguageList.Clear();
             FromLanguageList.Clear();
+            ToLanguageListForDocuments.Clear();
+            FromLanguageListForDocuments.Clear();
             FromLanguageList.Add(new Language("auto", Properties.Resources.label_AutoDetect));
+            FromLanguageListForDocuments.Add(new Language("auto", Properties.Resources.label_AutoDetect));
             var list = documentTranslationService.Languages.OrderBy((x) => x.Value.Name);
             foreach (var lang in list)
             {
-                ToLanguageList.Add(lang.Value);
-                FromLanguageList.Add(lang.Value);
+                Language newLang = (Language)lang.Value.Clone();
+                if (lang.Value.Experimental)
+                    newLang.Name = lang.Value.Name + "  -" + Properties.Resources.label_Experimental + "-";
+                ToLanguageList.Add(newLang);
+                FromLanguageList.Add(newLang);
+                if (!lang.Value.Experimental)
+                {
+                    ToLanguageListForDocuments.Add(lang.Value);
+                    FromLanguageListForDocuments.Add(lang.Value);
+                }
             }
             OnLanguagesUpdate?.Invoke(this, EventArgs.Empty);
         }

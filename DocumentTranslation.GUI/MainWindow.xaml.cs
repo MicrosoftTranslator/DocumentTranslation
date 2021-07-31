@@ -29,8 +29,8 @@ namespace DocumentTranslation.GUI
             ViewModel = viewModel;
             toLanguageBox.ItemsSource = ViewModel.ToLanguageList;
             fromLanguageBox.ItemsSource = ViewModel.FromLanguageList;
-            toLanguageBoxDocuments.ItemsSource = ViewModel.ToLanguageList;
-            fromLanguageBoxDocuments.ItemsSource = ViewModel.FromLanguageList;
+            toLanguageBoxDocuments.ItemsSource = ViewModel.ToLanguageListForDocuments;
+            fromLanguageBoxDocuments.ItemsSource = ViewModel.FromLanguageListForDocuments;
             CategoryDocumentsBox.ItemsSource = ViewModel.categories.MyCategoryList;
             CategoryTextBox.ItemsSource = ViewModel.categories.MyCategoryList;
         }
