@@ -259,7 +259,7 @@ namespace DocumentTranslationService.Core
                 await foreach (var blobItem in TranslationService.ContainerClientTarget.GetBlobsAsync())
                 {
                     await semaphore.WaitAsync();
-                    downloads.Add(DownloadBlobAsync(directory, blobItem));
+                    downloads.Add(DownloadBlobAsync(directory, blobItem, tolanguage));
                     count++;
                     sizeInBytes += (long)blobItem.Properties.ContentLength;
                     semaphore.Release();
@@ -296,11 +296,20 @@ namespace DocumentTranslationService.Core
         /// <param name="directory">Directory name to prepend to the file name.</param>
         /// <param name="blobItem">The actual blob</param>
         /// <returns>Task</returns>
-        private async Task DownloadBlobAsync(DirectoryInfo directory, BlobItem blobItem)
+        private async Task DownloadBlobAsync(DirectoryInfo directory, BlobItem blobItem, string tolanguage)
         {
             BlobClient blobClient = new(TranslationService.StorageConnectionString, TranslationService.ContainerClientTarget.Name, blobItem.Name);
             BlobDownloadInfo blobDownloadInfo = await blobClient.DownloadAsync();
-            FileStream downloadFileStream = File.Create(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
+            FileStream downloadFileStream;
+            try
+            {
+                downloadFileStream = File.Create(directory.FullName + Path.DirectorySeparatorChar + blobItem.Name);
+            }
+            catch (IOException)
+            {
+                //This happens when target folder is same as source. Try again with a different file name in same folder.
+                downloadFileStream = File.Create(directory.FullName + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(blobItem.Name) + "." + tolanguage + "." + Path.GetExtension(blobItem.Name));
+            }
             await blobDownloadInfo.Content.CopyToAsync(downloadFileStream);
             downloadFileStream.Close();
             logger.WriteLine("Downloaded: " + downloadFileStream.Name);
