@@ -48,6 +48,10 @@ namespace DocumentTranslationService.Core
                 throw;
             }
             DocTransAppSettings result =  JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            if (string.IsNullOrEmpty(result.AzureKeyVaultName))
+            {
+                var keyVaultAccess = new KeyVaultAccess(result.AzureKeyVaultName);
+            }
             if (result.AzureRegion is null) result.AzureRegion = "global";
             SettingsReadComplete?.Invoke(null, EventArgs.Empty);
             return result;
@@ -109,6 +113,11 @@ namespace DocumentTranslationService.Core
         /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
         /// </summary>
         public string AzureRegion { get; set; }
+        /// <summary>
+        /// Holds the name of the Azure key vail to use instead of local settings.
+        /// If not null or empty, other secrets and region will be ignored. 
+        /// </summary>
+        public string AzureKeyVaultName { get; set; }
     }
 
     public class Connectionstrings

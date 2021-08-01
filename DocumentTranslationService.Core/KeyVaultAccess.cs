@@ -5,11 +5,11 @@ using Azure.Security.KeyVault.Secrets;
 
 namespace DocumentTranslationService.Core
 {
-    public class KeyvaultAccess
+    public class KeyVaultAccess
     {
         public string KeyVaultName { get; init; }
 
-        public KeyvaultAccess(string keyVaultName)
+        public KeyVaultAccess(string keyVaultName)
         {
             KeyVaultName = keyVaultName;
         }
