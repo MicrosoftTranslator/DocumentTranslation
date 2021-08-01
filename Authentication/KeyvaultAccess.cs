@@ -9,8 +9,7 @@ namespace DocumentTranslationService.Core
     {
         public string KeyVaultName { get; init; }
 
-
-        KeyvaultAccess(string keyVaultName)
+        public KeyvaultAccess(string keyVaultName)
         {
             KeyVaultName = keyVaultName;
         }
