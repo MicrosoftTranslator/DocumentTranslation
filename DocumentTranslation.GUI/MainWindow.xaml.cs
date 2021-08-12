@@ -63,7 +63,15 @@ namespace DocumentTranslation.GUI
             {
                 SettingsTab.IsSelected = true;
                 TranslateDocumentsTab.IsEnabled = false;
-                if (ex.ParamName == "SubscriptionKey" || ex.ParamName == null) TranslateTextTab.IsEnabled = false;
+                if (ex.ParamName is "SubscriptionKey" or null) TranslateTextTab.IsEnabled = false;
+            }
+            catch (KeyVaultAccessException ex)
+            {
+                SettingsTab.IsSelected = true;
+                TranslateDocumentsTab.IsEnabled = false;
+                TranslateTextTab.IsEnabled = false;
+                StatusBarSText1.Text = ex.Message;
+                StatusBarSText2.Text = ex.InnerException.Message;
             }
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
             CategoryTextBox.SelectedValue = ViewModel.UISettings.lastCategoryText;
@@ -99,7 +107,21 @@ namespace DocumentTranslation.GUI
 
         private void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.GetAzureRegions();
+            if (ViewModel.Settings.UsingKeyVault)
+            {
+                subscriptionKey.IsEnabled = false;
+                region.IsEnabled = false;
+                storageConnectionString.IsEnabled = false;
+                resourceName.IsEnabled = false;
+            }
+            else
+            {
+                subscriptionKey.IsEnabled = true;
+                region.IsEnabled = true;
+                storageConnectionString.IsEnabled = true;
+                resourceName.IsEnabled = true;
+                ViewModel.GetAzureRegions();
+            }
             subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
@@ -379,6 +401,18 @@ namespace DocumentTranslation.GUI
             if (string.IsNullOrEmpty(ViewModel.Settings.ConnectionStrings.StorageConnectionString)) TranslateDocumentsTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
+            if (ViewModel.Settings.UsingKeyVault)
+            {
+                keyVaultName.Text = ViewModel.Settings.AzureKeyVaultName;
+            }
+            else
+            {
+                subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
+                region.ItemsSource = ViewModel.AzureRegions;
+                region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
+                storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
+                resourceName.Text = ViewModel.Settings.AzureResourceName;
+            }
         }
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
@@ -498,6 +532,10 @@ namespace DocumentTranslation.GUI
             {
                 TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
             }
+            catch (KeyVaultAccessException ex)
+            {
+                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
+            }
             await Task.Delay(3000);
             TestSettingsText.Visibility = Visibility.Hidden;
         }
@@ -561,6 +599,11 @@ namespace DocumentTranslation.GUI
             showErrors.ErrorsText.Text = ViewModel.ErrorsText;
             showErrors.ShowDialog();
             ThereWereErrorsButton.Visibility = Visibility.Hidden;
+        }
+
+        private void KeyVaultName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

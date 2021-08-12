@@ -344,6 +344,15 @@
   <data name="label_Experimental" xml:space="preserve">
     <value>Experimental</value>
   </data>
+  <data name="label_KeyVaultName" xml:space="preserve">
+    <value>Name of the Azure Key Vault</value>
+  </data>
+  <data name="msg_NotLoggedIn" xml:space="preserve">
+    <value>Please sign in with your work or school account.</value>
+  </data>
+  <data name="tooltip_KeyVaultName" xml:space="preserve">
+    <value>Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself.</value>
+  </data>
   <data name="msg_DocumentUploadStarted" xml:space="preserve">
     <value>Document upload ...</value>
   </data>

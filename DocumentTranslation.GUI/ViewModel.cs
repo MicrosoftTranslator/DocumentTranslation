@@ -38,6 +38,12 @@ namespace DocumentTranslation.GUI
             Settings = AppSettingsSetter.Read();
         }
 
+        /// <summary>
+        /// Initializes the document translation service. Call once per instance.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="KeyVaultAccessException"/>
         public void Initialize()
         {
             try

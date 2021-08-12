@@ -131,25 +131,25 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Vertical">
-                                    <TextBlock TextWrapping="Wrap">
+                                <TextBlock TextWrapping="Wrap" Grid.ColumnSpan="2">
                                         <Run Text="{x:Static resx:Resources.text_SettingsInstructions}" />
                                         <Hyperlink NavigateUri="https://microsofttranslator.github.io/DocumentTranslation/#how-to-obtain-the-service-credentials" RequestNavigate="Hyperlink_RequestNavigate">
                                             <Run Text="{x:Static resx:Resources.text_HowToObtainTheServiceCredentials}"/>
                                         </Hyperlink>
-                                    </TextBlock>
-                                </StackPanel>
-                                <Label Grid.Row="1" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
-                                <Label Grid.Row="2" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
-                                <Label Grid.Row="3" Content="{x:Static resx:Resources.label_ResourceName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
-                                <Label Grid.Row="4" Content="{x:Static resx:Resources.label_StorageConnectionString}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
-                                <Label Grid.Row="5" Content="{x:Static resx:Resources.label_ShowExperimental}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
-                                <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
-                                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
-                                <TextBox Grid.Row="3" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
-                                <TextBox Grid.Row="4" x:Name="storageConnectionString" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
-                                <CheckBox Grid.Row="5" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
-                                <StackPanel Grid.Row="7" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                                </TextBlock>
+                                <Label Grid.Row="1" Content="{x:Static resx:Resources.label_KeyVaultName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="keyVaultName" Height="22" Text="{Binding Settings.AzureKeyVaultName, Mode=TwoWay}" TextChanged="KeyVaultName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}"/>
+                                <Label Grid.Row="2" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
+                                <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
+                                <Label Grid.Row="3" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <ComboBox Grid.Row="3" Grid.Column="1" x:Name="region" Height="22" ItemsSource="{Binding AzureRegions}" DisplayMemberPath="Name" SelectedValue="{Binding Settings.AzureRegion}" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <Label Grid.Row="4" Content="{x:Static resx:Resources.label_ResourceName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
+                                <TextBox Grid.Row="4" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
+                                <Label Grid.Row="5" Content="{x:Static resx:Resources.label_StorageConnectionString}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
+                                <TextBox Grid.Row="5" x:Name="storageConnectionString" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
+                                <Label Grid.Row="6" Content="{x:Static resx:Resources.label_ShowExperimental}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <CheckBox Grid.Row="6" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <StackPanel Grid.Row="8" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                                     <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
                                     <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>
                                 </StackPanel>
@@ -177,6 +177,12 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                    <StatusBar VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="StatusBarSText1" Margin="10,0,0,0"/>
+                            <TextBlock x:Name="StatusBarSText2" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StatusBar>
                 </Grid>
             </TabItem>
             <TabItem Header="?" x:Name="tabHelp" Width="50">

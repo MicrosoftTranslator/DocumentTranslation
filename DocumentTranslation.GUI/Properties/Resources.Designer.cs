@@ -287,6 +287,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name of the Azure Key Vault.
+        /// </summary>
+        public static string label_KeyVaultName {
+            get {
+                return ResourceManager.GetString("label_KeyVaultName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New category ID.
         /// </summary>
         public static string label_NewCategoryIDSample {
@@ -521,6 +530,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please sign in with your work or school account..
+        /// </summary>
+        public static string msg_NotLoggedIn {
+            get {
+                return ResourceManager.GetString("msg_NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resource name incorrect or not a paid subscription.
         /// </summary>
         public static string msg_ResourceNameIncorrect {
@@ -742,6 +760,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_CategoryClear {
             get {
                 return ResourceManager.GetString("tooltip_CategoryClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself..
+        /// </summary>
+        public static string tooltip_KeyVaultName {
+            get {
+                return ResourceManager.GetString("tooltip_KeyVaultName", resourceCulture);
             }
         }
         
