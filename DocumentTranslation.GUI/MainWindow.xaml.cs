@@ -103,7 +103,7 @@ namespace DocumentTranslation.GUI
             subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
-            storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
+            storageConnectionString.Text = ViewModel.Settings.ConnectionStrings?.StorageConnectionString;
             resourceName.Text = ViewModel.Settings.AzureResourceName;
             experimentalCheckbox.IsChecked = ViewModel.Settings.ShowExperimental;
         }
@@ -380,6 +380,7 @@ namespace DocumentTranslation.GUI
 
         private void StorageConnection_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (ViewModel.Settings.ConnectionStrings is null) ViewModel.Settings.ConnectionStrings = new Connectionstrings();
             ViewModel.Settings.ConnectionStrings.StorageConnectionString = storageConnectionString.Text;
         }
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
