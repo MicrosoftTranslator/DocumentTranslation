@@ -240,8 +240,8 @@ namespace DocumentTranslationService.Core
                   (status.DocumentsInProgress != 0)
                 ||(!status.HasCompleted));
             OnStatusUpdate?.Invoke(this, new StatusResponse(status));
-            if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
             Task<List<DocumentStatus>> finalResultsTask = TranslationService.GetFinalResultsAsync();
+            if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
             #endregion
 
             #region Download the translations
