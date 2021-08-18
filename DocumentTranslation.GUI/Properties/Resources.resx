@@ -344,4 +344,10 @@
   <data name="label_Experimental" xml:space="preserve">
     <value>Experimental</value>
   </data>
+  <data name="msg_DocumentUploadStarted" xml:space="preserve">
+    <value>Document upload ...</value>
+  </data>
+  <data name="msg_files" xml:space="preserve">
+    <value>files</value>
+  </data>
 </root>

@@ -248,6 +248,7 @@ namespace DocumentTranslation.GUI
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
             else ViewModel.documentTranslationService.Category = null;
             DocumentTranslationBusiness documentTranslationBusiness = new(ViewModel.documentTranslationService);
+            documentTranslationBusiness.OnUploadStart += DocumentTranslationBusiness_OnUploadStart;
             documentTranslationBusiness.OnUploadComplete += DocumentTranslationBusiness_OnUploadComplete;
             documentTranslationBusiness.OnStatusUpdate += DocumentTranslationBusiness_OnStatusUpdate;
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
@@ -261,6 +262,12 @@ namespace DocumentTranslation.GUI
             _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 3;
+        }
+
+        private void DocumentTranslationBusiness_OnUploadStart(object sender, EventArgs e)
+        {
+            ProgressBar.Value+=2;
+            StatusBarText1.Text = Properties.Resources.msg_DocumentUploadStarted;
         }
 
         private void DocumentTranslationBusiness_OnContainerCreationFailure(object sender, string e)
@@ -288,6 +295,7 @@ namespace DocumentTranslation.GUI
         {
             ProgressBar.Value = 10;
             StatusBarText1.Text = Properties.Resources.msg_DocumentsUploaded;
+            StatusBarText2.Text = e.Item1 + " " + Properties.Resources.msg_files + " " + e.Item2 + " " + Properties.Resources.msg_Bytes;
         }
 
         private void DocumentTranslationBusiness_OnStatusUpdate(object sender, StatusResponse e)

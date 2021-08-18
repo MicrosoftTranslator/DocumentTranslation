@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sat 07/31/2021  9:21:03.58 
+        ///   Looks up a localized string similar to Wed 08/11/2021 21:54:22.28 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -413,6 +413,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Document upload ....
+        /// </summary>
+        public static string msg_DocumentUploadStarted {
+            get {
+                return ResourceManager.GetString("msg_DocumentUploadStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string msg_Done {
@@ -436,6 +445,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_Failed {
             get {
                 return ResourceManager.GetString("msg_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to files.
+        /// </summary>
+        public static string msg_files {
+            get {
+                return ResourceManager.GetString("msg_files", resourceCulture);
             }
         }
         

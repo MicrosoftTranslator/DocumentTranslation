@@ -47,6 +47,13 @@ namespace DocumentTranslationService.Core
         public event EventHandler<(int, long)> OnDownloadComplete;
 
         /// <summary>
+        /// Fires when the source files start uploading.  
+        /// Returns count and total size of the download.
+        /// </summary>
+        public event EventHandler OnUploadStart;
+
+
+        /// <summary>
         /// Fires when the source files completed uploading.  
         /// Returns count and total size of the download.
         /// </summary>
@@ -149,6 +156,7 @@ namespace DocumentTranslationService.Core
             await sourceContainerTask;
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - container creation.");
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} START - Documents and glossaries upload.");
+            OnUploadStart?.Invoke(this, EventArgs.Empty);
             int count = 0;
             long sizeInBytes = 0;
             List<Task> uploadTasks = new();
@@ -177,7 +185,7 @@ namespace DocumentTranslationService.Core
             await Task.WhenAll(uploadTasks);
             //Upload Glossaries
             var result = await glossary.UploadAsync(TranslationService.StorageConnectionString, containerNameBase);
-            if (OnUploadComplete is not null) OnUploadComplete(this, (count, sizeInBytes));
+            OnUploadComplete?.Invoke(this, (count, sizeInBytes));
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} END - Document upload. {sizeInBytes} bytes in {count} documents.");
             #endregion
 
