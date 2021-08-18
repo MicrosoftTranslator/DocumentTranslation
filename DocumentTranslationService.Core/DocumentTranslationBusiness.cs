@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
@@ -28,6 +29,12 @@ namespace DocumentTranslationService.Core
         /// Prevent deletion of storage container. For debugging.
         /// </summary>
         public bool Nodelete { get; set; } = false;
+        
+        /// <summary>
+        /// Fires when errors were encountered in the translation run
+        /// The message is a tab-separated list of files names and the error message and code returned from server
+        /// </summary>
+        public event EventHandler<string> OnThereWereErrors;
 
         /// <summary>
         /// Fires when final results are available;
@@ -282,6 +289,22 @@ namespace DocumentTranslationService.Core
             if (!Nodelete) await DeleteContainersAsync();
             var finalResults = await finalResultsTask;
             OnFinalResults?.Invoke(this, CharactersCharged(finalResults));
+            StringBuilder sb = new();
+            bool thereWereErrors = false;
+            foreach (var documentStatus in finalResults)
+            {
+                if (documentStatus.Error is not null)
+                {
+                    thereWereErrors = true;
+                    sb.Append(documentStatus.SourceDocumentUri.LocalPath + "\t");
+                    sb.Append(documentStatus.Error.Message);
+                    sb.AppendLine(" (" + documentStatus.Error.ErrorCode + ")");
+                }
+            }
+            if (thereWereErrors)
+            {
+                OnThereWereErrors?.Invoke(this, sb.ToString());
+            }
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Run: Exiting.");
             logger.Close();
             #endregion
