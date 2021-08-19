@@ -350,4 +350,13 @@
   <data name="msg_files" xml:space="preserve">
     <value>files</value>
   </data>
+  <data name="button_ShowErrors" xml:space="preserve">
+    <value>Show Errors</value>
+  </data>
+  <data name="title_DocumentTranslationErrors" xml:space="preserve">
+    <value>Document translation errors</value>
+  </data>
+  <data name="button_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>
