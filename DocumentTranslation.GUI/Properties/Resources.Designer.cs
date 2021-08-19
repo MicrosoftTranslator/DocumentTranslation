@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wed 08/11/2021 21:54:22.28 
+        ///   Looks up a localized string similar to Wed 08/18/2021 21:15:35.87 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -107,6 +107,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string button_Close {
+            get {
+                return ResourceManager.GetString("button_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string button_Delete {
@@ -130,6 +139,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string button_Select {
             get {
                 return ResourceManager.GetString("button_Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Errors.
+        /// </summary>
+        public static string button_ShowErrors {
+            get {
+                return ResourceManager.GetString("button_ShowErrors", resourceCulture);
             }
         }
         
@@ -661,6 +679,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string text_SettingsInstructions {
             get {
                 return ResourceManager.GetString("text_SettingsInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document translation errors.
+        /// </summary>
+        public static string title_DocumentTranslationErrors {
+            get {
+                return ResourceManager.GetString("title_DocumentTranslationErrors", resourceCulture);
             }
         }
         

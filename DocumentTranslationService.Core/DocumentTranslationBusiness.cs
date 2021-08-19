@@ -185,7 +185,7 @@ namespace DocumentTranslationService.Core
                     {
                         logger.WriteLine($"Uploading file {fileStream.Name} failed with {e.Message}");
                     }
-                    logger.WriteLine($"File {filename} uploaded.");
+                    logger.WriteLine($"File {filename} upload started.");
                 }
             }
             Debug.WriteLine("Awaiting document upload task completion.");
@@ -256,7 +256,7 @@ namespace DocumentTranslationService.Core
                 ||(!status.HasCompleted));
             OnStatusUpdate?.Invoke(this, new StatusResponse(status));
             Task<List<DocumentStatus>> finalResultsTask = TranslationService.GetFinalResultsAsync();
-            if (status.Status == DocumentTranslationStatus.Failed || status.Status == DocumentTranslationStatus.ValidationFailed) return;
+            if (status.Status == DocumentTranslationStatus.ValidationFailed) return;
             #endregion
 
             #region Download the translations
@@ -296,7 +296,7 @@ namespace DocumentTranslationService.Core
                 if (documentStatus.Error is not null)
                 {
                     thereWereErrors = true;
-                    sb.Append(documentStatus.SourceDocumentUri.LocalPath + "\t");
+                    sb.Append(ToDisplayForm(documentStatus.SourceDocumentUri.LocalPath) + "\t");
                     sb.Append(documentStatus.Error.Message);
                     sb.AppendLine(" (" + documentStatus.Error.ErrorCode + ")");
                 }
@@ -308,6 +308,12 @@ namespace DocumentTranslationService.Core
             logger.WriteLine($"{stopwatch.Elapsed.TotalSeconds} Run: Exiting.");
             logger.Close();
             #endregion
+        }
+
+        private string ToDisplayForm(string localPath)
+        {
+            string[] splits = localPath.Split('/');
+            return splits[splits.Length - 1];
         }
 
         private long CharactersCharged(List<DocumentStatus> finalResults)

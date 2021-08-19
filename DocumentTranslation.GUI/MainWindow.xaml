@@ -59,7 +59,8 @@
                         <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Browse}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
                     </Grid>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,2" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <Button x:Name="translateDocumentsButton" Content="{x:Static resx:Resources.button_TranslateDocuments}" Click="DocumentsTranslateButton_Click" Padding="10,2"  IsEnabled="False" HorizontalAlignment="Right"/>
+                        <Button x:Name="ThereWereErrorsButton" Content="{x:Static resx:Resources.button_ShowErrors}" HorizontalAlignment="Right" BorderBrush="Red" BorderThickness="2" Padding="10,2" Visibility="Hidden" Margin="0,0,10,0" Click="ThereWereErrorsButton_Click"/>
+                        <Button x:Name="translateDocumentsButton" Content="{x:Static resx:Resources.button_TranslateDocuments}" Click="DocumentsTranslateButton_Click" Padding="10,2"  IsEnabled="False" HorizontalAlignment="Right" />
                     </StackPanel>
                     <StatusBar Grid.Row="2" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal">

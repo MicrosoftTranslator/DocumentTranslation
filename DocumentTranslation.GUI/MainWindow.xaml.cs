@@ -254,6 +254,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnDownloadComplete += DocumentTranslationBusiness_OnDownloadComplete;
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
+            documentTranslationBusiness.OnThereWereErrors += DocumentTranslationBusiness_OnThereWereErrors;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
@@ -537,6 +538,20 @@ namespace DocumentTranslation.GUI
             GlossariesListBox.Items.Clear();
             GlossariesClearButton.Visibility = Visibility.Hidden;
             GlossariesSelectButton.Visibility = Visibility.Visible;
+        }
+        private void DocumentTranslationBusiness_OnThereWereErrors(object sender, string e)
+        {
+            ThereWereErrorsButton.Visibility = Visibility.Visible;
+            ViewModel.ErrorsText = e;
+        }
+
+
+        private void ThereWereErrorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowErrors showErrors = new();
+            showErrors.ErrorsText.Text = ViewModel.ErrorsText;
+            showErrors.ShowDialog();
+            ThereWereErrorsButton.Visibility = Visibility.Hidden;
         }
     }
 }
