@@ -24,4 +24,8 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\DocumentTranslationService.dll&#xD;&#xA;" />
+  </Target>
+
 </Project>

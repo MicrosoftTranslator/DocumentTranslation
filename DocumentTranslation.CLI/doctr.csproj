@@ -18,6 +18,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <AssemblyVersion>0.0.6.0</AssemblyVersion>
     <FileVersion>0.0.6.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,5 +52,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.dll&#xD;&#xA;&quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.exe&#xD;&#xA;" />
+  </Target>
 
 </Project>
