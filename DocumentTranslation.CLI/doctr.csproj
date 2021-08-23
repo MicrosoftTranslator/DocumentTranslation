@@ -54,7 +54,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.dll&#xD;&#xA;&quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.exe&#xD;&#xA;" />
+    <Exec Command="if $(ConfigurationName) == Release &quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.dll&#xD;&#xA;if $(ConfigurationName) == Release &quot;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\microsoft.windows.sdk.buildtools\10.0.19041.8\bin\10.0.19041.0\x64\signtool.exe&quot; sign /a $(OutDir)\doctr.exe&#xD;&#xA;" />
   </Target>
 
 </Project>
