@@ -151,7 +151,7 @@ namespace DocumentTranslation.GUI
             catch (Azure.RequestFailedException ex)
             {
                 StatusBarText1.Text = Properties.Resources.msg_Error;
-                if (ex.Status == 401 || ex.Status == 403) StatusBarText2.Text = DocumentTranslation.GUI.Properties.Resources.msg_S1OrHigherTierRequired;
+                if (ex.Status == 401 || ex.Status == 403) StatusBarText2.Text = Properties.Resources.msg_S1OrHigherTierRequired;
                 else StatusBarText2.Text = ex.Message;
                 await Task.Delay(2000);
                 StatusBarText1.Text = string.Empty;
@@ -165,8 +165,9 @@ namespace DocumentTranslation.GUI
             if (ViewModel.FilesToTranslate.Count > 0)
             {
                 if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + "." + toLanguageBoxDocuments.SelectedValue as string;
+                if (!string.IsNullOrEmpty(TargetTextBox.Text)) translateDocumentsButton.IsEnabled = true;
             }
-            if (!string.IsNullOrEmpty(TargetTextBox.Text)) translateDocumentsButton.IsEnabled = true;
+            else translateDocumentsButton.IsEnabled = false;
             return;
         }
 
@@ -226,6 +227,7 @@ namespace DocumentTranslation.GUI
         private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
+            if (ViewModel.FilesToTranslate.Count == 0) return;
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
             ViewModel.TargetFolder = TargetTextBox.Text;
