@@ -158,6 +158,14 @@ namespace DocumentTranslation.GUI
                 StatusBarText2.Text = string.Empty;
                 return;
             }
+            catch
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                await Task.Delay(2000);
+                StatusBarText1.Text = string.Empty;
+                StatusBarText2.Text = string.Empty;
+                return;
+            }
             openFileDialog.ShowDialog();
             foreach (var filename in openFileDialog.FileNames)
                 ViewModel.FilesToTranslate.Add(filename);
