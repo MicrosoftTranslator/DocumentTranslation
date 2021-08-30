@@ -359,4 +359,12 @@
   <data name="button_Close" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="label_DocumentTranslation" xml:space="preserve">
+    <value>Document Translation|</value>
+    <comment>Used for the file filter dialog. </comment>
+  </data>
+  <data name="label_Glossaries" xml:space="preserve">
+    <value>Glossaries|</value>
+    <comment>Used in the file filtering dialog.</comment>
+  </data>
 </root>

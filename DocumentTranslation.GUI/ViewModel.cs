@@ -105,7 +105,7 @@ namespace DocumentTranslation.GUI
         internal async Task<string> GetDocumentExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
-            filterBuilder.Append("Document Translation|");
+            filterBuilder.Append(Properties.Resources.label_DocumentTranslation);
             await documentTranslationService.GetDocumentFormatsAsync();
             foreach (var format in documentTranslationService.FileFormats)
             {
@@ -144,7 +144,7 @@ namespace DocumentTranslation.GUI
         internal async Task<string> GetGlossaryExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
-            filterBuilder.Append("Glossaries|");
+            filterBuilder.Append(Properties.Resources.label_Glossaries);
             await documentTranslationService.GetGlossaryFormatsAsync();
             foreach (var format in documentTranslationService.GlossaryFormats)
             {
