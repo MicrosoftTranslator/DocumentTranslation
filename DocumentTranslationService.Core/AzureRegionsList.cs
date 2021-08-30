@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
     public static class AzureRegionsList
     {
-        public static async Task<List<AzureRegion>> ReadAzureRegionsAsync()
+        public static List<AzureRegion> ReadAzureRegions()
         {
             List<AzureRegion> azureRegions = new();
-            string regionsText = await File.ReadAllTextAsync(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "AzureRegionsList.tsv");
+            string regionsText = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "AzureRegionsList.tsv");
             azureRegions.Clear();
             azureRegions.Add(new AzureRegion("Global", "global"));
             string[] lines = regionsText.Split("\r\n");

@@ -97,9 +97,9 @@ namespace DocumentTranslation.GUI
             ViewModel.Save();
         }
 
-        private async void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
+        private void TabItemAuthentication_Loaded(object sender, RoutedEventArgs e)
         {
-            await ViewModel.GetAzureRegions();
+            ViewModel.GetAzureRegions();
             subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);

@@ -158,10 +158,10 @@ namespace DocumentTranslation.GUI
         }
         #endregion
         #region Credentials
-        public async Task GetAzureRegions()
+        public void GetAzureRegions()
         {
             if (AzureRegions.Count > 5) return;
-            List<AzureRegion> azureRegions = await AzureRegionsList.ReadAzureRegionsAsync();
+            List<AzureRegion> azureRegions =  AzureRegionsList.ReadAzureRegions();
             AzureRegions.Clear();
             foreach (var region in azureRegions)
                 AzureRegions.Add(region);
