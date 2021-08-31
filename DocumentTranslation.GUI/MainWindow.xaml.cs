@@ -24,6 +24,7 @@ namespace DocumentTranslation.GUI
         {
             InitializeComponent();
             ViewModel viewModel = new();
+            DataContext = viewModel;
             viewModel.OnLanguagesUpdate += ViewModel_OnLanguagesUpdate;
             AppSettingsSetter.SettingsReadComplete += AppSettingsSetter_SettingsReadComplete;
             ViewModel = viewModel;
@@ -67,7 +68,6 @@ namespace DocumentTranslation.GUI
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
             CategoryTextBox.SelectedValue = ViewModel.UISettings.lastCategoryText;
             ViewModel_OnLanguagesUpdate(this, EventArgs.Empty);
-            ViewModel.GlossariesToUse.ListChanged += GlossariesToUse_ListChanged;
         }
 
         private void GlossariesToUse_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
