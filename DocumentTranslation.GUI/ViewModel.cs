@@ -35,13 +35,11 @@ namespace DocumentTranslation.GUI
 
         public ViewModel()
         {
-            Debug.WriteLine($"ViewModel constructor. ");
+            Settings = AppSettingsSetter.Read();
         }
 
         public void Initialize()
         {
-            Debug.WriteLine($"ViewModel Initialize. ");
-            Settings = AppSettingsSetter.Read();
             try
             {
                 AppSettingsSetter.CheckSettings(Settings);
