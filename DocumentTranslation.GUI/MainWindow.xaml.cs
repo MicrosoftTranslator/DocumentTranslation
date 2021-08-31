@@ -239,6 +239,7 @@ namespace DocumentTranslation.GUI
             ProgressBar.IsIndeterminate = true;
             ViewModel.TargetFolder = TargetTextBox.Text;
             ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
+            if (ViewModel.GlossariesToUse is null) ViewModel.GlossariesToUse = new();
             ViewModel.GlossariesToUse.Clear();
             foreach (var item in GlossariesListBox.Items) ViewModel.GlossariesToUse.Add(item as string);
             PerLanguageData perLanguageData = new();

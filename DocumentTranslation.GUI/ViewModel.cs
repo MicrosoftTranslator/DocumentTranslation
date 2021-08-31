@@ -27,7 +27,7 @@ namespace DocumentTranslation.GUI
         public string TargetFolder { get; set; }
         public string ErrorsText { get; set; }
 
-        public BindingList<string> GlossariesToUse { get; set; } = new();
+        public BindingList<string> GlossariesToUse { get; set; }
         public event EventHandler OnLanguagesUpdate;
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
