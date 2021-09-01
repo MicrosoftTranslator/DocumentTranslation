@@ -153,8 +153,6 @@
                                     <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
                                     <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>
                                 </StackPanel>
-                                <TextBlock Grid.Row="8" x:Name="SavedSettingsText" Text="{x:Static resx:Resources.msg_SettingsSaved}" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
-                                <TextBlock Grid.Row="8" x:Name="TestSettingsText" Text="{x:Static resx:Resources.msg_TestPassed}" Margin="5" Padding="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Visibility="Hidden"/>
                             </Grid>
                         </TabItem>
                         <TabItem x:Name="CategoriesTab" Header="{x:Static resx:Resources.tabTitle_Categories}" Width="140" Loaded="CategoriesTab_Loaded">

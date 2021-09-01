@@ -18,7 +18,14 @@ namespace DocumentTranslation.GUI
         public BindingList<Language> ToLanguageListForDocuments { get; private set; } = new();
         public BindingList<Language> FromLanguageListForDocuments { get; private set; } = new();
 
-        public DocTransAppSettings Settings { get; set; } = new();
+        public static DocTransAppSettings Settings
+        {
+            get => localSettings.UsingKeyVault ? keyVaultSettings : localSettings;
+            set => localSettings = value;
+        }
+        private static DocTransAppSettings localSettings;
+        private static DocTransAppSettings keyVaultSettings;
+
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
@@ -35,7 +42,7 @@ namespace DocumentTranslation.GUI
 
         public ViewModel()
         {
-            Settings = AppSettingsSetter.Read();
+            localSettings = AppSettingsSetter.Read();
         }
 
         /// <summary>
@@ -44,15 +51,23 @@ namespace DocumentTranslation.GUI
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="KeyVaultAccessException"/>
-        public void Initialize()
+        public async Task InitializeAsync()
         {
-            try
+            if (localSettings.UsingKeyVault)
             {
-                AppSettingsSetter.CheckSettings(Settings);
+                KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
+                keyVaultSettings = await kv.GetKVCredentialsAsync();
             }
-            catch (ArgumentException e)
+            else
             {
-                throw new ArgumentNullException(e.ParamName);
+                try
+                {
+                    AppSettingsSetter.CheckSettings(Settings);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new ArgumentNullException(e.ParamName);
+                }
             }
             DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
             documentTranslationService.AzureRegion = Settings.AzureRegion;
@@ -71,7 +86,7 @@ namespace DocumentTranslation.GUI
             UISettingsSetter.Write(null, UISettings);
         }
 
-        public void SaveAppSettings()
+        public static void SaveAppSettings()
         {
             AppSettingsSetter.Write(null, Settings);
         }
@@ -171,7 +186,7 @@ namespace DocumentTranslation.GUI
         public void GetAzureRegions()
         {
             if (AzureRegions.Count > 5) return;
-            List<AzureRegion> azureRegions =  AzureRegionsList.ReadAzureRegions();
+            List<AzureRegion> azureRegions = AzureRegionsList.ReadAzureRegions();
             AzureRegions.Clear();
             foreach (var region in azureRegions)
                 AzureRegions.Add(region);

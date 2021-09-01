@@ -53,11 +53,11 @@ namespace DocumentTranslation.GUI
             EnableTabs();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                ViewModel.Initialize();
+                await ViewModel.InitializeAsync();
             }
             catch (ArgumentNullException ex)
             {
@@ -438,12 +438,12 @@ namespace DocumentTranslation.GUI
         }
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            SavedSettingsText.Visibility = Visibility.Visible;
+            StatusBarSText1.Text = Properties.Resources.msg_SettingsSaved;
             ViewModel.SaveAppSettings();
             EnableTabs();
-            ViewModel.Initialize();
-            await Task.Delay(1000);
-            SavedSettingsText.Visibility = Visibility.Hidden;
+            await ViewModel.InitializeAsync();
+            await Task.Delay(3000);
+            StatusBarSText1.Text = string.Empty;
         }
 
         private void CategoriesTab_Loaded(object sender, RoutedEventArgs e)
@@ -513,31 +513,34 @@ namespace DocumentTranslation.GUI
 
         private async void TestSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            TestSettingsText.Text = Properties.Resources.Label_Testing;
-            TestSettingsText.Visibility = Visibility.Visible;
+            StatusBarSText1.Text = Properties.Resources.Label_Testing;
             try
             {
-                ViewModel.Initialize();
+                await ViewModel.InitializeAsync();
                 await ViewModel.documentTranslationService.TryCredentials();
-                TestSettingsText.Text = Properties.Resources.msg_TestPassed;
+                StatusBarSText1.Text = Properties.Resources.msg_TestPassed;
             }
             catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
             {
                 string message;
                 if (ex.Message == "name") message = Properties.Resources.msg_ResourceNameIncorrect;
                 else message = ex.Message;
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + message;
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarSText2.Text = message;
             }
             catch (ArgumentNullException ex)
             {
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarSText2.Text = ex.Message;
             }
             catch (KeyVaultAccessException ex)
             {
-                TestSettingsText.Text = Properties.Resources.msg_TestFailed + ": " + ex.Message;
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarSText2.Text = ex.Message;
             }
-            await Task.Delay(3000);
-            TestSettingsText.Visibility = Visibility.Hidden;
+            await Task.Delay(5000);
+            StatusBarSText1.Text = string.Empty;
+            StatusBarSText2.Text = string.Empty;
         }
 
         private void FromLanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

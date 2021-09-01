@@ -20,7 +20,8 @@ namespace DocumentTranslationService.Core
         /// Retrieve the Translator credentials from the key vault
         /// Caller should catch the Azure.RequestFailed exception.
         /// </summary>
-        /// <returns></returns>
+        /// <returns cref="DocTransAppSettings">DocTransAppSettings class</returns>
+        /// <exception cref="KeyVaultAccessException"/>
         public async Task<DocTransAppSettings> GetKVCredentialsAsync()
         {
             SecretClient client = new(new Uri("https://" + KeyVaultName + ".vault.azure.net/"), new DefaultAzureCredential());
@@ -55,7 +56,7 @@ namespace DocumentTranslationService.Core
                         settings.AzureResourceName = kvSecret.Value.Value;
                         break;
                     case "StorageConnectionString":
-                        settings.ConnectionStrings = new();
+                        if (settings.ConnectionStrings is null) settings.ConnectionStrings = new();
                         settings.ConnectionStrings.StorageConnectionString = kvSecret.Value.Value;
                         break;
                     case "SubscriptionKey":
