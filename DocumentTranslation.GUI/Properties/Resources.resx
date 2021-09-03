@@ -376,4 +376,7 @@
     <value>Glossaries|</value>
     <comment>Used in the file filtering dialog.</comment>
   </data>
+  <data name="msg_SigningIn" xml:space="preserve">
+    <value>Signing in ...</value>
+  </data>
 </root>

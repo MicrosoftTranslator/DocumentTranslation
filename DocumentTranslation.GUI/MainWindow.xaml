@@ -138,7 +138,14 @@
                                         </Hyperlink>
                                 </TextBlock>
                                 <Label Grid.Row="1" Content="{x:Static resx:Resources.label_KeyVaultName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}"/>
-                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="keyVaultName" Height="22" Text="{Binding Settings.AzureKeyVaultName, Mode=TwoWay}" TextChanged="KeyVaultName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}"/>
+                                <Grid Grid.Row="1" Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" x:Name="keyVaultName" Height="22" Text="{Binding Settings.AzureKeyVaultName, Mode=TwoWay}" TextChanged="KeyVaultName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}" Margin="0,0,5,0"/>
+                                    <Button Grid.Column="1" Width="Auto" Content="{x:Static resx:Resources.button_Clear}" Height="22" Margin="5,0,0,0" Padding="2" Click="KeyVaultNameClearButton_Click"/>
+                                </Grid>
                                 <Label Grid.Row="2" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <Label Grid.Row="3" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>

@@ -23,7 +23,7 @@ namespace DocumentTranslation.GUI
             get => localSettings.UsingKeyVault ? keyVaultSettings : localSettings;
             set => localSettings = value;
         }
-        private static DocTransAppSettings localSettings;
+        internal static DocTransAppSettings localSettings;
         private static DocTransAppSettings keyVaultSettings;
 
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
@@ -88,7 +88,7 @@ namespace DocumentTranslation.GUI
 
         public static void SaveAppSettings()
         {
-            AppSettingsSetter.Write(null, Settings);
+            AppSettingsSetter.Write(null, localSettings);
         }
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)

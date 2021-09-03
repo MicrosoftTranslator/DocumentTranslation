@@ -66,6 +66,7 @@ namespace DocumentTranslationService.Core
                         break;
                 }
             }
+            settings.AzureKeyVaultName = KeyVaultName;
             return settings;
         }
     }
