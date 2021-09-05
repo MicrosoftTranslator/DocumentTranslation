@@ -95,10 +95,10 @@ namespace DocumentTranslation.GUI
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.UISettings.lastToLanguage = toLanguageBox.SelectedValue as string;
-            ViewModel.UISettings.lastFromLanguage = fromLanguageBox.SelectedValue as string;
-            ViewModel.UISettings.lastToLanguageDocuments = toLanguageBoxDocuments.SelectedValue as string;
-            ViewModel.UISettings.lastFromLanguageDocuments = fromLanguageBoxDocuments.SelectedValue as string;
+            if (toLanguageBox.SelectedIndex >= 0) ViewModel.UISettings.lastToLanguage = toLanguageBox.SelectedValue as string;
+            if (fromLanguageBox.SelectedIndex >= 0) ViewModel.UISettings.lastFromLanguage = fromLanguageBox.SelectedValue as string;
+            if (toLanguageBoxDocuments.SelectedIndex >= 0) ViewModel.UISettings.lastToLanguageDocuments = toLanguageBoxDocuments.SelectedValue as string;
+            if (fromLanguageBox.SelectedIndex >= 0) ViewModel.UISettings.lastFromLanguageDocuments = fromLanguageBoxDocuments.SelectedValue as string;
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.UISettings.lastCategoryDocuments = ((MyCategory)CategoryDocumentsBox.SelectedItem).Name ?? string.Empty;
             else ViewModel.UISettings.lastCategoryDocuments = null;
             if (CategoryTextBox.SelectedItem is not null) ViewModel.UISettings.lastCategoryText = ((MyCategory)CategoryTextBox.SelectedItem).Name ?? string.Empty;
@@ -196,9 +196,8 @@ namespace DocumentTranslation.GUI
             if (ViewModel.FilesToTranslate.Count > 0)
             {
                 if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + "." + toLanguageBoxDocuments.SelectedValue as string;
-                if (!string.IsNullOrEmpty(TargetTextBox.Text)) translateDocumentsButton.IsEnabled = true;
             }
-            else translateDocumentsButton.IsEnabled = false;
+            SetTranslateDocumentsButtonStatus();
             return;
         }
 
@@ -211,6 +210,7 @@ namespace DocumentTranslation.GUI
             CancelButton.Background = Brushes.Gray;
             CancelButton.Visibility = Visibility.Visible;
             TargetOpenButton.Visibility = Visibility.Hidden;
+            SetTranslateDocumentsButtonStatus();
         }
 
         private async void GlossariesBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -252,11 +252,18 @@ namespace DocumentTranslation.GUI
             if ((perLanguageData is not null) && (perLanguageData.lastTargetFolder is not null)) folderBrowserDialog.SelectedPath = perLanguageData.lastTargetFolder;
             folderBrowserDialog.ShowDialog();
             TargetTextBox.Text = folderBrowserDialog.SelectedPath;
-            if ((ViewModel.FilesToTranslate.Count > 0) && (!string.IsNullOrEmpty(TargetTextBox.Text))) translateDocumentsButton.IsEnabled = true;
+            SetTranslateDocumentsButtonStatus();
+        }
+
+        private void SetTranslateDocumentsButtonStatus()
+        {
+            if ((ViewModel.FilesToTranslate.Count > 0) && (!string.IsNullOrEmpty(TargetTextBox.Text)) && (toLanguageBoxDocuments.SelectedIndex >= 0)) translateDocumentsButton.IsEnabled = true;
+            else translateDocumentsButton.IsEnabled = false;
         }
 
         private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
         {
+            if (toLanguageBoxDocuments.SelectedIndex < 0) return;
             ResetUI();
             if (ViewModel.FilesToTranslate.Count == 0) return;
             CancelButton.IsEnabled = true;
@@ -588,6 +595,7 @@ namespace DocumentTranslation.GUI
                 outputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
                 outputBox.TextAlignment = TextAlignment.Left;
             }
+            SetTranslateDocumentsButtonStatus();
         }
 
         private void TranslateTextTab_Loaded(object sender, RoutedEventArgs e)

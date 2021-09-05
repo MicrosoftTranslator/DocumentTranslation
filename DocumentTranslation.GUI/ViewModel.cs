@@ -14,7 +14,7 @@ namespace DocumentTranslation.GUI
     {
         public BindingList<Language> ToLanguageList { get; private set; } = new();
         public BindingList<Language> FromLanguageList { get; private set; } = new();
-        internal UISettings UISettings = new();
+        internal static UISettings UISettings;
         public BindingList<Language> ToLanguageListForDocuments { get; private set; } = new();
         public BindingList<Language> FromLanguageListForDocuments { get; private set; } = new();
 
@@ -81,7 +81,7 @@ namespace DocumentTranslation.GUI
             return;
         }
 
-        public void SaveUISettings()
+        public static void SaveUISettings()
         {
             UISettingsSetter.Write(null, UISettings);
         }
