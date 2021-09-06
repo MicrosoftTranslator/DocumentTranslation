@@ -134,10 +134,10 @@ namespace DocumentTranslation.GUI
                 region.IsEnabled = true;
                 storageConnectionString.IsEnabled = true;
                 resourceName.IsEnabled = true;
-                ViewModel.GetAzureRegions();
             }
             keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
             subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
+            ViewModel.GetAzureRegions();
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
             storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings?.StorageConnectionString;
