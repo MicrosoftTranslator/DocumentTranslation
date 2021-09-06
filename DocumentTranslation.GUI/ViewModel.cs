@@ -37,12 +37,14 @@ namespace DocumentTranslation.GUI
         public BindingList<string> GlossariesToUse { get; set; }
         public event EventHandler OnLanguagesUpdate;
 
-        internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
+        internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new();
         public readonly Categories categories = new();
 
         public ViewModel()
         {
             localSettings = AppSettingsSetter.Read();
+            UISettings = UISettingsSetter.Read();
+            if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
         }
 
         /// <summary>
@@ -53,6 +55,9 @@ namespace DocumentTranslation.GUI
         /// <exception cref="KeyVaultAccessException"/>
         public async Task InitializeAsync()
         {
+            documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
+            documentTranslationService.ShowExperimental = localSettings.ShowExperimental;
+            _ = documentTranslationService.GetLanguagesAsync();   //this method can be called without credentials, and before the document translation service is initialized with credentials.
             if (localSettings.UsingKeyVault)
             {
                 KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
@@ -69,14 +74,12 @@ namespace DocumentTranslation.GUI
                     throw new ArgumentNullException(e.ParamName);
                 }
             }
-            DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
-            documentTranslationService.AzureRegion = Settings.AzureRegion;
-            this.documentTranslationService = documentTranslationService;
-            documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            documentTranslationService.ShowExperimental = Settings.ShowExperimental;
+
+            documentTranslationService.SubscriptionKey = Settings.SubscriptionKey;
+            documentTranslationService.AzureRegion= Settings.AzureRegion;
+            documentTranslationService.AzureResourceName = Settings.AzureResourceName;
+            documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
             textTranslationService = new(documentTranslationService);
-            UISettings = UISettingsSetter.Read();
-            if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
             _ = this.documentTranslationService.InitializeAsync();
             return;
         }
@@ -93,7 +96,7 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
-            //Document translation does not support experimental langauges. Maintain two separate language lists between document and text translation
+            //Document translation does not support experimental languages. Maintain two separate language lists between document and text translation
             ToLanguageList.Clear();
             FromLanguageList.Clear();
             ToLanguageListForDocuments.Clear();

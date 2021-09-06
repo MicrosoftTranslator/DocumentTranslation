@@ -15,7 +15,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The "Connection String" of the Azure blob storage resource. Get from properties of Azure storage.
         /// </summary>
-        public string StorageConnectionString { get; } = string.Empty;
+        public string StorageConnectionString { get; set; } = string.Empty;
 
         /// <summary>
         /// Holds the Custom Translator category.
@@ -25,7 +25,7 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// Your Azure Translator subscription key. Get from properties of the Translator resource
         /// </summary>
-        public string SubscriptionKey { get; } = string.Empty;
+        public string SubscriptionKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The region of your Translator subscription.
@@ -36,13 +36,13 @@ namespace DocumentTranslationService.Core
         /// <summary>
         /// The name of the Azure Translator resource
         /// </summary>
-        public string AzureResourceName { get; } = string.Empty;
+        public string AzureResourceName { get; set; } = string.Empty;
 
         internal BlobContainerClient ContainerClientSource { get; set; }
         internal BlobContainerClient ContainerClientTarget { get; set; }
         public DocumentTranslationOperation DocumentTranslationOperation { get => documentTranslationOperation; set => documentTranslationOperation = value; }
 
-        private readonly DocumentTranslationClient documentTranslationClient;
+        private DocumentTranslationClient documentTranslationClient;
 
         private DocumentTranslationOperation documentTranslationOperation;
 
@@ -70,7 +70,11 @@ namespace DocumentTranslationService.Core
             this.SubscriptionKey = SubscriptionKey;
             this.AzureResourceName = AzureResourceName;
             this.StorageConnectionString = StorageConnectionString;
-            documentTranslationClient = new(new Uri("https://" + AzureResourceName + baseUriTemplate), new Azure.AzureKeyCredential(SubscriptionKey));
+        }
+
+        public DocumentTranslationService()
+        {
+
         }
 
         /// <summary>
@@ -86,6 +90,7 @@ namespace DocumentTranslationService.Core
         {
             if (String.IsNullOrEmpty(AzureResourceName)) throw new CredentialsException("name");
             if (String.IsNullOrEmpty(SubscriptionKey)) throw new CredentialsException("key");
+            documentTranslationClient = new(new Uri("https://" + AzureResourceName + baseUriTemplate), new Azure.AzureKeyCredential(SubscriptionKey));
             List<Task> tasks = new();
             tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
