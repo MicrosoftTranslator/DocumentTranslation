@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thu 09/02/2021 11:09:51.79 
+        ///   Looks up a localized string similar to Mon 09/06/2021 13:07:56.81 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -382,6 +382,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Translation {
             get {
                 return ResourceManager.GetString("label_Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authenticating....
+        /// </summary>
+        public static string msg_Authenticating {
+            get {
+                return ResourceManager.GetString("msg_Authenticating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication complete..
+        /// </summary>
+        public static string msg_AuthenticationComplete {
+            get {
+                return ResourceManager.GetString("msg_AuthenticationComplete", resourceCulture);
             }
         }
         

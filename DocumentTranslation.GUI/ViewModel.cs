@@ -36,6 +36,8 @@ namespace DocumentTranslation.GUI
 
         public BindingList<string> GlossariesToUse { get; set; }
         public event EventHandler OnLanguagesUpdate;
+        public event EventHandler OnKeyVaultAuthenicationStart;
+        public event EventHandler OnKeyVaultAuthenicationComplete;
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new();
         public readonly Categories categories = new();
@@ -60,8 +62,12 @@ namespace DocumentTranslation.GUI
             _ = documentTranslationService.GetLanguagesAsync();   //this method can be called without credentials, and before the document translation service is initialized with credentials.
             if (localSettings.UsingKeyVault)
             {
+                Debug.WriteLine($"Start authententicating Key Vault {localSettings.AzureKeyVaultName}");
+                OnKeyVaultAuthenicationStart?.Invoke(this, EventArgs.Empty);
                 KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
                 keyVaultSettings = await kv.GetKVCredentialsAsync();
+                Debug.WriteLine($"Authentication Complete {localSettings.AzureKeyVaultName}");
+                OnKeyVaultAuthenicationComplete?.Invoke(this, EventArgs.Empty);
             }
             else
             {
