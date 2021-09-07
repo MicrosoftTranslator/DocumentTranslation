@@ -268,7 +268,7 @@
     <value>This list of category names provides easy access to a friendly name for custom translation systems you have built with Custom Translator. More information at http://customtranslator.ai. No need to use this unless you have built a custom translation system. </value>
   </data>
   <data name="text_SettingsInstructions" xml:space="preserve">
-    <value>Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization's Azure administrator.</value>
+    <value>Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization's Azure administrator. Or enter the name of an Azure Key Vault.</value>
   </data>
   <data name="title_WindowTitle" xml:space="preserve">
     <value>Document Translation</value>
@@ -344,6 +344,15 @@
   <data name="label_Experimental" xml:space="preserve">
     <value>Experimental</value>
   </data>
+  <data name="label_KeyVaultName" xml:space="preserve">
+    <value>Name of the Azure Key Vault</value>
+  </data>
+  <data name="msg_NotLoggedIn" xml:space="preserve">
+    <value>Please sign in with your work or school account.</value>
+  </data>
+  <data name="tooltip_KeyVaultName" xml:space="preserve">
+    <value>Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself.</value>
+  </data>
   <data name="msg_DocumentUploadStarted" xml:space="preserve">
     <value>Document upload ...</value>
   </data>
@@ -366,5 +375,11 @@
   <data name="label_Glossaries" xml:space="preserve">
     <value>Glossaries|</value>
     <comment>Used in the file filtering dialog.</comment>
+  </data>
+  <data name="msg_SigningIn" xml:space="preserve">
+    <value>Signing in ...</value>
+  </data>
+  <data name="msg_SignInComplete" xml:space="preserve">
+    <value>Signed in</value>
   </data>
 </root>

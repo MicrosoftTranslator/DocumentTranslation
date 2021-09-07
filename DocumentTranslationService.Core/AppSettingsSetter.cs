@@ -3,9 +3,9 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
@@ -27,6 +27,12 @@ namespace DocumentTranslationService.Core
             return JsonSerializer.Serialize(settings, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true });
         }
 
+        /// <summary>
+        /// Reads settings from file and from Azure KeyVault, if file settings indicate a key vault
+        /// </summary>
+        /// <param name="filename">File name to read settings from</param>
+        /// <returns>Task</returns>
+        /// <exception cref="KeyVaultAccessException" />
         public static DocTransAppSettings Read(string filename = null)
         {
             string appsettingsJson;
@@ -35,7 +41,6 @@ namespace DocumentTranslationService.Core
                 if (string.IsNullOrEmpty(filename)) filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
                 appsettingsJson = File.ReadAllText(filename);
             }
-
             catch (Exception ex)
             {
                 if (ex is FileNotFoundException || ex is DirectoryNotFoundException)
@@ -47,9 +52,17 @@ namespace DocumentTranslationService.Core
                 }
                 throw;
             }
-            DocTransAppSettings result =  JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            DocTransAppSettings result = JsonSerializer.Deserialize<DocTransAppSettings>(appsettingsJson, new JsonSerializerOptions { IncludeFields = true });
+            if (!string.IsNullOrEmpty(result.AzureKeyVaultName))
+            {
+                Debug.WriteLine($"Authentication: Using Azure Key Vault {result.AzureKeyVaultName} to read credentials.");
+            }
+            else
+            {
+                Debug.WriteLine("Authentication: Using appsettings.json file to read credentials.");
+                SettingsReadComplete?.Invoke(null, EventArgs.Empty);
+            }
             if (result.AzureRegion is null) result.AzureRegion = "global";
-            SettingsReadComplete?.Invoke(null, EventArgs.Empty);
             return result;
         }
 
@@ -81,41 +94,5 @@ namespace DocumentTranslationService.Core
             }
             return;
         }
-    }
-
-    public class DocTransAppSettings
-    {
-        /// <summary>
-        /// Name of the Azure Translator resource
-        /// </summary>
-        public string AzureResourceName { get; set; }
-        /// <summary>
-        /// Hold sthe connection strings.
-        /// </summary>
-        public Connectionstrings ConnectionStrings { get; set; }
-        /// <summary>
-        /// The subscription key to use.
-        /// </summary>
-        public string SubscriptionKey { get; set; }
-        /// <summary>
-        /// Whether to show experimental languages
-        /// </summary>
-        public bool ShowExperimental { get; set; }
-        /// <summary>
-        /// The Custom Translator category ID to use. 
-        /// </summary>
-        public string Category { get; set; }
-        /// <summary>
-        /// Hold the Azure region. Important only for text translation. This is the region ID, not the region friendly name.
-        /// </summary>
-        public string AzureRegion { get; set; }
-    }
-
-    public class Connectionstrings
-    {
-        /// <summary>
-        /// Azure storage connection string, copied from the portal.
-        /// </summary>
-        public string StorageConnectionString { get; set; }
     }
 }

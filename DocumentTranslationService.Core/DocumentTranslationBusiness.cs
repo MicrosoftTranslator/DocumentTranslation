@@ -310,10 +310,10 @@ namespace DocumentTranslationService.Core
             #endregion
         }
 
-        private string ToDisplayForm(string localPath)
+        private static string ToDisplayForm(string localPath)
         {
             string[] splits = localPath.Split('/');
-            return splits[splits.Length - 1];
+            return splits[^1];
         }
 
         private long CharactersCharged(List<DocumentStatus> finalResults)

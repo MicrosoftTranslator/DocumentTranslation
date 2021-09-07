@@ -14,11 +14,18 @@ namespace DocumentTranslation.GUI
     {
         public BindingList<Language> ToLanguageList { get; private set; } = new();
         public BindingList<Language> FromLanguageList { get; private set; } = new();
-        internal UISettings UISettings = new();
+        internal static UISettings UISettings;
         public BindingList<Language> ToLanguageListForDocuments { get; private set; } = new();
         public BindingList<Language> FromLanguageListForDocuments { get; private set; } = new();
 
-        public DocTransAppSettings Settings { get; set; } = new();
+        public static DocTransAppSettings Settings
+        {
+            get => localSettings.UsingKeyVault ? keyVaultSettings : localSettings;
+            set => localSettings = value;
+        }
+        internal static DocTransAppSettings localSettings;
+        private static DocTransAppSettings keyVaultSettings;
+
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
@@ -29,50 +36,73 @@ namespace DocumentTranslation.GUI
 
         public BindingList<string> GlossariesToUse { get; set; }
         public event EventHandler OnLanguagesUpdate;
+        public event EventHandler OnKeyVaultAuthenicationStart;
+        public event EventHandler OnKeyVaultAuthenicationComplete;
 
-        internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService;
+        internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new();
         public readonly Categories categories = new();
 
         public ViewModel()
         {
-            Settings = AppSettingsSetter.Read();
-        }
-
-        public void Initialize()
-        {
-            try
-            {
-                AppSettingsSetter.CheckSettings(Settings);
-            }
-            catch (ArgumentException e)
-            {
-                throw new ArgumentNullException(e.ParamName);
-            }
-            DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(Settings.SubscriptionKey, Settings.AzureResourceName, Settings.ConnectionStrings.StorageConnectionString);
-            documentTranslationService.AzureRegion = Settings.AzureRegion;
-            this.documentTranslationService = documentTranslationService;
-            documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
-            documentTranslationService.ShowExperimental = Settings.ShowExperimental;
-            textTranslationService = new(documentTranslationService);
+            localSettings = AppSettingsSetter.Read();
             UISettings = UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
+        }
+
+        /// <summary>
+        /// Initializes the document translation service. Call once per instance.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="KeyVaultAccessException"/>
+        public async Task InitializeAsync()
+        {
+            documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
+            documentTranslationService.ShowExperimental = localSettings.ShowExperimental;
+            _ = documentTranslationService.GetLanguagesAsync();   //this method can be called without credentials, and before the document translation service is initialized with credentials.
+            if (localSettings.UsingKeyVault)
+            {
+                Debug.WriteLine($"Start authententicating Key Vault {localSettings.AzureKeyVaultName}");
+                OnKeyVaultAuthenicationStart?.Invoke(this, EventArgs.Empty);
+                KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
+                keyVaultSettings = await kv.GetKVCredentialsAsync();
+                Debug.WriteLine($"Authentication Complete {localSettings.AzureKeyVaultName}");
+                OnKeyVaultAuthenicationComplete?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                try
+                {
+                    AppSettingsSetter.CheckSettings(Settings);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new ArgumentNullException(e.ParamName);
+                }
+            }
+
+            documentTranslationService.SubscriptionKey = Settings.SubscriptionKey;
+            documentTranslationService.AzureRegion= Settings.AzureRegion;
+            documentTranslationService.AzureResourceName = Settings.AzureResourceName;
+            documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
+            textTranslationService = new(documentTranslationService);
             _ = this.documentTranslationService.InitializeAsync();
             return;
         }
 
-        public void SaveUISettings()
+        public static void SaveUISettings()
         {
             UISettingsSetter.Write(null, UISettings);
         }
 
-        public void SaveAppSettings()
+        public static void SaveAppSettings()
         {
-            AppSettingsSetter.Write(null, Settings);
+            AppSettingsSetter.Write(null, localSettings);
         }
 
         private void DocumentTranslationService_OnLanguagesUpdate(object sender, EventArgs e)
         {
-            //Document translation does not support experimental langauges. Maintain two separate language lists between document and text translation
+            //Document translation does not support experimental languages. Maintain two separate language lists between document and text translation
             ToLanguageList.Clear();
             FromLanguageList.Clear();
             ToLanguageListForDocuments.Clear();
@@ -165,7 +195,7 @@ namespace DocumentTranslation.GUI
         public void GetAzureRegions()
         {
             if (AzureRegions.Count > 5) return;
-            List<AzureRegion> azureRegions =  AzureRegionsList.ReadAzureRegions();
+            List<AzureRegion> azureRegions = AzureRegionsList.ReadAzureRegions();
             AzureRegions.Clear();
             foreach (var region in azureRegions)
                 AzureRegions.Add(region);

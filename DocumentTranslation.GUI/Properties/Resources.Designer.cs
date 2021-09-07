@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sun 08/29/2021 17:19:14.77 
+        ///   Looks up a localized string similar to Mon 09/06/2021 17:33:39.26 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -283,6 +283,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Input {
             get {
                 return ResourceManager.GetString("label_Input", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the Azure Key Vault.
+        /// </summary>
+        public static string label_KeyVaultName {
+            get {
+                return ResourceManager.GetString("label_KeyVaultName", resourceCulture);
             }
         }
         
@@ -521,6 +530,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please sign in with your work or school account..
+        /// </summary>
+        public static string msg_NotLoggedIn {
+            get {
+                return ResourceManager.GetString("msg_NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resource name incorrect or not a paid subscription.
         /// </summary>
         public static string msg_ResourceNameIncorrect {
@@ -544,6 +562,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_SettingsSaved {
             get {
                 return ResourceManager.GetString("msg_SettingsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed in.
+        /// </summary>
+        public static string msg_SignInComplete {
+            get {
+                return ResourceManager.GetString("msg_SignInComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing in ....
+        /// </summary>
+        public static string msg_SigningIn {
+            get {
+                return ResourceManager.GetString("msg_SigningIn", resourceCulture);
             }
         }
         
@@ -692,7 +728,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization&apos;s Azure administrator..
+        ///   Looks up a localized string similar to Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization&apos;s Azure administrator. Or enter the name of an Azure Key Vault..
         /// </summary>
         public static string text_SettingsInstructions {
             get {
@@ -742,6 +778,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_CategoryClear {
             get {
                 return ResourceManager.GetString("tooltip_CategoryClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself..
+        /// </summary>
+        public static string tooltip_KeyVaultName {
+            get {
+                return ResourceManager.GetString("tooltip_KeyVaultName", resourceCulture);
             }
         }
         
