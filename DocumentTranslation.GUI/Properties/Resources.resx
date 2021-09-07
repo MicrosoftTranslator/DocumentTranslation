@@ -268,7 +268,7 @@
     <value>This list of category names provides easy access to a friendly name for custom translation systems you have built with Custom Translator. More information at http://customtranslator.ai. No need to use this unless you have built a custom translation system. </value>
   </data>
   <data name="text_SettingsInstructions" xml:space="preserve">
-    <value>Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization's Azure administrator.</value>
+    <value>Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization's Azure administrator. Or enter the name of an Azure Key Vault.</value>
   </data>
   <data name="title_WindowTitle" xml:space="preserve">
     <value>Document Translation</value>
