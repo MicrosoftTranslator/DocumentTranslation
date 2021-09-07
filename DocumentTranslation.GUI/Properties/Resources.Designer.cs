@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 09/06/2021 13:07:56.81 
+        ///   Looks up a localized string similar to Mon 09/06/2021 17:24:15.08 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -386,24 +386,6 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authenticating....
-        /// </summary>
-        public static string msg_Authenticating {
-            get {
-                return ResourceManager.GetString("msg_Authenticating", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Authentication complete..
-        /// </summary>
-        public static string msg_AuthenticationComplete {
-            get {
-                return ResourceManager.GetString("msg_AuthenticationComplete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to bytes.
         /// </summary>
         public static string msg_Bytes {
@@ -580,6 +562,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_SettingsSaved {
             get {
                 return ResourceManager.GetString("msg_SettingsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed in.
+        /// </summary>
+        public static string msg_SignInComplete {
+            get {
+                return ResourceManager.GetString("msg_SignInComplete", resourceCulture);
             }
         }
         

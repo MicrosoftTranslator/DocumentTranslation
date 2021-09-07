@@ -39,12 +39,12 @@ namespace DocumentTranslation.GUI
         }
         private void ViewModel_OnKeyVaultAuthenicationStart(object sender, EventArgs e)
         {
-            StatusBarText1.Text = Properties.Resources.msg_Authenticating;
+            StatusBarText1.Text = Properties.Resources.msg_SigningIn;
         }
 
         private async void ViewModel_OnKeyVaultAuthenicationComplete(object sender, EventArgs e)
         {
-            StatusBarText1.Text = Properties.Resources.msg_AuthenticationComplete;
+            StatusBarText1.Text = Properties.Resources.msg_SignInComplete;
             await Task.Delay(3000);
             StatusBarText1.Text = string.Empty;
         }
@@ -85,6 +85,14 @@ namespace DocumentTranslation.GUI
                 TranslateTextTab.IsEnabled = false; 
                 System.Resources.ResourceManager resx = new("DocumentTranslation.GUI.Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
                 StatusBarSText1.Text = resx.GetString(ex.Message, System.Globalization.CultureInfo.CurrentCulture);
+                StatusBarSText2.Text = ex.InnerException.Message;
+            }
+            catch (System.AggregateException ex)
+            {
+                SettingsTab.IsSelected = true;
+                TranslateDocumentsTab.IsEnabled = false;
+                TranslateTextTab.IsEnabled = false;
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
                 StatusBarSText2.Text = ex.InnerException.Message;
             }
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
@@ -423,17 +431,17 @@ namespace DocumentTranslation.GUI
             if (string.IsNullOrEmpty(ViewModel.Settings.ConnectionStrings.StorageConnectionString)) TranslateDocumentsTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
-            if (ViewModel.Settings.UsingKeyVault)
+            region.ItemsSource = ViewModel.AzureRegions;
+            if (ViewModel.localSettings.UsingKeyVault)
             {
-                keyVaultName.Text = ViewModel.Settings.AzureKeyVaultName;
+                keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
             }
             else
             {
-                subscriptionKey.Password = ViewModel.Settings.SubscriptionKey;
-                region.ItemsSource = ViewModel.AzureRegions;
-                region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.Settings.AzureRegion);
-                storageConnectionString.Text = ViewModel.Settings.ConnectionStrings.StorageConnectionString;
-                resourceName.Text = ViewModel.Settings.AzureResourceName;
+                subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
+                region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
+                storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings.StorageConnectionString;
+                resourceName.Text = ViewModel.localSettings.AzureResourceName;
             }
         }
         private void KeyVaultName_TextChanged(object sender, RoutedEventArgs e)
@@ -466,6 +474,7 @@ namespace DocumentTranslation.GUI
 
         private async void TestSettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            StatusBarSText2.Text = string.Empty;
             StatusBarSText1.Text = Properties.Resources.Label_Testing;
             try
             {
@@ -491,16 +500,22 @@ namespace DocumentTranslation.GUI
                 StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
                 StatusBarSText2.Text = ex.Message;
             }
-            await Task.Delay(5000);
+            catch (System.AggregateException ex)
+            {
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarSText2.Text = ex.InnerException.Message;
+            }
+            await Task.Delay(10000);
             StatusBarSText1.Text = string.Empty;
             StatusBarSText2.Text = string.Empty;
         }
 
         private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            StatusBarSText2.Text = string.Empty;
             StatusBarSText1.Text = Properties.Resources.msg_SettingsSaved;
             ViewModel.SaveAppSettings();
-            if (ViewModel.Settings.UsingKeyVault) StatusBarSText1.Text = Properties.Resources.msg_SigningIn;
+            if (ViewModel.localSettings.UsingKeyVault) StatusBarSText1.Text = Properties.Resources.msg_SigningIn;
             try
             {
                 await ViewModel.InitializeAsync();
@@ -509,7 +524,7 @@ namespace DocumentTranslation.GUI
             {
                 TestSettingsButton_Click(this, null);
             }
-            if (ViewModel.Settings.UsingKeyVault) StatusBarSText1.Text = string.Empty;
+            if (ViewModel.localSettings.UsingKeyVault) StatusBarSText1.Text = string.Empty;
             EnableTabs();
             await Task.Delay(3000);
             StatusBarSText1.Text = string.Empty;
@@ -658,11 +673,13 @@ namespace DocumentTranslation.GUI
                 resourceName.IsEnabled = false;
                 storageConnectionString.IsEnabled = false;
             }
+            ViewModel.localSettings.AzureKeyVaultName = keyVaultName.Text;
         }
 
         private void KeyVaultNameClearButton_Click(object sender, RoutedEventArgs e)
         {
             keyVaultName.Text = string.Empty;
+            ViewModel.localSettings.AzureKeyVaultName = string.Empty;
         }
     }
 }

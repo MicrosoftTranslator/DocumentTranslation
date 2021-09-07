@@ -379,10 +379,7 @@
   <data name="msg_SigningIn" xml:space="preserve">
     <value>Signing in ...</value>
   </data>
-  <data name="msg_AuthenticationComplete" xml:space="preserve">
-    <value>Authentication complete.</value>
-  </data>
-  <data name="msg_Authenticating" xml:space="preserve">
-    <value>Authenticating...</value>
+  <data name="msg_SignInComplete" xml:space="preserve">
+    <value>Signed in</value>
   </data>
 </root>
