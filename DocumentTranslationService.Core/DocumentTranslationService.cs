@@ -55,9 +55,7 @@ namespace DocumentTranslationService.Core
         #region Constants
         /// <summary>
         /// The base URL template for making translation requests.
-        /// {0} is the name of the Translator resource.
         /// </summary>
-        //private const string baseUriTemplate = ".cognitiveservices.azure.com/translator/text/batch/v1.0";
         private const string baseUriTemplate = ".cognitiveservices.azure.com/";
         #endregion Constants
         #region Methods
@@ -95,6 +93,7 @@ namespace DocumentTranslationService.Core
             tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
             await Task.WhenAll(tasks);
+            await GetLanguagesAsync();
             if (OnInitializeComplete is not null) OnInitializeComplete(this, EventArgs.Empty);
         }
 
