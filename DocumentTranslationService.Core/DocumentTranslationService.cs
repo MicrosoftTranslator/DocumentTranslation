@@ -94,7 +94,6 @@ namespace DocumentTranslationService.Core
             List<Task> tasks = new();
             tasks.Add(GetDocumentFormatsAsync());
             tasks.Add(GetGlossaryFormatsAsync());
-            tasks.Add(GetLanguagesAsync());
             await Task.WhenAll(tasks);
             if (OnInitializeComplete is not null) OnInitializeComplete(this, EventArgs.Empty);
         }

@@ -675,6 +675,8 @@ namespace DocumentTranslation.GUI
         {
             keyVaultName.Text = string.Empty;
             ViewModel.localSettings.AzureKeyVaultName = string.Empty;
+            StatusBarSText1.Text = string.Empty;
+            StatusBarSText2.Text = string.Empty;
         }
     }
 }
