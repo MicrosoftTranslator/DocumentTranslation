@@ -3,7 +3,7 @@
   <?define doctr_TargetDir=$(var.doctr.TargetDir)?>
   <?define DocumentTranslationService_TargetDir=$(var.DocumentTranslationService.TargetDir)?>
   <?define DocumentTranslation.GUI_TargetDir=$(var.DocumentTranslation.GUI.TargetDir)?>
-  <Product Id="*" Name="Document Translation" Language="1033" Version="0.8.5.0" Manufacturer="Microsoft" UpgradeCode="cc63954a-c510-49da-af5f-dc82af6502e1">
+  <Product Id="*" Name="Document Translation" Language="1033" Version="0.8.6.0" Manufacturer="Microsoft" UpgradeCode="cc63954a-c510-49da-af5f-dc82af6502e1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Document Translation is already installed." />
