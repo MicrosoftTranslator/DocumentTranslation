@@ -82,7 +82,7 @@ namespace DocumentTranslation.GUI
             {
                 SettingsTab.IsSelected = true;
                 TranslateDocumentsTab.IsEnabled = false;
-                TranslateTextTab.IsEnabled = false; 
+                TranslateTextTab.IsEnabled = false;
                 System.Resources.ResourceManager resx = new("DocumentTranslation.GUI.Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
                 StatusBarSText1.Text = resx.GetString(ex.Message, System.Globalization.CultureInfo.CurrentCulture);
                 StatusBarSText2.Text = ex.InnerException.Message;
@@ -329,7 +329,7 @@ namespace DocumentTranslation.GUI
 
         private void DocumentTranslationBusiness_OnUploadStart(object sender, EventArgs e)
         {
-            ProgressBar.Value+=2;
+            ProgressBar.Value += 2;
             StatusBarText1.Text = Properties.Resources.msg_DocumentUploadStarted;
         }
 
@@ -444,11 +444,6 @@ namespace DocumentTranslation.GUI
                 resourceName.Text = ViewModel.localSettings.AzureResourceName;
             }
         }
-        private void KeyVaultName_TextChanged(object sender, RoutedEventArgs e)
-        {
-            ViewModel.localSettings.AzureKeyVaultName = keyVaultName.Text;
-        }
-
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
         {
@@ -524,7 +519,7 @@ namespace DocumentTranslation.GUI
             {
                 TestSettingsButton_Click(this, null);
             }
-            if (ViewModel.localSettings.UsingKeyVault) StatusBarSText1.Text = string.Empty;
+            if (ViewModel.localSettings.UsingKeyVault) StatusBarSText1.Text = Properties.Resources.msg_SignInComplete;
             EnableTabs();
             await Task.Delay(3000);
             StatusBarSText1.Text = string.Empty;
