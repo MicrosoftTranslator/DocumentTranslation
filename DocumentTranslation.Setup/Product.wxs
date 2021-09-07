@@ -110,6 +110,18 @@
       <Component Id="Azure.AI.Translation.Document.dll" Guid="D872C38E-B4CD-40D9-8290-D7F28F5C5CF5">
         <File Id="Azure.AI.Translation.Document.dll" Name="Azure.AI.Translation.Document.dll" Source="$(var.doctr_TargetDir)Azure.AI.Translation.Document.dll" />
       </Component>
+      <Component Id="Azure.Identity.dll" Guid="258F35F5-C1BF-41BB-93A8-8B861AA196B4">
+        <File Id="Azure.Identity.dll" Name="Azure.Identity.dll" Source="$(var.doctr_TargetDir)Azure.Identity.dll" />
+      </Component>
+      <Component Id="Azure.Security.KeyVault.Secrets.dll" Guid="EBA82DCE-8D41-4EC0-A5D0-0B4E60E5D4BD">
+        <File Id="Azure.Security.KeyVault.Secrets.dll" Name="Azure.Security.KeyVault.Secrets.dll" Source="$(var.doctr_TargetDir)Azure.Security.KeyVault.Secrets.dll" />
+      </Component>
+      <Component Id="Microsoft.Identity.Client.dll" Guid="6B722BAB-BD76-4265-88EE-68B5B8D7A910">
+        <File Id="Microsoft.Identity.Client.dll" Name="Microsoft.Identity.Client.dll" Source="$(var.doctr_TargetDir)Microsoft.Identity.Client.dll" />
+      </Component>
+      <Component Id="Microsoft.Identity.Client.Extensions.Msal.dll" Guid="09A2D7D0-7372-4720-BDEE-B71CD9DE4D38">
+        <File Id="Microsoft.Identity.Client.Extensions.Msal.dll" Name="Microsoft.Identity.Client.Extensions.Msal.dll" Source="$(var.doctr_TargetDir)Microsoft.Identity.Client.Extensions.Msal.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>
