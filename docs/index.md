@@ -37,6 +37,16 @@ It will install the document translation tool on your Windows computer.
 
 #### How to obtain the service credentials
 
+If you prefer to not maintain the acess secrets on your computer, or if your organization manages the Azure account for you, you
+may use Azure Key Vault to manage the credentials.
+
+##### Azure Key Vault
+
+If your organization manages the Azure subscription for you, you can ask your Azure administrator for the name of the Azure Key Vault.
+You enter the name of the Azure Key Vault in the Settings page, and you are done. You don't have to enter any other settings.
+If you want to enter the settings yourself, leave the Azure Key Vault setting blank. 
+If you are an Azure administrator, see here how to set up Azure Key Vault.
+
 ##### Translator resource key and name
 
 You can use an existing paid Azure Translator resource. Document translation will not work with the free subscription.
@@ -80,6 +90,28 @@ Copy the entire "Connection String". It is a very long string.
 --------------
 
 Paste this string to the "Storage Connection String" field in the Settings/Authentication tab.
+
+##### Azure Key Vault administration
+
+Ignore this section if you are entering the secrets into the Settings page directly. 
+
+To create a Key Vault for use with Document Translation:
+- Set up resources for Translator and for Storage as described above
+- Create an Azure Key Vault resource
+- Create Secrets for each of 
+    - AzureRegion
+    - AzureResourceName
+    - StorageConnectionString
+    - SubscriptionKey
+
+and copy the **secret from the Translator** resource and the **connection string from the Storage** resource.
+
+The names of the secrets must be exactly like this, and the Key Valut resource should look like this:
+
+![Set up Azure Key Vault](images/AzureKeyVault.png)
+
+Provide the users with the **name** of the Key Vault. In the example the name is "EUS2kv". 
+Users will need to log in to Azure using the **Azure CLI** and **PowerShell**.
 
 
 ### Translate Documents
@@ -271,3 +303,6 @@ quickly - or reject with comments.
 The tool uses following Nuget packages:
 - Nate McMaster's Command Line Utilities for the CLI command and options processing. 
 - Azure.Storage.Blobs for the interaction with the Azure storage service. 
+- Azure.AI.Translation.Document for document translation (Beta 3)
+- Azure.Identity for authentication to get to Key Vault
+- Azure Security.KeyVault.Secrets for Key Vault access
