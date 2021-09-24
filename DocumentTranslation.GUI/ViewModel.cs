@@ -27,7 +27,6 @@ namespace DocumentTranslation.GUI
         private static DocTransAppSettings keyVaultSettings;
 
         public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
-        internal TextTranslationService textTranslationService;
         public Language FromLanguage { get; set; }
         public Language ToLanguage { get; init; }
         public BindingList<string> FilesToTranslate { get; private set; } = new();
@@ -85,7 +84,6 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureRegion= Settings.AzureRegion;
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
-            textTranslationService = new(documentTranslationService);
             _ = this.documentTranslationService.InitializeAsync();
             return;
         }
@@ -129,8 +127,8 @@ namespace DocumentTranslation.GUI
         internal async Task<string> TranslateTextAsync(string text, string fromLanguageCode, string toLanguageCode)
         {
             if (fromLanguageCode == "auto") fromLanguageCode = null;
-            textTranslationService.AzureRegion = Settings.AzureRegion;
-            string result = await textTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
+            documentTranslationService.AzureRegion = Settings.AzureRegion;
+            string result = await documentTranslationService.TranslateStringAsync(text, fromLanguageCode, toLanguageCode);
             Debug.WriteLine($"Translate {text.Length} characters from {fromLanguageCode} to {toLanguageCode}");
             return result;
         }

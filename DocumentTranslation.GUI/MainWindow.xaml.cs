@@ -155,7 +155,7 @@ namespace DocumentTranslation.GUI
 
         private async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.textTranslationService.CategoryID = CategoryTextBox.SelectedItem is not null ? ((MyCategory)CategoryTextBox.SelectedItem).ID : null;
+            ViewModel.documentTranslationService.Category = CategoryTextBox.SelectedItem is not null ? ((MyCategory)CategoryTextBox.SelectedItem).ID : null;
             try
             {
                 outputBox.Text = await ViewModel.TranslateTextAsync(inputBox.Text, fromLanguageBox.SelectedValue as string, toLanguageBox.SelectedValue as string);

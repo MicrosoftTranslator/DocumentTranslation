@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace DocumentTranslationService.Core
 {
 
-    public class TextTranslationService
+    public partial class DocumentTranslationService
     {
         #region Properties and fields
 
@@ -27,21 +27,13 @@ namespace DocumentTranslationService.Core
 
         private const int maxrequestsize = 5000;   //service size is 5000
         private const int maxelements = 100;
-        private readonly DocumentTranslationService documentTranslationService;
 
-        /// <summary>
-        /// The category ID to use
-        /// </summary>
-        public string CategoryID { get; set; }
         /// <summary>
         /// End point address for the Translator API
         /// </summary>
         public string EndPointAddress { get; set; } = "https://api.cognitive.microsofttranslator.com";
         public static int Maxrequestsize { get => maxrequestsize; }
-        public static int Maxelements { get => maxelements; }
-        public string AzureRegion { get; set; } = null;
-        public string AzureCloud { get; set; } = String.Empty;
-
+        
         public enum ContentType { plain, HTML };
         #endregion
 
@@ -91,7 +83,7 @@ namespace DocumentTranslationService.Core
         /// <param name="request">Request object to set the headers for</param>
         private void SetHeaders(HttpRequestMessage request)
         {
-            request.Headers.Add("Ocp-Apim-Subscription-Key", documentTranslationService.SubscriptionKey);
+            request.Headers.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
             if (!(AzureRegion?.ToLowerInvariant() == "global")) request.Headers.Add("Ocp-Apim-Subscription-Region", AzureRegion);
         }
 
@@ -132,7 +124,7 @@ namespace DocumentTranslationService.Core
                 try
                 {
                     string[] teststring = { "Test" };
-                    string remembercategory = documentTranslationService.Category;
+                    string remembercategory = Category;
                     Task<string[]> translateTask = TranslateTextAsyncInternal(teststring, "en", "he", category, ContentType.plain);
                     await translateTask.ConfigureAwait(false);
                     if (translateTask.Result == null) return false; else return true;
@@ -145,17 +137,6 @@ namespace DocumentTranslationService.Core
                 }
             }
             return returnvalue;
-        }
-
-
-        /// <summary>
-        /// Class for text translation
-        /// </summary>
-        /// <param name="documentTranslationService">The document translation service to use</param>
-        public TextTranslationService(DocumentTranslationService documentTranslationService)
-        {
-            this.documentTranslationService = documentTranslationService;
-            this.CategoryID = documentTranslationService.Category;
         }
 
 
@@ -359,7 +340,7 @@ namespace DocumentTranslationService.Core
                     {
                         string[] str = new string[1];
                         str[0] = innertext;
-                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, CategoryID, contentType).ConfigureAwait(false);
+                        string[] innertranslation = await TranslateTextAsyncInternal(str, from, to, Category, contentType).ConfigureAwait(false);
                         linetranslation += innertranslation[0];
                     }
                     resultlist.Add(linetranslation);
@@ -368,7 +349,7 @@ namespace DocumentTranslationService.Core
             }
             else
             {
-                return await TranslateTextAsyncInternal(texts, from, to, CategoryID, contentType).ConfigureAwait(false);
+                return await TranslateTextAsyncInternal(texts, from, to, Category, contentType).ConfigureAwait(false);
             }
         }
 
@@ -392,7 +373,7 @@ namespace DocumentTranslationService.Core
             int retrycount = 3)
         {
             string path = "/translate?api-version=3.0";
-            if (documentTranslationService.ShowExperimental) path += "&flight=experimental";
+            if (ShowExperimental) path += "&flight=experimental";
             string params_ = "&from=" + from + "&to=" + to;
             string thiscategory = category;
             if (String.IsNullOrEmpty(category))
