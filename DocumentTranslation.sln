@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "DocumentTranslationService.Core\DocumentTranslationService.csproj", "{00DF591A-11E2-407B-B686-38FC96D4D509}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doctr", "DocumentTranslation.CLI\doctr.csproj", "{FEE35A76-74A5-4321-AFC2-961AA1B29636}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9A35F10-42E5-4DA4-B4DF-AF2A0FF5652E}"
@@ -35,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30
 		docs\translatorkey.png = docs\translatorkey.png
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "..\DocumentTranslationService\DocumentTranslationService.csproj", "{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,14 +43,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Debug|x86.Build.0 = Debug|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|x86.ActiveCfg = Release|Any CPU
-		{00DF591A-11E2-407B-B686-38FC96D4D509}.Release|x86.Build.0 = Release|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE35A76-74A5-4321-AFC2-961AA1B29636}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -73,6 +65,14 @@ Global
 		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|Any CPU.ActiveCfg = Release|x86
 		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|x86.ActiveCfg = Release|x86
 		{ED9DEEB6-3E2D-47AC-979D-39294652C3F2}.Release|x86.Build.0 = Release|x86
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Debug|x86.Build.0 = Debug|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Release|x86.ActiveCfg = Release|Any CPU
+		{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
