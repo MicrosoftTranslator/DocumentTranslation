@@ -504,6 +504,11 @@ namespace DocumentTranslation.GUI
                 StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
                 StatusBarSText2.Text = ex.InnerException.Message;
             }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarSText2.Text = ex.InnerException.Message;
+            }
             await Task.Delay(10000);
             StatusBarSText1.Text = string.Empty;
             StatusBarSText2.Text = string.Empty;
