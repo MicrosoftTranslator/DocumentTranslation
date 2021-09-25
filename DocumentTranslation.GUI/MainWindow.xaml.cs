@@ -351,6 +351,10 @@ namespace DocumentTranslation.GUI
                 await ViewModel.documentTranslationService.CancelRunAsync();
             }
             catch (UriFormatException) { }
+            catch (Exception ex)
+            {
+                StatusBarText2.Text = ex.Message;
+            }
             StatusBarText1.Text = Properties.Resources.msg_Canceled;
         }
 
