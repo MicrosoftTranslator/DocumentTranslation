@@ -606,26 +606,30 @@ namespace DocumentTranslation.GUI
             {
                 inputBox.TextAlignment = TextAlignment.Right;
                 inputBox.FlowDirection = System.Windows.FlowDirection.RightToLeft;
+                inputBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right;
             }
             else
             {
                 inputBox.TextAlignment = TextAlignment.Left;
                 inputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
+                inputBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
             }
         }
 
         private void ToLanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (toLanguageBox.SelectedItem is not Language lang) return;
-            if (lang.Bidi)
+            if (toLanguageBox.SelectedItem is null) return;
+            if ((toLanguageBox.SelectedItem as Language).Bidi)
             {
                 outputBox.FlowDirection = System.Windows.FlowDirection.RightToLeft;
                 outputBox.TextAlignment = TextAlignment.Right;
+                outputBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Right;
             }
             else
             {
                 outputBox.FlowDirection = System.Windows.FlowDirection.LeftToRight;
                 outputBox.TextAlignment = TextAlignment.Left;
+                outputBox.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
             }
             SetTranslateDocumentsButtonStatus();
         }
