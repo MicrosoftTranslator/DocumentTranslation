@@ -26,8 +26,8 @@ namespace DocumentTranslation.GUI
             ViewModel viewModel = new();
             DataContext = viewModel;
             viewModel.OnLanguagesUpdate += ViewModel_OnLanguagesUpdate;
-            viewModel.OnKeyVaultAuthenicationStart += ViewModel_OnKeyVaultAuthenicationStart;
-            viewModel.OnKeyVaultAuthenicationComplete += ViewModel_OnKeyVaultAuthenicationComplete;
+            viewModel.OnKeyVaultAuthenticationStart += ViewModel_OnKeyVaultAuthenticationStart;
+            viewModel.OnKeyVaultAuthenticationComplete += ViewModel_OnKeyVaultAuthenticationComplete;
             AppSettingsSetter.SettingsReadComplete += AppSettingsSetter_SettingsReadComplete;
             ViewModel = viewModel;
             toLanguageBox.ItemsSource = ViewModel.ToLanguageList;
@@ -37,12 +37,12 @@ namespace DocumentTranslation.GUI
             CategoryDocumentsBox.ItemsSource = ViewModel.categories.MyCategoryList;
             CategoryTextBox.ItemsSource = ViewModel.categories.MyCategoryList;
         }
-        private void ViewModel_OnKeyVaultAuthenicationStart(object sender, EventArgs e)
+        private void ViewModel_OnKeyVaultAuthenticationStart(object sender, EventArgs e)
         {
             StatusBarText1.Text = Properties.Resources.msg_SigningIn;
         }
 
-        private async void ViewModel_OnKeyVaultAuthenicationComplete(object sender, EventArgs e)
+        private async void ViewModel_OnKeyVaultAuthenticationComplete(object sender, EventArgs e)
         {
             StatusBarText1.Text = Properties.Resources.msg_SignInComplete;
             await Task.Delay(3000);
