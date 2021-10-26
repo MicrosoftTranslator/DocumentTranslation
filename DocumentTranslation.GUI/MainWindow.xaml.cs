@@ -319,14 +319,37 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
             documentTranslationBusiness.OnThereWereErrors += DocumentTranslationBusiness_OnThereWereErrors;
+            documentTranslationBusiness.OnFileReadError += DocumentTranslationBusiness_OnFileReadError;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
             foreach (var glossary in ViewModel.GlossariesToUse) glossariestouse.Add(glossary);
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
-            _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
+            try
+            {
+                _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
+            }
+            catch (System.IO.IOException ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                StatusBarText2.Text = ex.Message;
+                ProgressBar.Value = 0;
+                return;
+            }
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 3;
+        }
+
+        private void DocumentTranslationBusiness_OnFileReadError(object sender, string e)
+        {
+            ProgressBar.Value = 0;
+            StatusBarText1.Text = Properties.Resources.msg_Error;
+            StatusBarText2.Text = e;
+            CancelButton.Background = Brushes.Gray;
+            CancelButton.Visibility = Visibility.Hidden;
+            translateDocumentsButton.Visibility = Visibility.Visible;
+            SetTranslateDocumentsButtonStatus();
+
         }
 
         private void DocumentTranslationBusiness_OnUploadStart(object sender, EventArgs e)
