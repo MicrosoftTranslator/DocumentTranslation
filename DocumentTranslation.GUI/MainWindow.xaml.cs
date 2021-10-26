@@ -320,6 +320,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
             documentTranslationBusiness.OnThereWereErrors += DocumentTranslationBusiness_OnThereWereErrors;
             documentTranslationBusiness.OnFileReadError += DocumentTranslationBusiness_OnFileReadError;
+            documentTranslationBusiness.OnHeartBeat += DocumentTranslationBusiness_OnHeartBeat;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
             List<string> glossariestouse = new();
@@ -340,6 +341,13 @@ namespace DocumentTranslation.GUI
             ProgressBar.Value = 3;
         }
 
+        private async void DocumentTranslationBusiness_OnHeartBeat(object sender, EventArgs e)
+        {
+            Heartbeat.Visibility = Visibility.Visible;
+            await Task.Delay(300);
+            Heartbeat.Visibility = Visibility.Hidden;
+        }
+
         private void DocumentTranslationBusiness_OnFileReadError(object sender, string e)
         {
             ProgressBar.Value = 0;
@@ -349,7 +357,6 @@ namespace DocumentTranslation.GUI
             CancelButton.Visibility = Visibility.Hidden;
             translateDocumentsButton.Visibility = Visibility.Visible;
             SetTranslateDocumentsButtonStatus();
-
         }
 
         private void DocumentTranslationBusiness_OnUploadStart(object sender, EventArgs e)

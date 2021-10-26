@@ -59,6 +59,7 @@
                         <Button x:Name="ThereWereErrorsButton" Content="{x:Static resx:Resources.button_ShowErrors}" HorizontalAlignment="Right" BorderBrush="Red" BorderThickness="2" Padding="10,2" Visibility="Hidden" Margin="0,0,10,0" Click="ThereWereErrorsButton_Click"/>
                         <Button x:Name="translateDocumentsButton" Content="{x:Static resx:Resources.button_TranslateDocuments}" Click="DocumentsTranslateButton_Click" Padding="10,2"  IsEnabled="False" HorizontalAlignment="Right" />
                     </StackPanel>
+                    <Label Grid.Row="1" x:Name="Heartbeat"  Content="♥" Visibility="Hidden" HorizontalAlignment="Left" Foreground="Red" />
                     <StatusBar Grid.Row="2" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal">
                             <Grid>
