@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 09/06/2021 17:33:39.26 
+        ///   Looks up a localized string similar to Fri 10/29/2021 11:17:46.73 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -224,7 +224,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Documents to translate.
+        ///   Looks up a localized string similar to Documents to translate:.
         /// </summary>
         public static string label_DocumentsToTranslate {
             get {

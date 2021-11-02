@@ -160,7 +160,7 @@
     <value>Name</value>
   </data>
   <data name="label_DocumentsToTranslate" xml:space="preserve">
-    <value>Documents to translate</value>
+    <value>Documents to translate:</value>
   </data>
   <data name="label_From" xml:space="preserve">
     <value>From:</value>

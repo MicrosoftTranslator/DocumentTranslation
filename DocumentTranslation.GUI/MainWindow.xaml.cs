@@ -328,7 +328,17 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             try
             {
-                _ = documentTranslationBusiness.RunAsync(filestotranslate, fromLanguageBoxDocuments.SelectedValue as string, toLanguageBoxDocuments.SelectedValue as string, glossariestouse, ViewModel.TargetFolder);
+                Language[] items = new Language[ViewModel.ToLanguageList.Count];
+                toLanguageBoxDocuments.SelectedItems.CopyTo(items, 0);
+                List<string> tolanguages = new();
+                foreach (var item in items) tolanguages.Add(item.LangCode);
+                _ = documentTranslationBusiness.RunAsync(
+                    filestotranslate: filestotranslate,
+                    fromlanguage: fromLanguageBoxDocuments.SelectedValue as string,
+                    tolanguages: tolanguages.ToArray(),
+                    glossaryfiles: glossariestouse,
+                    targetFolder: ViewModel.TargetFolder
+                    );
             }
             catch (System.IO.IOException ex)
             {

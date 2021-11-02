@@ -16,44 +16,69 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
-                        <RowDefinition Height="34"/>
-                        <RowDefinition Height="22"/>
+                        <RowDefinition Height="34" x:Name="CommandBar"/>
+                        <RowDefinition Height="22" x:Name="StatusBar"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Margin="20" Height="22" VerticalAlignment="Top">
-                        <Label Content="{x:Static resx:Resources.label_From}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="0,0,10,0" Padding="2"/>
-                        <ComboBox x:Name="fromLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding FromLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode">
-                        </ComboBox>
-                        <Label Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2"/>
-                        <ComboBox x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" ItemsSource="{Binding ToLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged"/>
-                        <Label Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
-                        <ComboBox x:Name="CategoryDocumentsBox" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="150" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
-                        <Button x:Name="CategoryDocumentsClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="10,0" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
-                    </StackPanel>
-                    <Grid Margin="20, 50, 20, 10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="34"/>
-                            <RowDefinition Height="34"/>
-                            <RowDefinition Height="34"/>
-                        </Grid.RowDefinitions>
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition/>
-                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.label_DocumentsToTranslate}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
-                        <ListBox Grid.Column="1" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
-                        <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="0" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
-                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="TargetTextBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
-                        <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="1" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.label_Glossary}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
-                        <ListBox Grid.Row="2" Grid.Column="1" x:Name="GlossariesListBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ItemsSource="{Binding GlossariesToUse, Mode=OneWayToSource}" />
-                        <Button x:Name="GlossariesSelectButton" Content="{x:Static resx:Resources.button_Select}" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                        <Button x:Name="GlossariesClearButton" Content="{x:Static resx:Resources.button_Clear}" Grid.Row="2" Grid.Column="2" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesClearButton_Click" Margin="4" HorizontalAlignment="Stretch" Visibility="Hidden"/>
-                        <ProgressBar Grid.Row="3" Grid.Column="1" x:Name="ProgressBar" Padding="2,2" IsEnabled="False" Margin="2"/>
-                        <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Cancel}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
-                        <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="2" Content="{x:Static resx:Resources.button_Browse}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
+                        <Grid Grid.Column="0" Margin="0,15,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" MinWidth="150" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="34" />
+                                <RowDefinition />
+                                <RowDefinition Height="34" />
+                                <RowDefinition Height="34" />
+                            </Grid.RowDefinitions>
+                            <Label Content="{x:Static resx:Resources.label_From}" Padding="2" HorizontalAlignment="Left"/>
+                            <ComboBox Grid.Column="1" x:Name="fromLanguageBoxDocuments" VerticalAlignment="Top" ItemsSource="{Binding FromLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode"/>
+                            <Label Grid.Row="1" Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" Padding="2"/>
+                            <ListBox Grid.Row="1" Grid.Column="1" MinWidth="150" MinHeight="22" SelectionMode="Multiple" x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="auto" ItemsSource="{Binding ToLanguageListForDocuments}" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Label Grid.Row="2" Content="{x:Static resx:Resources.label_Category}" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top" Padding="2" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                            <ComboBox Grid.Row="2" Grid.Column="1" x:Name="CategoryDocumentsBox" VerticalAlignment="Top" Margin="0,5,0,0" DisplayMemberPath="Name" SelectedValuePath="Name" SelectionChanged="CategoryDocumentsBox_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_Category}"/>
+                            <Button Grid.Row="3" Grid.Column="1" x:Name="CategoryDocumentsClearButton" Content="{x:Static resx:Resources.button_Clear}" HorizontalAlignment="Right"  VerticalAlignment="Top" Visibility="Hidden" Padding="2" Click="CategoryDocumentsClearButton_Click" ToolTip="{x:Static resx:Resources.tooltip_CategoryClear}"/>
+                        </Grid>
+                        <Grid Grid.Column="1" Margin="20, 15, 20, 10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="34"/>
+                                <RowDefinition Height="34"/>
+                                <RowDefinition Height="34"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Static resx:Resources.label_DocumentsToTranslate}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
+                            <ListBox Grid.Column="2" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
+                            <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="0" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                            <TextBox Grid.Row="1" Grid.Column="2" x:Name="TargetTextBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                            <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="1" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Static resx:Resources.label_Glossary}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
+                            <ListBox Grid.Row="2" Grid.Column="2" x:Name="GlossariesListBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ItemsSource="{Binding GlossariesToUse, Mode=OneWayToSource}" />
+                            <Button x:Name="GlossariesSelectButton" Content="{x:Static resx:Resources.button_Select}" Grid.Row="2" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
+                            <Button x:Name="GlossariesClearButton" Content="{x:Static resx:Resources.button_Clear}" Grid.Row="2" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="GlossariesClearButton_Click" Margin="4" HorizontalAlignment="Stretch" Visibility="Hidden"/>
+                            <ProgressBar Grid.Row="3" Grid.Column="2" x:Name="ProgressBar" Padding="2,2" IsEnabled="False" Margin="2"/>
+                            <Button x:Name="CancelButton" Grid.Row="3" Grid.Column="3" Content="{x:Static resx:Resources.button_Cancel}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="False" Click="CancelButton_Click"/>
+                            <Button x:Name="TargetOpenButton" Grid.Row="3" Grid.Column="3" Content="{x:Static resx:Resources.button_Browse}" Height="22" Padding="2,2" VerticalAlignment="Top" Margin="4" HorizontalAlignment="Stretch" IsEnabled="True" Click="TargetOpenButton_Click" Visibility="Hidden"/>
+                        </Grid>
                     </Grid>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,2" VerticalAlignment="Top" HorizontalAlignment="Right">
                         <Button x:Name="ThereWereErrorsButton" Content="{x:Static resx:Resources.button_ShowErrors}" HorizontalAlignment="Right" BorderBrush="Red" BorderThickness="2" Padding="10,2" Visibility="Hidden" Margin="0,0,10,0" Click="ThereWereErrorsButton_Click"/>
