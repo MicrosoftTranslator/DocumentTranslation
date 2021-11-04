@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 10/29/2021 11:17:46.73 
+        ///   Looks up a localized string similar to Tue 11/02/2021 16:27:49.94 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -526,6 +526,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_InvalidCredentialsTip {
             get {
                 return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  language selected.
+        /// </summary>
+        public static string msg_LanguageSelected {
+            get {
+                return ResourceManager.GetString("msg_LanguageSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  languages selected.
+        /// </summary>
+        public static string msg_LanguagesSelected {
+            get {
+                return ResourceManager.GetString("msg_LanguagesSelected", resourceCulture);
             }
         }
         

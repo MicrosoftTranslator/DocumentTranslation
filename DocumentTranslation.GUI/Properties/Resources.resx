@@ -382,4 +382,10 @@
   <data name="msg_SignInComplete" xml:space="preserve">
     <value>Signed in</value>
   </data>
+  <data name="msg_LanguagesSelected" xml:space="preserve">
+    <value> languages selected</value>
+  </data>
+  <data name="msg_LanguageSelected" xml:space="preserve">
+    <value> language selected</value>
+  </data>
 </root>

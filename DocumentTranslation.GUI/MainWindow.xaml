@@ -38,11 +38,11 @@
                             <Label Content="{x:Static resx:Resources.label_From}" Padding="2" HorizontalAlignment="Left"/>
                             <ComboBox Grid.Column="1" x:Name="fromLanguageBoxDocuments" VerticalAlignment="Top" ItemsSource="{Binding FromLanguageListForDocuments}" DisplayMemberPath="Name" SelectedValue="{Binding FromLanguage.LangCode}" SelectedValuePath="LangCode"/>
                             <Label Grid.Row="1" Content="{x:Static resx:Resources.label_To}" HorizontalAlignment="Left" Padding="2"/>
-                            <ListBox Grid.Row="1" Grid.Column="1" MinWidth="150" MinHeight="22" SelectionMode="Multiple" x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="auto" ItemsSource="{Binding ToLanguageListForDocuments}" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode" SelectionChanged="ToLanguageBoxDocuments_SelectionChanged">
+                            <ListBox Grid.Row="1" Grid.Column="1" MinWidth="150" MinHeight="22" SelectionMode="Multiple" x:Name="toLanguageBoxDocuments" HorizontalAlignment="Left" VerticalAlignment="Top" Width="auto" ItemsSource="{Binding ToLanguageListForDocuments}" SelectedValue="{Binding ToLanguage.LangCode}" SelectedValuePath="LangCode">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}"  Checked="ToLanguageCheckBox_Checked" Unchecked="ToLanguageCheckBox_Checked"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

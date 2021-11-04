@@ -55,7 +55,7 @@ namespace DocumentTranslation.GUI
         public string lastFromLanguage;
         public string lastToLanguage;
         public string lastFromLanguageDocuments;
-        public string lastToLanguageDocuments;
+        public List<string> lastToLanguagesDocuments;
         public string lastCategoryText;
         public string lastCategoryDocuments;
         public string lastDocumentsFolder;
