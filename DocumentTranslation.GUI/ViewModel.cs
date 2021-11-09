@@ -46,6 +46,7 @@ namespace DocumentTranslation.GUI
             localSettings = AppSettingsSetter.Read();
             UISettings = UISettingsSetter.Read();
             if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
+            if (UISettings.lastToLanguagesDocuments is null) UISettings.lastToLanguagesDocuments = new List<string>();
         }
 
         /// <summary>

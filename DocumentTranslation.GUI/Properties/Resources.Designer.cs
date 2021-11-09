@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 09/06/2021 17:33:39.26 
+        ///   Looks up a localized string similar to Mon 11/08/2021 17:27:09.61 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -224,7 +224,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Documents to translate.
+        ///   Looks up a localized string similar to Documents to translate:.
         /// </summary>
         public static string label_DocumentsToTranslate {
             get {
@@ -526,6 +526,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_InvalidCredentialsTip {
             get {
                 return ResourceManager.GetString("msg_InvalidCredentialsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  language selected.
+        /// </summary>
+        public static string msg_LanguageSelected {
+            get {
+                return ResourceManager.GetString("msg_LanguageSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  languages selected.
+        /// </summary>
+        public static string msg_LanguagesSelected {
+            get {
+                return ResourceManager.GetString("msg_LanguagesSelected", resourceCulture);
             }
         }
         
@@ -832,6 +850,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_SubscriptionKey {
             get {
                 return ResourceManager.GetString("tooltip_SubscriptionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicate the target folder. &apos;*&apos; shows where the language ID should go. .
+        /// </summary>
+        public static string tooltip_TargetFolder {
+            get {
+                return ResourceManager.GetString("tooltip_TargetFolder", resourceCulture);
             }
         }
         

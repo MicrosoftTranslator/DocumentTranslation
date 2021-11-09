@@ -160,7 +160,7 @@
     <value>Name</value>
   </data>
   <data name="label_DocumentsToTranslate" xml:space="preserve">
-    <value>Documents to translate</value>
+    <value>Documents to translate:</value>
   </data>
   <data name="label_From" xml:space="preserve">
     <value>From:</value>
@@ -381,5 +381,14 @@
   </data>
   <data name="msg_SignInComplete" xml:space="preserve">
     <value>Signed in</value>
+  </data>
+  <data name="msg_LanguagesSelected" xml:space="preserve">
+    <value> languages selected</value>
+  </data>
+  <data name="msg_LanguageSelected" xml:space="preserve">
+    <value> language selected</value>
+  </data>
+  <data name="tooltip_TargetFolder" xml:space="preserve">
+    <value>Indicate the target folder. '*' shows where the language ID should go. </value>
   </data>
 </root>
