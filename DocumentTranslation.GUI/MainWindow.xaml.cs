@@ -57,7 +57,10 @@ namespace DocumentTranslation.GUI
             if (ViewModel.UISettings.lastFromLanguage is not null)
                 fromLanguageBox.SelectedValue = ViewModel.UISettings.lastFromLanguage;
             else fromLanguageBox.SelectedIndex = 0;
-            toLanguageBoxDocuments.SelectedValue = ViewModel.UISettings.lastToLanguagesDocuments;
+            if (ViewModel.UISettings.lastToLanguagesDocuments is not null)
+                foreach (string lang in ViewModel.UISettings.lastToLanguagesDocuments)
+                    foreach (Language l in toLanguageBoxDocuments.Items)
+                        if (l.LangCode == lang) l.IsChecked = true;
             if (ViewModel.UISettings.lastFromLanguageDocuments is not null)
                 fromLanguageBoxDocuments.SelectedValue = ViewModel.UISettings.lastFromLanguageDocuments;
             else fromLanguageBoxDocuments.SelectedIndex = 0;
@@ -189,7 +192,7 @@ namespace DocumentTranslation.GUI
             FilesListBox.ItemsSource = ViewModel.FilesToTranslate;
             if (ViewModel.FilesToTranslate.Count > 0)
             {
-                if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + "." + toLanguageBoxDocuments.SelectedValue as string;
+                if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + ".*";
             }
             SetTranslateDocumentsButtonStatus();
             return;
@@ -250,7 +253,10 @@ namespace DocumentTranslation.GUI
 
         private void SetTranslateDocumentsButtonStatus()
         {
-            if ((ViewModel.FilesToTranslate.Count > 0) && (!string.IsNullOrEmpty(TargetTextBox.Text)) && (SelectedToLanguages().Count >= 0)) translateDocumentsButton.IsEnabled = true;
+            if ((ViewModel.FilesToTranslate.Count > 0)
+                && (!string.IsNullOrEmpty(TargetTextBox.Text))
+                && (SelectedToLanguages().Count >= 0))
+                translateDocumentsButton.IsEnabled = true;
             else translateDocumentsButton.IsEnabled = false;
         }
 
@@ -274,14 +280,16 @@ namespace DocumentTranslation.GUI
                 perLanguageData.lastGlossary = ViewModel.GlossariesToUse[0];
             }
             perLanguageData.lastTargetFolder = ViewModel.TargetFolder;
-            if (ViewModel.UISettings.PerLanguageFolders.ContainsKey(toLanguageBoxDocuments.SelectedValue as string))
+            if (tolanguages.Count == 1)
             {
-                ViewModel.UISettings.PerLanguageFolders.Remove(toLanguageBoxDocuments.SelectedValue as string);
+                if (ViewModel.UISettings.PerLanguageFolders.ContainsKey(tolanguages[0]))
+                    ViewModel.UISettings.PerLanguageFolders.Remove(tolanguages[0]);
+                ViewModel.UISettings.PerLanguageFolders.Add(tolanguages[0], perLanguageData);
             }
-            ViewModel.UISettings.PerLanguageFolders.Add(toLanguageBoxDocuments.SelectedValue as string, perLanguageData);
             ViewModel.UISettings.lastFromLanguageDocuments = fromLanguageBoxDocuments.SelectedValue as string;
             ViewModel.UISettings.lastToLanguagesDocuments.Clear();
-            foreach (Language l in toLanguageBoxDocuments.Items) ViewModel.UISettings.lastToLanguagesDocuments.Add(l.LangCode);
+            foreach (Language l in toLanguageBoxDocuments.Items)
+                if(l.IsChecked) ViewModel.UISettings.lastToLanguagesDocuments.Add(l.LangCode);
             ViewModel.SaveUISettings();
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
             else ViewModel.documentTranslationService.Category = null;
@@ -449,6 +457,15 @@ namespace DocumentTranslation.GUI
                             TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + langCodes[0];
                 }
                 GlossariesToUse_ListChanged(this, null);
+            }
+            if (langCodes.Count > 1)
+            {
+                if (!TargetTextBox.Text.Contains("*"))
+                {
+                    foreach (Language lang in ViewModel.ToLanguageList)
+                        if (TargetTextBox.Text.ToLowerInvariant().EndsWith("." + lang.LangCode.ToLowerInvariant()))
+                            TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + "*";
+                }
             }
         }
 

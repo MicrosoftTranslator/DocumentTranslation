@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tue 11/02/2021 16:27:49.94 
+        ///   Looks up a localized string similar to Mon 11/08/2021 17:27:09.61 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -850,6 +850,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_SubscriptionKey {
             get {
                 return ResourceManager.GetString("tooltip_SubscriptionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicate the target folder. &apos;*&apos; shows where the language ID should go. .
+        /// </summary>
+        public static string tooltip_TargetFolder {
+            get {
+                return ResourceManager.GetString("tooltip_TargetFolder", resourceCulture);
             }
         }
         

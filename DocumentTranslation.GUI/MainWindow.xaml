@@ -68,8 +68,8 @@
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Static resx:Resources.label_DocumentsToTranslate}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4"/>
                             <ListBox Grid.Column="2" x:Name="FilesListBox" Padding="2,2" Margin="2"/>
                             <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="0" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="DocumentBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
-                            <TextBox Grid.Row="1" Grid.Column="2" x:Name="TargetTextBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Static resx:Resources.label_TargetFolder}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" ToolTip="{x:Static resx:Resources.tooltip_TargetFolder}"/>
+                            <TextBox Grid.Row="1" Grid.Column="2" x:Name="TargetTextBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ToolTip="{x:Static resx:Resources.tooltip_TargetFolder}"/>
                             <Button Content="{x:Static resx:Resources.button_Select}" Grid.Row="1" Grid.Column="3" Height="22" Padding="2,2" VerticalAlignment="Top" Click="TargetBrowseButton_Click" Margin="4" HorizontalAlignment="Stretch"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Static resx:Resources.label_Glossary}" TextWrapping="Wrap" VerticalAlignment="Top" Padding="2,2" Margin="4" />
                             <ListBox Grid.Row="2" Grid.Column="2" x:Name="GlossariesListBox" Padding="2,2" Margin="2" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ItemsSource="{Binding GlossariesToUse, Mode=OneWayToSource}" />

@@ -388,4 +388,7 @@
   <data name="msg_LanguageSelected" xml:space="preserve">
     <value> language selected</value>
   </data>
+  <data name="tooltip_TargetFolder" xml:space="preserve">
+    <value>Indicate the target folder. '*' shows where the language ID should go. </value>
+  </data>
 </root>
