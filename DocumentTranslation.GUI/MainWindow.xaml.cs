@@ -39,6 +39,8 @@ namespace DocumentTranslation.GUI
             CategoryDocumentsBox.ItemsSource = ViewModel.categories.MyCategoryList;
             CategoryTextBox.ItemsSource = ViewModel.categories.MyCategoryList;
         }
+
+
         private void ViewModel_OnKeyVaultAuthenticationStart(object sender, EventArgs e)
         {
             StatusBarText1.Text = Properties.Resources.msg_SigningIn;
@@ -65,11 +67,23 @@ namespace DocumentTranslation.GUI
                 fromLanguageBoxDocuments.SelectedValue = ViewModel.UISettings.lastFromLanguageDocuments;
             else fromLanguageBoxDocuments.SelectedIndex = 0;
             _ = SelectedToLanguages();
+            ScrollToLanguages();
         }
 
         private void AppSettingsSetter_SettingsReadComplete(object sender, EventArgs e)
         {
             EnableTabs();
+        }
+
+        private async void ScrollToLanguages()
+        {
+            await Task.Delay(500);
+            foreach (Language l in toLanguageBoxDocuments.Items)
+                if (l.IsChecked)
+                {
+                    toLanguageBoxDocuments.ScrollIntoView(l);
+                    return;
+                }
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
