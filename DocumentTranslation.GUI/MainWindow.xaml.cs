@@ -238,7 +238,15 @@ namespace DocumentTranslation.GUI
 
         private void TargetOpenButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(ViewModel.TargetFolder)) Process.Start("explorer.exe", ViewModel.TargetFolder);
+            string targetfolder = ViewModel.TargetFolder;
+            if (targetfolder.Contains("*")) 
+                foreach (Language lang in toLanguageBoxDocuments.Items)
+                    if (lang.IsChecked)
+                    {
+                        targetfolder = targetfolder.Replace("*", lang.LangCode);
+                        break;
+                    }
+            if (!String.IsNullOrEmpty(targetfolder)) Process.Start("explorer.exe", targetfolder);
         }
 
         private void TargetBrowseButton_Click(object sender, RoutedEventArgs e)
