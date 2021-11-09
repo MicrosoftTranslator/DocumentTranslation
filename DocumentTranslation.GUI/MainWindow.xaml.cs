@@ -64,6 +64,7 @@ namespace DocumentTranslation.GUI
             if (ViewModel.UISettings.lastFromLanguageDocuments is not null)
                 fromLanguageBoxDocuments.SelectedValue = ViewModel.UISettings.lastFromLanguageDocuments;
             else fromLanguageBoxDocuments.SelectedIndex = 0;
+            _ = SelectedToLanguages();
         }
 
         private void AppSettingsSetter_SettingsReadComplete(object sender, EventArgs e)
@@ -270,9 +271,9 @@ namespace DocumentTranslation.GUI
 
         private void DocumentsTranslateButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
             List<string> tolanguages = SelectedToLanguages();
             if (tolanguages.Count < 1) return;
-            ResetUI();
             if (ViewModel.FilesToTranslate.Count == 0) return;
             CancelButton.IsEnabled = true;
             ProgressBar.IsIndeterminate = true;
@@ -342,6 +343,7 @@ namespace DocumentTranslation.GUI
             List<string> tolanguages = new();
             foreach (Language l in toLanguageBoxDocuments.Items)
                 if (l.IsChecked) tolanguages.Add(l.LangCode);
+            StatusBarText1.Text = tolanguages.Count + ((tolanguages.Count == 1) ? Properties.Resources.msg_LanguageSelected : Properties.Resources.msg_LanguagesSelected);
             return tolanguages;
         }
 
@@ -444,10 +446,8 @@ namespace DocumentTranslation.GUI
 
         private void ToLanguageCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            List<string> langCodes = new();
-            foreach (Language l in toLanguageBoxDocuments.Items)
-                if (l.IsChecked) langCodes.Add(l.LangCode);
-            StatusBarText1.Text = langCodes.Count + ((langCodes.Count == 1) ? Properties.Resources.msg_LanguageSelected : Properties.Resources.msg_LanguagesSelected);
+            ResetUI();
+            List<string> langCodes = SelectedToLanguages();
             if (langCodes.Count == 1)
             {
                 if (ViewModel.UISettings.PerLanguageFolders is not null && langCodes[0] is not null) ViewModel.UISettings.PerLanguageFolders.TryGetValue(langCodes[0], out perLanguageData);
@@ -482,6 +482,7 @@ namespace DocumentTranslation.GUI
             GlossariesListBox.Items.Clear();
             GlossariesClearButton.Visibility = Visibility.Hidden;
             GlossariesSelectButton.Visibility = Visibility.Visible;
+            ResetUI();
         }
         private void DocumentTranslationBusiness_OnThereWereErrors(object sender, string e)
         {

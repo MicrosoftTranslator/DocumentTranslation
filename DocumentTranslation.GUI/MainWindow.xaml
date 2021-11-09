@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
-        Title="{x:Static resx:Resources.title_WindowTitle}" Height="500" Width="800">
+        Title="{x:Static resx:Resources.title_WindowTitle}" Height="550" Width="850">
     <Grid>
         <TabControl>
             <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateDocuments}" Width="200" x:Name="TranslateDocumentsTab">
