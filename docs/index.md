@@ -33,7 +33,8 @@ It will install the document translation tool on your Windows computer.
 - An Azure subscription
 - A Translator resource with a pricing tier of S1 or higher
 - A Blob storage resource in your Azure subscription
-- A Windows 10 or later operating system able to run .Net 5. If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/dotnet/5.0.
+- A Windows 10 or later operating system able to run .Net 5.
+If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/dotnet/5.0.
 
 #### How to obtain the service credentials
 
@@ -127,11 +128,13 @@ Choose your local documents that you want to translate. Pressing "Select" opens 
 to translate as you like, up to 1000.
 Additional limits are documented in [API documentation: Limits](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/get-started-with-document-translation?tabs=csharp#content-limits)
 
-Choose a folder to store the translated documents in. You may choose any folder on your computer.
-If you have translated to this language before, the app will suggest using the same folder as last time you translated to this target language.
+Choose a folder to store the translated documents in. You may choose any folder on your computer,
+or any network folder that you have create and write permissions to.
+If you are translating to a single language and have translated to this language before,
+the app will suggest using the same folder as last time you translated to this target language.
 
 You may optionally provide a glossary of words or phrases you want to have translated in a specific way. Add only words and phrases that you are sure must
-be translated a certain way, and only those that do not translate naturally as intended. Works well for compound nouns like product names or
+be translated a certain way, and only those that do not translate naturally as intended. This works best for compound nouns like product names or
 phrases that shall remain untranslated.
 
 You can supply a simple mapping file like this, as a TSV (tab separated variables) file:
@@ -147,7 +150,6 @@ The status bar at the bottom gives an indication of the status of the translatio
 
 After the progress bar reaches 100%, you can retrieve your documents in the target location.
 
-You are now ready for the next language or the next batch of documents to translate. 
 
 -----------------------
 ## Command Line Interface

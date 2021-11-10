@@ -5,21 +5,25 @@ Supported formats include HTML, PDF, all Office document formats, Markdown and p
 The complete [list of document formats is here](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/overview#supported-document-formats).
 
 You can select up to 1000 files and translate them to a different language with a single command.
-The Windows UI gives you options to comfortably select source files, target language, and the folder you want to deposit the translations in.
+The Windows UI gives you options to comfortably select source files, one or more target languages, and the folder you want to deposit the translations in.
 It comes with a command line utility that does the same thing using a command line interface. 
 Document Translation uses the Azure Translator Service to perform the translations. You need a subscription to Azure, and register
-a Translator resource as well as a storage resource. [The documentation](https://microsofttranslator.github.io/DocumentTranslation) gives detailed instructions on how to obtain those. 
+a Translator resource as well as a storage resource. [The documentation](https://microsofttranslator.github.io/DocumentTranslation) gives
+detailed instructions on how to obtain those. 
 
 For the translation you can specify a glossary (custom dictionary) to use. You can also make use of a custom translation system
 you may have built with [Custom Translator](http://customtranslator.ai).
 
-**Main UI**
+**Document Translation  UI**
+
+The main UI provides document translation: Multiple documents to multiple languages.
 
 ![Main UI](docs/images/Running.png)
 
-A simple copy-and-paste text translation interface is present in the Windows UI. 
 
 **Text Translation UI**
+
+A simple copy-and-paste text translation interface is present in the Windows UI. 
 
 ![Text Translate](docs/images/TextTranslate.png)
 
@@ -71,8 +75,9 @@ quickly - or reject with comments.
 ## Future plans
 
 - Option to extend the set of file formats with format conversions that are processed locally, as a library within this tool.
-- Authentication with Azure Actove Directory
-- Upgrade to .Net 6 when it becomes generally available. 
+- Authentication with Azure Active Directory
+- Upgrade to .Net 6
+- Upgrade to .Net 6 MAUI when it becomes available
 
 
 ## Credits
