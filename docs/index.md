@@ -38,15 +38,25 @@ If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/
 
 #### How to obtain the service credentials
 
-If you prefer to not maintain the acess secrets on your computer, or if your organization manages the Azure account for you, you
-may use Azure Key Vault to manage the credentials.
+If you prefer to not maintain the acess secrets on your computer, or if your organization manages the
+Azure account for you, you may use Azure Key Vault to manage the credentials.
 
 ##### Azure Key Vault
 
-If your organization manages the Azure subscription for you, you can ask your Azure administrator for the name of the Azure Key Vault.
-You enter the name of the Azure Key Vault in the Settings page, and you are done. You don't have to enter any other settings.
-If you want to enter the settings yourself, leave the Azure Key Vault setting blank. 
-If you are an Azure administrator, see here how to set up Azure Key Vault.
+If your organization manages the Azure subscription for you, ask your Azure administrator for the name of
+the Azure Key Vault. Enter the name of the Azure Key Vault in the Settings page.
+You don't have to enter any other settings.
+If you are an Azure administrator, see [here](#azure-key-vault-administration) how to set up Azure Key Vault.
+
+In order to access the Key Vault, you need to have read permissions for the Key Vault resource in Azure,
+and you need to be signed in to Azure. 
+To sign in to Azure, download the Azure CLI (Command Line Interface) from
+https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows.
+Open a CMD Window, and type `az login`. 
+![Azlogin](images/azlogin.png)
+This will open your browser and ask you to log in.
+After having logged in, visit the Settings tab and hit "Test" to verify the credentials.
+If the test passes, you can proceed to translate. 
 
 ##### Translator resource key and name
 
