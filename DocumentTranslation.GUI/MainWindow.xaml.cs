@@ -77,7 +77,7 @@ namespace DocumentTranslation.GUI
 
         private async void ScrollToLanguages()
         {
-            await Task.Delay(500);
+            await Task.Delay(200);
             foreach (Language l in toLanguageBoxDocuments.Items)
                 if (l.IsChecked)
                 {
