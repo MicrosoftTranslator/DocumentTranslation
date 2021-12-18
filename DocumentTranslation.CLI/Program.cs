@@ -103,6 +103,11 @@ namespace DocumentTranslation.CLI
                         langs[0] = toLang.Value();
                         await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values, fromlanguage: fromLang.Value(), tolanguages: langs, glossaryfiles: gls.Values, targetFolder: target);
                     }
+                    catch (System.IO.FileNotFoundException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return;
+                    }
                     catch (System.ArgumentNullException e)
                     {
                         Console.WriteLine(e.Message);
@@ -266,6 +271,7 @@ namespace DocumentTranslation.CLI
                     DocTransAppSettings settings = new();
                     settings = AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+                    await translationService.InitializeAsync();
                     try
                     {
                         var result = await translationService.GetDocumentFormatsAsync();
@@ -307,6 +313,7 @@ namespace DocumentTranslation.CLI
                     DocTransAppSettings settings = new();
                     settings = AppSettingsSetter.Read();
                     DocumentTranslationService.Core.DocumentTranslationService translationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
+                    await translationService.InitializeAsync();
                     try
                     {
                         var result = await translationService.GetGlossaryFormatsAsync();
