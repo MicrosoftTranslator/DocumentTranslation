@@ -39,11 +39,13 @@ The documentation is stored in the /docs folder of the project.
 
 ## Implementation
 
-Document Translation is written and compiled for .Net 5. The command line utility should be compatible with other platforms
-running .Net 5, namely MacOS and Linux. Tested only on Windows 10 at this point. Please let us know via an issue if you find problems with
-other platforms running .Net 5. 
+Document Translation is written and compiled for .Net 6. The command line utility should be compatible with other platforms
+running .Net 6, namely MacOS and Linux. Tested on Windows 10, Windows 11 and Mac OS X at this point. Please let us know via an issue if you find problems with
+other platforms running .Net 6. 
 Signed binaries are provided in the [releases](https://github.com/microsofttranslator/documenttranslation/releases) folder.
-To compile yourself, run Visual Studio 2019 and have the .Net 5 SDK installed.
+To compile yourself, run Visual Studio 2022 and have the .Net 6 SDK installed.
+You can compile and run the tool in Visual Studio 2022, but building the installer still requires Visual Studio 2019,
+until the Wix toolset updates its plugin for Visual Studio 2022.
 
 This tool makes use of the Azure Document Translation service. The Azure Document Translation service translates
 a set of documents that reside in an Azure storage container, and delivers the translations in another Azure storage

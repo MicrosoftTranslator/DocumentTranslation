@@ -34,12 +34,13 @@ It will install the document translation tool on your Windows computer.
 - A Translator resource with a pricing tier of S1 or higher
 - A Blob storage resource in your Azure subscription
 - A Windows 10 or later operating system able to run .Net 5.
-If it fails, install .Net 5 manually from https://dotnet.microsoft.com/download/dotnet/5.0.
+If it fails, install .Net 6 manually from https://dotnet.microsoft.com/download/dotnet/6.0.
 
 #### How to obtain the service credentials
 
 If you prefer to not maintain the acess secrets on your computer, or if your organization manages the
 Azure account for you, you may use Azure Key Vault to manage the credentials.
+Azure key vault not tested on Mac OS X. You can use the direct service credentials on the Mac. 
 
 ##### Azure Key Vault
 
@@ -228,6 +229,7 @@ Use `doctr config set --storage="<this string>"` to enter, with the quotes.
 
 ### Usage
 Use `doctr --help` or `doctr <command> --help` to get detailed information about the command.
+On a Mac, use `dotnet doctr.dll --help` or `dotnet doctr.dll <command> --help` to get detailed information about the command.
 
 #### Configure the tool
 The configuration contains the credentials for the needed Azure resources:
@@ -254,6 +256,9 @@ Command	| Function
 ----------------------------|-----------------------------------------
 `doctr config list`	| List the current configuration settings.
 `doctr config test`	| Validate the credentials and report which one is failing.
+
+The test function will always fail with an invalid key message if the Azure key is from a region other than "global".
+Document translation will still work, just this test is failing. 
 
 #### List capabilities
 
@@ -288,3 +293,27 @@ it limits the deletion to containers that are older than one week.
 Command	| Function
 --------|---------
 `doctr clear`	| Delete residue from abandoned or failed translation runs in the storage account
+
+
+
+----------------------------
+
+## Running on Mac OS X
+
+At this point point only the command line version runs on the Mac. The GUI version is waiting for .Net 6 MAUI to be released.
+
+### Download and install
+
+- Install .Net 6 runtime for Mac from https://dotnet.microsoft.com/. You do not need the SDK, just the runtime.
+Download and install the .Net 6 runtim for the appropriate processor platform of your Mac.
+
+- Download the zip file in the releases folder and expand to a suitable directory on the Mac HD.
+
+
+### Command line syntax notes
+
+The command line syntax is the same as listed [above](#command-line-interface), but instead of `doctr <command>` you run `dotnet doctr.dll <command>`.
+
+When pasting the storage connection string in `dotnet doctr.dll config set --storage "<storageconnectionstring>"` please make sure you use
+quotes around the connection string, otherwise the string will be cut off prematurely.
+
