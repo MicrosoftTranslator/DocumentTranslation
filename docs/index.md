@@ -3,8 +3,8 @@ The Document Translation tool translates documents in your local storage using t
 It can translate Office documents (Word, Excel, PowerPoint), HTML documents, PDF documents, Outlook Messages, Markdown, MHTML,
 plain text, RTF and XLIFF files.
 
-It comes in a Windows UI and a command line interface. The command line interface runs on Linux, MacOS and Windows, any system
-that a [.Net 5 runtime](https://dotnet.microsoft.com/download/dotnet/5.0) is available for. 
+It comes in a Windows UI and a command line interface. The command line interface runs MacOS and Windows, or any system
+that a [.Net 6 runtime](https://dotnet.microsoft.com/download/dotnet/6.0) is available for. Tested only on Windows and Mac.
 
 -------------------
 ## Content
@@ -13,7 +13,7 @@ that a [.Net 5 runtime](https://dotnet.microsoft.com/download/dotnet/5.0) is ava
 
 [Command Line Interface](#command-line-interface)
 
-[Running on Mac OS X](#running-on-mac-os-X)
+[Running on Mac OS X](#running-on-mac-os-x)
 
 ---------------
 
