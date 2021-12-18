@@ -13,13 +13,7 @@ that a [.Net 5 runtime](https://dotnet.microsoft.com/download/dotnet/5.0) is ava
 
 [Command Line Interface](#command-line-interface)
 
-[Implementation Details](#implementation-details)
-
-[Bug Reports](#bug-reports)
-
-[Contributions](#contributions)
-
-[Credits](#credits)
+[Running on Mac OS X](#running-on-mac-os-X)
 
 ---------------
 
