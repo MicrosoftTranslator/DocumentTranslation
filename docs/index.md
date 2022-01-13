@@ -27,7 +27,7 @@ It will install the document translation tool on your Windows computer.
 - An Azure subscription
 - A Translator resource with a pricing tier of S1 or higher
 - A Blob storage resource in your Azure subscription
-- A Windows 10 or later operating system able to run .Net 5.
+- A Windows 10 or later operating system able to run .Net 6.
 If it fails, install .Net 6 manually from https://dotnet.microsoft.com/download/dotnet/6.0.
 
 #### How to obtain the service credentials
