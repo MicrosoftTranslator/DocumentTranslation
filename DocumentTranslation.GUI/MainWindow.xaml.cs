@@ -611,6 +611,7 @@ namespace DocumentTranslation.GUI
             ViewModel.GetAzureRegions();
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
+            region.UpdateLayout();
             storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings?.StorageConnectionString;
             resourceName.Text = ViewModel.localSettings.AzureResourceName;
             experimentalCheckbox.IsChecked = ViewModel.localSettings.ShowExperimental;
