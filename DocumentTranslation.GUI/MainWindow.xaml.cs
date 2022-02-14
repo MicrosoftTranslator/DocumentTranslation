@@ -610,7 +610,18 @@ namespace DocumentTranslation.GUI
             }
             keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
             subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
-            ViewModel.GetAzureRegions();
+            try
+            {
+                ViewModel.GetAzureRegions();
+            }
+            catch (Exception ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                StatusBarText2.Text = ex.Message;
+                Task.Delay(10000);
+                StatusBarText1.Text = string.Empty;
+                StatusBarText2.Text = string.Empty;
+            }
             region.ItemsSource = ViewModel.AzureRegions;
             region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
             region.UpdateLayout();
