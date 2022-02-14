@@ -189,16 +189,18 @@ namespace DocumentTranslation.GUI
                 StatusBarText1.Text = Properties.Resources.msg_Error;
                 if (ex.Status == 401 || ex.Status == 403) StatusBarText2.Text = Properties.Resources.msg_S1OrHigherTierRequired;
                 else StatusBarText2.Text = ex.Message;
-                await Task.Delay(2000);
+                await Task.Delay(5000);
                 StatusBarText1.Text = string.Empty;
                 StatusBarText2.Text = string.Empty;
                 return;
             }
-            catch
+            catch (Exception ex)
             {
                 StatusBarText1.Text = Properties.Resources.msg_Error;
-                await Task.Delay(2000);
+                StatusBarText2.Text= ex.Message;
+                await Task.Delay(5000);
                 StatusBarText1.Text = string.Empty;
+                StatusBarText2.Text = string.Empty;
                 return;
             }
             openFileDialog.ShowDialog();
