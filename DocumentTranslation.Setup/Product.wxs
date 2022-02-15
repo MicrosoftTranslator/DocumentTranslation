@@ -70,7 +70,7 @@
       <Component Id="DocumentTranslation.GUI.dll" Guid="c3d60c1e-3c17-4f28-9aa5-6d36d07659f6">
         <File Id="DocumentTranslation.GUI.dll" Name="DocumentTranslation.GUI.dll" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.dll" />
       </Component>
-      <Component Id="DocumentTranslation.GUI.exe">
+      <Component Id="DocumentTranslation.GUI.exe" Guid="C93A0556-DA3F-4DCA-85A4-D7759C224659">
         <File Id="DocumentTranslation.GUI.exe" Name="DocumentTranslation.GUI.exe" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.exe" />
       </Component>
     </ComponentGroup>
@@ -78,7 +78,7 @@
       <Component Id="doctr.dll" Guid="8325feec-d2d2-4058-886e-46face493d14">
         <File Id="doctr.dll" Name="doctr.dll" Source="$(var.doctr_TargetDir)doctr.dll" />
       </Component>
-      <Component Id="doctr.exe" >
+      <Component Id="doctr.exe" Guid="AD28EAB5-087B-4985-A54F-485D08F990E8" >
         <File Id="doctr.exe" Name="doctr.exe" Source="$(var.doctr_TargetDir)doctr.exe" />
       </Component>
       <Component Id="McMaster.Extensions.CommandLineUtils.dll" Guid="198f2c2d-e585-4a08-af76-7eed9e77f922">
@@ -94,9 +94,6 @@
       </Component>
       <Component Id="Azure.Core.dll" Guid="9f025167-0577-4556-bc99-77d849c0e66b">
         <File Id="Azure.Core.dll" Name="Azure.Core.dll" Source="$(var.doctr_TargetDir)Azure.Core.dll" />
-      </Component>
-      <Component Id="AzureRegionsList.tsv">
-        <File Id="AzureRegionsList.tsv" Name="AzureRegionsList.tsv" Source="$(var.doctr_TargetDir)AzureRegionsList.tsv" />
       </Component>
       <Component Id="System.Memory.Data.dll" Guid="fceb9dd2-b09c-4cea-ad40-453cadc258c0">
         <File Id="System.Memory.Data.dll" Name="System.Memory.Data.dll" Source="$(var.doctr_TargetDir)System.Memory.Data.dll" />
