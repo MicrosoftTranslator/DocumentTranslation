@@ -85,7 +85,14 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureRegion= Settings.AzureRegion;
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
-            _ = this.documentTranslationService.InitializeAsync();
+            try
+            {
+                _ = this.documentTranslationService.InitializeAsync();
+            }
+            catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
+            {
+                throw new DocumentTranslationService.Core.DocumentTranslationService.CredentialsException(ex.Message, ex);
+            }
             return;
         }
 

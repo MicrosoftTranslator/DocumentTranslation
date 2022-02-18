@@ -115,6 +115,11 @@ namespace DocumentTranslation.GUI
                 StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
                 StatusBarSText2.Text = ex.InnerException.Message;
             }
+            catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_TestFailed;
+                StatusBarText2.Text = ex.Message;
+            }
             CategoryDocumentsBox.SelectedValue = ViewModel.UISettings.lastCategoryDocuments;
             CategoryTextBox.SelectedValue = ViewModel.UISettings.lastCategoryText;
             ViewModel_OnLanguagesUpdate(this, EventArgs.Empty);
