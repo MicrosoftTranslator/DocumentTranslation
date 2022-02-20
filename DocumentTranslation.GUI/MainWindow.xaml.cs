@@ -261,7 +261,7 @@ namespace DocumentTranslation.GUI
         private void TargetOpenButton_Click(object sender, RoutedEventArgs e)
         {
             string targetfolder = ViewModel.TargetFolder;
-            if (targetfolder.Contains("*")) 
+            if (targetfolder.Contains('*')) 
                 foreach (Language lang in toLanguageBoxDocuments.Items)
                     if (lang.IsChecked)
                     {
@@ -483,17 +483,17 @@ namespace DocumentTranslation.GUI
                     GlossariesListBox.Items.Clear();
                     foreach (Language lang in ViewModel.ToLanguageList)
                         if (TargetTextBox.Text.ToLowerInvariant().EndsWith("." + lang.LangCode.ToLowerInvariant()))
-                            TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + langCodes[0];
+                            TargetTextBox.Text = TargetTextBox.Text[..^lang.LangCode.Length] + langCodes[0];
                 }
                 GlossariesToUse_ListChanged(this, null);
             }
             if (langCodes.Count > 1)
             {
-                if (!TargetTextBox.Text.Contains("*"))
+                if (!TargetTextBox.Text.Contains('*'))
                 {
                     foreach (Language lang in ViewModel.ToLanguageList)
                         if (TargetTextBox.Text.ToLowerInvariant().EndsWith("." + lang.LangCode.ToLowerInvariant()))
-                            TargetTextBox.Text = TargetTextBox.Text.Substring(0, TargetTextBox.Text.Length - lang.LangCode.Length) + "*";
+                            TargetTextBox.Text = TargetTextBox.Text[..^lang.LangCode.Length] + "*";
                 }
             }
         }
