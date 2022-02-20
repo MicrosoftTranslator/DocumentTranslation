@@ -331,7 +331,7 @@ namespace DocumentTranslation.GUI
             documentTranslationBusiness.OnContainerCreationFailure += DocumentTranslationBusiness_OnContainerCreationFailure;
             documentTranslationBusiness.OnFinalResults += DocumentTranslationBusiness_OnFinalResults;
             documentTranslationBusiness.OnThereWereErrors += DocumentTranslationBusiness_OnThereWereErrors;
-            documentTranslationBusiness.OnFileReadError += DocumentTranslationBusiness_OnFileReadError;
+            documentTranslationBusiness.OnFileReadWriteError += DocumentTranslationBusiness_OnFileReadWriteError;
             documentTranslationBusiness.OnHeartBeat += DocumentTranslationBusiness_OnHeartBeat;
             List<string> filestotranslate = new();
             foreach (var document in ViewModel.FilesToTranslate) filestotranslate.Add(document);
@@ -375,7 +375,7 @@ namespace DocumentTranslation.GUI
             Heartbeat.Visibility = Visibility.Hidden;
         }
 
-        private void DocumentTranslationBusiness_OnFileReadError(object sender, string e)
+        private void DocumentTranslationBusiness_OnFileReadWriteError(object sender, string e)
         {
             ProgressBar.Value = 0;
             StatusBarText1.Text = Properties.Resources.msg_Error;
