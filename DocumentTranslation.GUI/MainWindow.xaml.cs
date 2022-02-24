@@ -784,6 +784,15 @@ namespace DocumentTranslation.GUI
         {
             ViewModel.localSettings.ShowExperimental = experimentalCheckbox.IsChecked.Value;
         }
+        private void UseAzureGovCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.UseAzureGov = useAzureGovCheckbox.IsChecked.Value;
+        }
+        private void UseAzureGovCheckbox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.UseAzureGov = useAzureGovCheckbox.IsChecked.Value;
+        }
+
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
@@ -817,5 +826,6 @@ namespace DocumentTranslation.GUI
             StatusBarSText2.Text = string.Empty;
         }
         #endregion Settings
+
     }
 }

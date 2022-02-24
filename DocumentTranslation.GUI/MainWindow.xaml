@@ -163,25 +163,29 @@
                                             <Run Text="{x:Static resx:Resources.text_HowToObtainTheServiceCredentials}"/>
                                         </Hyperlink>
                                 </TextBlock>
-                                <Label Grid.Row="1" Content="{x:Static resx:Resources.label_KeyVaultName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}"/>
+                                <Label Grid.Row="1" Content="{x:Static resx:Resources.label_KeyVaultUri}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultUri}"/>
                                 <Grid Grid.Row="1" Grid.Column="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" x:Name="keyVaultName" Height="22" Text="{Binding Settings.AzureKeyVaultName, Mode=TwoWay}" TextChanged="KeyVaultName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultName}" Margin="0,0,5,0"/>
+                                    <TextBox Grid.Column="0" x:Name="keyVaultName" Height="22" Text="{Binding Settings.AzureKeyVaultName, Mode=TwoWay}" TextChanged="KeyVaultName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_KeyVaultUri}" Margin="0,0,5,0"/>
                                     <Button Grid.Column="1" Width="Auto" Content="{x:Static resx:Resources.button_Clear}" Height="22" Margin="5,0,0,0" Padding="2" Click="KeyVaultNameClearButton_Click"/>
                                 </Grid>
                                 <Label Grid.Row="2" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <Label Grid.Row="3" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
-                                <ComboBox Grid.Row="3" Grid.Column="1" x:Name="region" Height="22" DisplayMemberPath="Name" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
-                                <Label Grid.Row="4" Content="{x:Static resx:Resources.label_ResourceName}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
-                                <TextBox Grid.Row="4" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_ResourceName}"/>
+                                <ComboBox Grid.Row="3" Grid.Column="1" x:Name="region" IsEditable="True" Height="22" DisplayMemberPath="Name" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <Label Grid.Row="4" Content="{x:Static resx:Resources.label_DocTransEndpoint}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_DocTransEndpoint}"/>
+                                <TextBox Grid.Row="4" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_DocTransEndpoint}"/>
                                 <Label Grid.Row="5" Content="{x:Static resx:Resources.label_StorageConnectionString}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
                                 <TextBox Grid.Row="5" x:Name="storageConnectionString" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
                                 <Label Grid.Row="6" Content="{x:Static resx:Resources.label_ShowExperimental}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
-                                <CheckBox Grid.Row="6" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Grid.Column="1" VerticalAlignment="Center" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <StackPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                                    <CheckBox x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                    <Label Content="{x:Static resx:Resources.label_UseAzureGov}" Margin="60,0,0,0" ToolTip="{x:Static resx:Resources.tooltip_UseAzureGov}"/>
+                                    <CheckBox x:Name="useAzureGovCheckbox" IsChecked="{Binding Settings.UseAzureGov}" Margin="4" Checked="UseAzureGovCheckbox_Checked" Unchecked="UseAzureGovCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_UseAzureGov}"/>
+                                </StackPanel>
                                 <StackPanel Grid.Row="8" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                                     <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
                                     <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>

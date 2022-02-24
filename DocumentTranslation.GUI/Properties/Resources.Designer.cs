@@ -19,7 +19,7 @@ namespace DocumentTranslation.GUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 11/08/2021 17:27:09.61 
+        ///   Looks up a localized string similar to Wed 02/23/2022 16:13:20.62 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -224,6 +224,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Document Translation Endpoint:.
+        /// </summary>
+        public static string label_DocTransEndpoint {
+            get {
+                return ResourceManager.GetString("label_DocTransEndpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documents to translate:.
         /// </summary>
         public static string label_DocumentsToTranslate {
@@ -287,11 +296,11 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name of the Azure Key Vault.
+        ///   Looks up a localized string similar to Vault URI of the Azure Key Vault:.
         /// </summary>
-        public static string label_KeyVaultName {
+        public static string label_KeyVaultUri {
             get {
-                return ResourceManager.GetString("label_KeyVaultName", resourceCulture);
+                return ResourceManager.GetString("label_KeyVaultUri", resourceCulture);
             }
         }
         
@@ -310,15 +319,6 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_NewCategorySample {
             get {
                 return ResourceManager.GetString("label_NewCategorySample", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Resource Name:.
-        /// </summary>
-        public static string label_ResourceName {
-            get {
-                return ResourceManager.GetString("label_ResourceName", resourceCulture);
             }
         }
         
@@ -382,6 +382,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Translation {
             get {
                 return ResourceManager.GetString("label_Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Azure Government:.
+        /// </summary>
+        public static string label_UseAzureGov {
+            get {
+                return ResourceManager.GetString("label_UseAzureGov", resourceCulture);
             }
         }
         
@@ -800,20 +809,20 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself..
+        ///   Looks up a localized string similar to The endpoint of the document Translation Service. For Azure public https://&lt;resource name&gt;.cognitiveservices.azure.com..
         /// </summary>
-        public static string tooltip_KeyVaultName {
+        public static string tooltip_DocTransEndpoint {
             get {
-                return ResourceManager.GetString("tooltip_KeyVaultName", resourceCulture);
+                return ResourceManager.GetString("tooltip_DocTransEndpoint", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The name of the Translator resource in your Azure subscription..
+        ///   Looks up a localized string similar to Obtain the URI of the Azure Key Vault from your work or school Azure administrator. Or &apos;Clear&apos; to supply the settings yourself..
         /// </summary>
-        public static string tooltip_ResourceName {
+        public static string tooltip_KeyVaultUri {
             get {
-                return ResourceManager.GetString("tooltip_ResourceName", resourceCulture);
+                return ResourceManager.GetString("tooltip_KeyVaultUri", resourceCulture);
             }
         }
         
@@ -868,6 +877,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_TestSettings {
             get {
                 return ResourceManager.GetString("tooltip_TestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check if you are using Azure Government. Leave unchecked for Azure public..
+        /// </summary>
+        public static string tooltip_UseAzureGov {
+            get {
+                return ResourceManager.GetString("tooltip_UseAzureGov", resourceCulture);
             }
         }
     }
