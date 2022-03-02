@@ -37,6 +37,7 @@ namespace DocumentTranslation.GUI
         public event EventHandler OnLanguagesUpdate;
         public event EventHandler OnKeyVaultAuthenticationStart;
         public event EventHandler OnKeyVaultAuthenticationComplete;
+        public event EventHandler<string> OnLanguagesFailed;
 
         internal DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new();
         public readonly Categories categories = new();
@@ -59,7 +60,15 @@ namespace DocumentTranslation.GUI
         {
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             documentTranslationService.ShowExperimental = localSettings.ShowExperimental;
-            _ = documentTranslationService.GetLanguagesAsync();   //this method can be called without credentials, and before the document translation service is initialized with credentials.
+            if (string.IsNullOrEmpty(documentTranslationService.TextTransUri)) documentTranslationService.TextTransUri = "https://api.cognitive.microsofttranslator.com/";
+            try
+            {
+                _ = documentTranslationService.GetLanguagesAsync();   //this method can be called without credentials, and before the document translation service is initialized with credentials.
+            }
+            catch (Exception ex)
+            {
+                OnLanguagesFailed?.Invoke(this, ex.Message);
+            }
             if (localSettings.UsingKeyVault)
             {
                 Debug.WriteLine($"Start authententicating Key Vault {localSettings.AzureKeyVaultName}");
@@ -85,6 +94,7 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureRegion= Settings.AzureRegion;
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
+            documentTranslationService.TextTransUri = Settings.TextTransEndpoint;
             try
             {
                 _ = this.documentTranslationService.InitializeAsync();

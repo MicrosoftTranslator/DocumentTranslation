@@ -88,6 +88,7 @@ namespace DocumentTranslation.GUI
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            ViewModel.OnLanguagesFailed += ViewModel_OnLanguagesFailed;
             try
             {
                 await ViewModel.InitializeAsync();
@@ -125,6 +126,12 @@ namespace DocumentTranslation.GUI
             ViewModel_OnLanguagesUpdate(this, EventArgs.Empty);
         }
 
+        private void ViewModel_OnLanguagesFailed(object sender, string e)
+        {
+            StatusBarText1.Text = Properties.Resources.msg_Error;
+            StatusBarText2.Text = e;
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (toLanguageBox.SelectedIndex >= 0) ViewModel.UISettings.lastToLanguage = toLanguageBox.SelectedValue as string;
@@ -158,6 +165,7 @@ namespace DocumentTranslation.GUI
                 region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
                 storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings.StorageConnectionString;
                 resourceName.Text = ViewModel.localSettings.AzureResourceName;
+                textTransEndpoint.Text = ViewModel.localSettings.TextTransEndpoint;
             }
         }
 
@@ -633,6 +641,7 @@ namespace DocumentTranslation.GUI
             storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings?.StorageConnectionString;
             resourceName.Text = ViewModel.localSettings.AzureResourceName;
             experimentalCheckbox.IsChecked = ViewModel.localSettings.ShowExperimental;
+            textTransEndpoint.Text = ViewModel.localSettings.TextTransEndpoint;
         }
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
@@ -784,15 +793,6 @@ namespace DocumentTranslation.GUI
         {
             ViewModel.localSettings.ShowExperimental = experimentalCheckbox.IsChecked.Value;
         }
-        private void UseAzureGovCheckbox_Checked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.localSettings.UseAzureGov = useAzureGovCheckbox.IsChecked.Value;
-        }
-        private void UseAzureGovCheckbox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.localSettings.UseAzureGov = useAzureGovCheckbox.IsChecked.Value;
-        }
-
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
@@ -826,6 +826,11 @@ namespace DocumentTranslation.GUI
             StatusBarSText2.Text = string.Empty;
         }
         #endregion Settings
+
+        private void TextTransEndpoint_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.TextTransEndpoint = textTransEndpoint.Text;
+        }
 
     }
 }

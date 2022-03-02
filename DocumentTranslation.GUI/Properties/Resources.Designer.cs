@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wed 02/23/2022 16:13:20.62 
+        ///   Looks up a localized string similar to Wed 03/02/2022 14:19:28.14 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -296,7 +296,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vault URI of the Azure Key Vault:.
+        ///   Looks up a localized string similar to Azure Key Vault URI:.
         /// </summary>
         public static string label_KeyVaultUri {
             get {
@@ -368,6 +368,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text Translation Endpoint:.
+        /// </summary>
+        public static string label_TextTransEndpoint {
+            get {
+                return ResourceManager.GetString("label_TextTransEndpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To:.
         /// </summary>
         public static string label_To {
@@ -382,15 +391,6 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Translation {
             get {
                 return ResourceManager.GetString("label_Translation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Azure Government:.
-        /// </summary>
-        public static string label_UseAzureGov {
-            get {
-                return ResourceManager.GetString("label_UseAzureGov", resourceCulture);
             }
         }
         
@@ -881,11 +881,11 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if you are using Azure Government. Leave unchecked for Azure public..
+        ///   Looks up a localized string similar to Azure Translator Text Translation Endpoint.
         /// </summary>
-        public static string tooltip_UseAzureGov {
+        public static string tooltip_TextTransEndpoint {
             get {
-                return ResourceManager.GetString("tooltip_UseAzureGov", resourceCulture);
+                return ResourceManager.GetString("tooltip_TextTransEndpoint", resourceCulture);
             }
         }
     }

@@ -310,10 +310,10 @@
   <data name="text_OpenInBrowser" xml:space="preserve">
     <value>Open in browser</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
+	<assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+	<data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+		<value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+	</data>
   <data name="text_BuildDate" xml:space="preserve">
     <value>Build date:</value>
   </data>
@@ -345,7 +345,7 @@
     <value>Experimental</value>
   </data>
   <data name="label_KeyVaultUri" xml:space="preserve">
-    <value>Vault URI of the Azure Key Vault:</value>
+    <value>Azure Key Vault URI:</value>
   </data>
   <data name="msg_NotLoggedIn" xml:space="preserve">
     <value>Please sign in with your work or school account.</value>
@@ -391,10 +391,10 @@
   <data name="tooltip_TargetFolder" xml:space="preserve">
     <value>Indicate the target folder. '*' shows where the language ID should go. </value>
   </data>
-  <data name="label_UseAzureGov" xml:space="preserve">
-    <value>Use Azure Government:</value>
+  <data name="label_TextTransEndpoint" xml:space="preserve">
+    <value>Text Translation Endpoint:</value>
   </data>
-  <data name="tooltip_UseAzureGov" xml:space="preserve">
-    <value>Check if you are using Azure Government. Leave unchecked for Azure public.</value>
+  <data name="tooltip_TextTransEndpoint" xml:space="preserve">
+    <value>Azure Translator Text Translation Endpoint</value>
   </data>
 </root>
