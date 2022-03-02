@@ -69,11 +69,16 @@ Visit the properties of your Translator resource.
 ![Translator Key and Name](images/translatorkey.png)
 
 -------------------
-Copy the key to the "Subscription Key" field in the Settings/Authentication tab.
+Copy the Key to the "Subscription Key" field in the Settings/Authentication tab.
 
-Copy the name of the resource into the "Resource Name" field in the Settings/Authentication tab.
+Copy the Text Translation endpoint to the "Text Translation Endpoint" field in the Settings/Authentication tab.
 
-Select the "Azure Region" where your Translator resource is located in the Settings/Authentication tab.
+Copy the Document Tranlsation endpoint into the "Document Translation" field in the Settings/Authentication tab.
+
+Select the "Azure Region" where your Translator resource is located in the Settings/Authentication tab. If your Azure region is not
+listed, please use a text editor, for example Notepad, to add the region into the **AzureRegionsList.tsv** file that is in the same
+folder as the Document Translation app itself. If your Translator service is in an **Azure sovereign region**, there will be a need to add the
+region manually. 
 
 ![Settings Dialog](images/SettingsDialog.png)
 
