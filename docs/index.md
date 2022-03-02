@@ -113,16 +113,18 @@ To create a Key Vault for use with Document Translation:
     - AzureRegion
     - AzureResourceName
     - StorageConnectionString
+    - TextTransEndpoint
     - SubscriptionKey
 
 and copy the **secret from the Translator** resource and the **connection string from the Storage** resource.
 
-The names of the secrets must be exactly like this, and the Key Valut resource should look like this:
+The names of the secrets must be exactly like this, and the Key Vault resource should look like this:
 
 ![Set up Azure Key Vault](images/AzureKeyVault.png)
 
-Provide the users with the **name** of the Key Vault. In the example the name is "EUS2kv". 
+Provide the users with the **VCault URI** of the Key Vault. In the example the URI is "https://eus2kv.vault.azure.net/". 
 Users will need to log in to Azure using the **Azure CLI** and **PowerShell**.
+![Key Vault URI](images/AzureKeyVaultOverview.png)
 
 
 ### Translate Documents
