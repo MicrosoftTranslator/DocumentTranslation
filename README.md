@@ -44,12 +44,11 @@ running .Net 6, namely MacOS and Linux. Tested on Windows 10, Windows 11 and Mac
 other platforms running .Net 6. 
 Signed binaries are provided in the [releases](https://github.com/microsofttranslator/documenttranslation/releases) folder.
 To compile yourself, run Visual Studio 2022 and have the .Net 6 SDK installed.
-You can compile and run the tool in Visual Studio 2022, but building the installer still requires Visual Studio 2019,
-until the Wix toolset updates its plugin for Visual Studio 2022.
+You can compile and run the tool in Visual Studio 2022.
 
 This tool makes use of the Azure Document Translation service. The Azure Document Translation service translates
 a set of documents that reside in an Azure storage container, and delivers the translations in another Azure storage
-container. This tool provides a local interface to that service, allowing you to translate a locally rediding file
+container. This tool provides a local interface to that service, allowing you to translate a locally residing file
 or a folder, and receiving the translation of these documents in a local folder.
 The tool uploads the local documents, invokes the translation, monitors the translation progress,
 downloads the translated documents to your local machine, and then deletes the containers from the service.
@@ -63,7 +62,8 @@ with the Azure service.
 DocumentTranslationBusiness handles the local file operations and business logic.
 Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
 
-Future optimization includes a shared storage for the glossary, so that multiple clients can refer to a single company-wide glossary. 
+Designed for the Azure public cloud. Currently in preview is a version that allows usage of sovereign clouds,
+including Azure Government.
 
 ## Issues
 
@@ -78,8 +78,9 @@ quickly - or reject with comments.
 
 - Option to extend the set of file formats with format conversions that are processed locally, as a library within this tool.
 - Authentication with Azure Active Directory
-- Upgrade to .Net 6
 - Upgrade to .Net 6 MAUI when it becomes available
+- A shared storage for the glossary, so that multiple clients can refer to a
+single company-wide glossary. 
 
 
 ## Credits
