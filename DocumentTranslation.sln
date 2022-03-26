@@ -23,6 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{204E769F-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30FE-48F7-443E-AFC8-76EB24108B82}"
 	ProjectSection(SolutionItems) = preProject
+		docs\images\azlogin.png = docs\images\azlogin.png
+		docs\images\AzureKeyVault.png = docs\images\AzureKeyVault.png
+		docs\images\AzureKeyVaultOverview.png = docs\images\AzureKeyVaultOverview.png
 		docs\connectionstring.png = docs\connectionstring.png
 		docs\images\Glossary.png = docs\images\Glossary.png
 		docs\images\Running.png = docs\images\Running.png

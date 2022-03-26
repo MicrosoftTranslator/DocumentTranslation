@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="button_Add" xml:space="preserve">
     <value>Add</value>
@@ -171,8 +171,8 @@
   <data name="label_Input" xml:space="preserve">
     <value>Input:</value>
   </data>
-  <data name="label_ResourceName" xml:space="preserve">
-    <value>Resource Name:</value>
+  <data name="label_DocTransEndpoint" xml:space="preserve">
+    <value>Document Translation Endpoint:</value>
   </data>
   <data name="label_ShowExperimental" xml:space="preserve">
     <value>Show experimental languages:</value>
@@ -283,8 +283,8 @@
   <data name="tooltip_CategoryClear" xml:space="preserve">
     <value>Clears the selection of a category. Does not remove the category fron your set of available categories.</value>
   </data>
-  <data name="tooltip_ResourceName" xml:space="preserve">
-    <value>The name of the Translator resource in your Azure subscription.</value>
+  <data name="tooltip_DocTransEndpoint" xml:space="preserve">
+    <value>The endpoint of the document Translation Service. For Azure public https://&lt;resource name&gt;.cognitiveservices.azure.com.</value>
   </data>
   <data name="tooltip_SaveSettings" xml:space="preserve">
     <value>Save the above settings on your device.</value>
@@ -310,10 +310,10 @@
   <data name="text_OpenInBrowser" xml:space="preserve">
     <value>Open in browser</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
+	<assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+	<data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+		<value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+	</data>
   <data name="text_BuildDate" xml:space="preserve">
     <value>Build date:</value>
   </data>
@@ -344,14 +344,14 @@
   <data name="label_Experimental" xml:space="preserve">
     <value>Experimental</value>
   </data>
-  <data name="label_KeyVaultName" xml:space="preserve">
-    <value>Name of the Azure Key Vault</value>
+  <data name="label_KeyVaultUri" xml:space="preserve">
+    <value>Azure Key Vault URI:</value>
   </data>
   <data name="msg_NotLoggedIn" xml:space="preserve">
     <value>Please sign in with your work or school account.</value>
   </data>
-  <data name="tooltip_KeyVaultName" xml:space="preserve">
-    <value>Obtain the name of the Azure Key Vault from your work or school Azure administrator. Or leave clear to supply the settings yourself.</value>
+  <data name="tooltip_KeyVaultUri" xml:space="preserve">
+    <value>Obtain the URI of the Azure Key Vault from your work or school Azure administrator. Or 'Clear' to supply the settings yourself.</value>
   </data>
   <data name="msg_DocumentUploadStarted" xml:space="preserve">
     <value>Document upload ...</value>
@@ -390,5 +390,11 @@
   </data>
   <data name="tooltip_TargetFolder" xml:space="preserve">
     <value>Indicate the target folder. '*' shows where the language ID should go. </value>
+  </data>
+  <data name="label_TextTransEndpoint" xml:space="preserve">
+    <value>Text Translation Endpoint:</value>
+  </data>
+  <data name="tooltip_TextTransEndpoint" xml:space="preserve">
+    <value>Azure Translator Text Translation Endpoint</value>
   </data>
 </root>

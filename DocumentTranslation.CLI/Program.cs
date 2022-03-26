@@ -166,13 +166,13 @@ namespace DocumentTranslation.CLI
                 {
                     var key = configSetCmd.Option("--key <AzureKey>", "Azure key for the Translator resource. 'clear' to remove.", CommandOptionType.SingleValue);
                     var storage = configSetCmd.Option("--storage <StorageConnectionString>", "Connection string copied from the Azure storage resource. 'clear' to remove.", CommandOptionType.SingleValue);
-                    var name = configSetCmd.Option("--name <ResourceName>", "Name of the Translator resource matching the \"key\". 'clear' to remove.", CommandOptionType.SingleValue);
-                    var exp = configSetCmd.Option("--experimental <true/false>", "Show experimental languages. 'clear' to remove.", CommandOptionType.SingleValue);
+                    var endpoint = configSetCmd.Option("--endpoint <Endpoint>", "URL of the Translator endpoint matching the \"key\".", CommandOptionType.SingleValue);
+                    var region = configSetCmd.Option("--region <Region>", "Region where the Translator resource is located.", CommandOptionType.SingleValue);
                     var cat = configSetCmd.Option("--category", "Set the Custom Translator category to use for translations. 'clear' to remove.", CommandOptionType.SingleValue);
                     configSetCmd.Description = "Set the values of configuration parameters. Required before using Document Translation.";
                     configSetCmd.OnExecute(() =>
                     {
-                        if (!(key.HasValue() || storage.HasValue() || name.HasValue() || exp.HasValue() || cat.HasValue())) configSetCmd.ShowHelp();
+                        if (!(key.HasValue() || storage.HasValue() || endpoint.HasValue() || region.HasValue() || cat.HasValue())) configSetCmd.ShowHelp();
                         DocTransAppSettings docTransAppSettings = AppSettingsSetter.Read(null);
                         if (key.HasValue())
                         {
@@ -190,11 +190,11 @@ namespace DocumentTranslation.CLI
                             docTransAppSettings.ConnectionStrings.StorageConnectionString = storage.Value();
                             Console.WriteLine($"{app.Name}: Storage Connection String set.");
                         }
-                        if (name.HasValue())
+                        if (endpoint.HasValue())
                         {
-                            if (name.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureResourceName = string.Empty;
-                            else docTransAppSettings.AzureResourceName = name.Value();
-                            Console.WriteLine($"{app.Name}: Azure resource name set.");
+                            if (endpoint.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureResourceName = string.Empty;
+                            else docTransAppSettings.AzureResourceName = endpoint.Value();
+                            Console.WriteLine($"{app.Name}: Azure resource endpoint set.");
                         }
                         if (cat.HasValue())
                         {
@@ -202,23 +202,11 @@ namespace DocumentTranslation.CLI
                             else docTransAppSettings.Category = cat.Value();
                             Console.WriteLine($"{app.Name}: Custom Translator Category set.");
                         }
-                        if (exp.HasValue())
+                        if (region.HasValue())
                         {
-                            switch (exp.Value().ToLowerInvariant()[0])
-                            {
-                                case 't':
-                                case 'y':
-                                    docTransAppSettings.ShowExperimental = true;
-                                    break;
-                                case 'n':
-                                case 'f':
-                                    docTransAppSettings.ShowExperimental = false;
-                                    Console.WriteLine($"{app.Name}: Experimental languages enabled.");
-                                    break;
-                                default:
-                                    Console.WriteLine($"{app.Name}: Experimental flag not recognized. Must be yes, no, true, or false.");
-                                    break;
-                            }
+                            if (cat.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureRegion = string.Empty;
+                            else docTransAppSettings.AzureRegion = region.Value();
+                            Console.WriteLine($"{app.Name}: Azure region set.");
                         }
                         AppSettingsSetter.Write(null, docTransAppSettings);
                         return 0;
