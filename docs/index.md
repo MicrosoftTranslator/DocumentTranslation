@@ -179,9 +179,9 @@ recommended is a folder in your operating system's PATH.
 - An Azure subscription
 - A Translator resource in your Azure subscription
 - A Blob storage resource in your Azure subscription
-- An Linux, MacOS or Windows operating system able to run .Net 5. The tool is written in .Net 5.0 and able to run on other platforms that
-.Net 5.0 is present on. Tested only on Windows. Try to run as is. If it fails,
-install .Net 5 from https://dotnet.microsoft.com/download/dotnet/5.0.
+- An Linux, MacOS or Windows operating system able to run .Net 6. The tool is written in .Net 6.0 and able to run on other platforms
+that .Net 6.0 is present on. Tested only on Windows and MacOS. Try to run as is. If it fails,
+install .Net 6 from https://dotnet.microsoft.com/download/dotnet/6.0.
 
 #### How to obtain the service credentials
 
