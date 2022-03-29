@@ -807,6 +807,7 @@ namespace DocumentTranslation.GUI
                 region.IsEnabled = true;
                 resourceName.IsEnabled = true;
                 storageConnectionString.IsEnabled = true;
+                textTransEndpoint.IsEnabled = true;
             }
             else
             {
@@ -814,6 +815,7 @@ namespace DocumentTranslation.GUI
                 region.IsEnabled = false;
                 resourceName.IsEnabled = false;
                 storageConnectionString.IsEnabled = false;
+                textTransEndpoint.IsEnabled = false;
             }
             ViewModel.localSettings.AzureKeyVaultName = keyVaultName.Text;
         }
