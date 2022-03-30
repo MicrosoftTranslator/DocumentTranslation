@@ -56,7 +56,7 @@ namespace DocumentTranslation.GUI
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="KeyVaultAccessException"/>
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(bool IsTest=false)
         {
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             documentTranslationService.ShowExperimental = localSettings.ShowExperimental;
@@ -72,11 +72,11 @@ namespace DocumentTranslation.GUI
             if (localSettings.UsingKeyVault)
             {
                 Debug.WriteLine($"Start authenticating Key Vault {localSettings.AzureKeyVaultName}");
-                OnKeyVaultAuthenticationStart?.Invoke(this, EventArgs.Empty);
+                if (!IsTest) OnKeyVaultAuthenticationStart?.Invoke(this, EventArgs.Empty);
                 KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
                 keyVaultSettings = await kv.GetKVCredentialsAsync();
                 Debug.WriteLine($"Authentication Complete {localSettings.AzureKeyVaultName}");
-                OnKeyVaultAuthenticationComplete?.Invoke(this, EventArgs.Empty);
+                if (!IsTest) OnKeyVaultAuthenticationComplete?.Invoke(this, EventArgs.Empty);
             }
             else
             {

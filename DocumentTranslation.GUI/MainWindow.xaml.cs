@@ -672,7 +672,7 @@ namespace DocumentTranslation.GUI
             StatusBarSText1.Text = Properties.Resources.Label_Testing;
             try
             {
-                await ViewModel.InitializeAsync();
+                await ViewModel.InitializeAsync(true);
                 await ViewModel.documentTranslationService.TryCredentials();
                 StatusBarSText1.Text = Properties.Resources.msg_TestPassed;
             }
