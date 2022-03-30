@@ -43,14 +43,13 @@ namespace DocumentTranslation.GUI
 
         private void ViewModel_OnKeyVaultAuthenticationStart(object sender, EventArgs e)
         {
-            StatusBarText1.Text = Properties.Resources.msg_SigningIn;
+            StatusBarSText1.Text = Properties.Resources.msg_SigningIn;
         }
 
-        private async void ViewModel_OnKeyVaultAuthenticationComplete(object sender, EventArgs e)
+        private void ViewModel_OnKeyVaultAuthenticationComplete(object sender, EventArgs e)
         {
-            StatusBarText1.Text = Properties.Resources.msg_SignInComplete;
-            await Task.Delay(3000);
-            StatusBarText1.Text = string.Empty;
+            if (ViewModel.Settings.UsingKeyVault) TranslateDocumentsTab.IsSelected = true;
+            StatusBarSText1.Text = Properties.Resources.msg_SignInComplete;
         }
 
         private void ViewModel_OnLanguagesUpdate(object sender, EventArgs e)
@@ -89,6 +88,7 @@ namespace DocumentTranslation.GUI
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.OnLanguagesFailed += ViewModel_OnLanguagesFailed;
+            if (ViewModel.localSettings.UsingKeyVault) SettingsTab.IsSelected = true;
             try
             {
                 await ViewModel.InitializeAsync();

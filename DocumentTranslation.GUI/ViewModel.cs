@@ -71,7 +71,7 @@ namespace DocumentTranslation.GUI
             }
             if (localSettings.UsingKeyVault)
             {
-                Debug.WriteLine($"Start authententicating Key Vault {localSettings.AzureKeyVaultName}");
+                Debug.WriteLine($"Start authenticating Key Vault {localSettings.AzureKeyVaultName}");
                 OnKeyVaultAuthenticationStart?.Invoke(this, EventArgs.Empty);
                 KeyVaultAccess kv = new(localSettings.AzureKeyVaultName);
                 keyVaultSettings = await kv.GetKVCredentialsAsync();
