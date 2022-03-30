@@ -268,7 +268,7 @@
     <value>This list of category names provides easy access to a friendly name for custom translation systems you have built with Custom Translator. More information at http://customtranslator.ai. No need to use this unless you have built a custom translation system. </value>
   </data>
   <data name="text_SettingsInstructions" xml:space="preserve">
-    <value>Obtain the subscription key, the Azure region, the resource name and the storage connection string from the Azure portal or from your organization's Azure administrator. Or enter the name of an Azure Key Vault.</value>
+    <value>Obtain the subscription key, the Azure region, the endpoints and the storage connection string from the Azure portal or from your organization's Azure administrator. If you have an Azure Key Vault URI, no need to fill the other fields.</value>
   </data>
   <data name="title_WindowTitle" xml:space="preserve">
     <value>Document Translation</value>
@@ -310,10 +310,10 @@
   <data name="text_OpenInBrowser" xml:space="preserve">
     <value>Open in browser</value>
   </data>
-	<assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-	<data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-		<value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-	</data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="text_BuildDate" xml:space="preserve">
     <value>Build date:</value>
   </data>
