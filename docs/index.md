@@ -39,19 +39,13 @@ Azure key vault not tested on Mac OS X. You can use the direct service credentia
 ##### Azure Key Vault
 
 If your organization manages the Azure subscription for you, ask your Azure administrator for the name of
-the Azure Key Vault. Enter the name of the Azure Key Vault in the Settings page.
-You don't have to enter any other settings.
+the Azure Key Vault. Enter the URI of the Azure Key Vault in the Settings page.
+You don't have to enter any other settings in this case.
 If you are an Azure administrator, see [here](#azure-key-vault-administration) how to set up Azure Key Vault.
 
-In order to access the Key Vault, you need to have read permissions for the Key Vault resource in Azure,
-and you need to be signed in to Azure. 
-To sign in to Azure, download the Azure CLI (Command Line Interface) from
-https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows.
-Open a CMD Window, and type `az login`. 
-![Azlogin](images/azlogin.png)
-This will open your browser and ask you to log in.
-After having logged in, visit the Settings tab and hit "Test" to verify the credentials.
-If the test passes, you can proceed to translate. 
+If a Key Vault URI is specified, your browser will open and ask you to log in.
+If a Key Vault URI is specified, the other entries on this Settings page have no effect.
+
 
 ##### Translator resource key and name
 
@@ -112,18 +106,20 @@ To create a Key Vault for use with Document Translation:
 - Create Secrets for each of 
     - AzureRegion
     - AzureResourceName
+    - DocTransEndpoint
     - StorageConnectionString
-    - TextTransEndpoint
     - SubscriptionKey
+    - TextTransEndpoint
 
 and copy the **secret from the Translator** resource and the **connection string from the Storage** resource.
 
-The names of the secrets must be exactly like this, and the Key Vault resource should look like this:
+The names of the secrets must be exactly like this (casing is significant),
+and the Key Vault resource should look like this:
 
 ![Set up Azure Key Vault](images/AzureKeyVault.png)
 
-Provide the users with the **VCault URI** of the Key Vault. In the example the URI is "https://eus2kv.vault.azure.net/". 
-Users will need to log in to Azure using the **Azure CLI** and **PowerShell**.
+Provide the users with the **URI** of the Key Vault. In the example the URI is "https://eus2kv.vault.azure.net/". 
+
 ![Key Vault URI](images/AzureKeyVaultOverview.png)
 
 
