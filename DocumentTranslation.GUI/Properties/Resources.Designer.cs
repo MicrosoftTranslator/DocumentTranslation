@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wed 03/30/2022 15:27:41.15 
+        ///   Looks up a localized string similar to Thu 04/07/2022 11:26:40.81 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -341,7 +341,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscription Key:.
+        ///   Looks up a localized string similar to Resource Key:.
         /// </summary>
         public static string label_SubscriptionKey {
             get {
@@ -755,7 +755,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Obtain the subscription key, the Azure region, the endpoints and the storage connection string from the Azure portal or from your organization&apos;s Azure administrator. If you have an Azure Key Vault URI, no need to fill the other fields..
+        ///   Looks up a localized string similar to Obtain the resource key, the Azure region, the endpoints and the storage connection string from the Azure portal or from your organization&apos;s Azure administrator. If you have an Azure Key Vault URI, no need to fill the other fields..
         /// </summary>
         public static string text_SettingsInstructions {
             get {

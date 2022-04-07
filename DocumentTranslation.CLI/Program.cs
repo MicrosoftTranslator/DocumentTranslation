@@ -57,7 +57,7 @@ namespace DocumentTranslation.CLI
                                                    "Optional: The language code of the language to translate from. Use 'doctr languages' to see the available languages. If omitted, the language will be auto-detected.",
                                                    CommandOptionType.SingleOrNoValue);
                 var key = translateCmd.Option("-k|--key <SubscriptionKey>",
-                                              "Optional: The subscription key to use for this translation. Will not be saved in config settings. If omitted, will use the key of the configuration.",
+                                              "Optional: The resource key to use for this translation. Will not be saved in config settings. If omitted, will use the key of the configuration.",
                                               CommandOptionType.SingleValue);
                 var cat = translateCmd.Option("-c|--category",
                                               "The Custom Translator category to use. Set to 'none' or 'n' to force use of no category.",
@@ -144,7 +144,7 @@ namespace DocumentTranslation.CLI
                             switch (ex.Message.ToLowerInvariant())
                             {
                                 case "key":
-                                    Console.WriteLine("FAIL: Invalid or missing subscription key.");
+                                    Console.WriteLine("FAIL: Invalid or missing resource key.");
                                     break;
                                 case "storage":
                                     Console.WriteLine("FAIL: Storage account not present or invalid storage connection string.");
@@ -178,7 +178,7 @@ namespace DocumentTranslation.CLI
                         {
                             if (key.Value().ToLowerInvariant() == "clear") docTransAppSettings.SubscriptionKey = string.Empty;
                             else docTransAppSettings.SubscriptionKey = key.Value();
-                            Console.WriteLine($"{app.Name}: Subscription key set.");
+                            Console.WriteLine($"{app.Name}: Resource key set.");
                         }
                         if (storage.HasValue())
                         {

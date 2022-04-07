@@ -181,7 +181,7 @@
     <value>Storage Connection String:</value>
   </data>
   <data name="label_SubscriptionKey" xml:space="preserve">
-    <value>Subscription Key:</value>
+    <value>Resource Key:</value>
   </data>
   <data name="label_TargetFolder" xml:space="preserve">
     <value>Target folder:</value>
@@ -268,7 +268,7 @@
     <value>This list of category names provides easy access to a friendly name for custom translation systems you have built with Custom Translator. More information at http://customtranslator.ai. No need to use this unless you have built a custom translation system. </value>
   </data>
   <data name="text_SettingsInstructions" xml:space="preserve">
-    <value>Obtain the subscription key, the Azure region, the endpoints and the storage connection string from the Azure portal or from your organization's Azure administrator. If you have an Azure Key Vault URI, no need to fill the other fields.</value>
+    <value>Obtain the resource key, the Azure region, the endpoints and the storage connection string from the Azure portal or from your organization's Azure administrator. If you have an Azure Key Vault URI, no need to fill the other fields.</value>
   </data>
   <data name="title_WindowTitle" xml:space="preserve">
     <value>Document Translation</value>

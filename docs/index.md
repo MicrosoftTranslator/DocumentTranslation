@@ -49,7 +49,7 @@ If a Key Vault URI is specified, the other entries on this Settings page have no
 
 ##### Translator resource key and name
 
-You can use an existing paid Azure Translator resource. Document translation will not work with the free subscription.
+You can use an existing paid Azure Translator resource. Document translation will not work with a free Translator resource.
 If you don't have a Translator resource, create one:
 
 ------------------------------
@@ -63,16 +63,13 @@ Visit the properties of your Translator resource.
 ![Translator Key and Name](images/translatorkey.png)
 
 -------------------
-Copy the Key to the "Subscription Key" field in the Settings/Authentication tab.
+Copy the Key to the "Resource Key" field in the Settings/Authentication tab.
 
 Copy the Text Translation endpoint to the "Text Translation Endpoint" field in the Settings/Authentication tab.
 
-Copy the Document Tranlsation endpoint into the "Document Translation" field in the Settings/Authentication tab.
+Copy the Document Translation endpoint into the "Document Translation" field in the Settings/Authentication tab.
 
-Select the "Azure Region" where your Translator resource is located in the Settings/Authentication tab. If your Azure region is not
-listed, please use a text editor, for example Notepad, to add the region into the **AzureRegionsList.tsv** file that is in the same
-folder as the Document Translation app itself. If your Translator service is in an **Azure sovereign region**, there will be a need to add the
-region manually. 
+Enter the "Azure Region" where your Translator resource is located in the Settings/Authentication tab. 
 
 ![Settings Dialog](images/SettingsDialog.png)
 
@@ -105,10 +102,9 @@ To create a Key Vault for use with Document Translation:
 - Create an Azure Key Vault resource
 - Create Secrets for each of 
     - AzureRegion
-    - AzureResourceName
     - DocTransEndpoint
+    - ResourceKey
     - StorageConnectionString
-    - SubscriptionKey
     - TextTransEndpoint
 
 and copy the **secret from the Translator** resource and the **connection string from the Storage** resource.
@@ -231,7 +227,7 @@ On a Mac, use `dotnet doctr.dll --help` or `dotnet doctr.dll <command> --help` t
 #### Configure the tool
 The configuration contains the credentials for the needed Azure resources:
 The minimum needed credentials are
-- The subscription key to the Translator resource.
+- The resource key to the Translator resource.
 - The name of the Translator resource 
 - A storage connection string.
 You can obtain all of these from the Azure portal.
@@ -239,7 +235,7 @@ You can obtain all of these from the Azure portal.
 Command	| Required/Optional
 ----------------------------|-----------------------------------------
 `doctr config --set storage <Storage Connection String>`	| Required	|
-`doctr config --set key <Subscription key of the Translator resource>`	| Required	|
+`doctr config --set key <Resource Key of the Translator resource>`	| Required	|
 `doctr config --set name <Name of the Azure Translator resource>`	| Required	|
 `doctr config --set category <Custom Translator category ID>`	| Optional	|
 
