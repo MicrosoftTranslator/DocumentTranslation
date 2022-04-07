@@ -26,7 +26,6 @@ namespace DocumentTranslation.GUI
         internal static DocTransAppSettings localSettings;
         private static DocTransAppSettings keyVaultSettings;
 
-        public BindingList<AzureRegion> AzureRegions { get; private set; } = new();
         public Language FromLanguage { get; set; }
         public Language ToLanguage { get; init; }
         public BindingList<string> FilesToTranslate { get; private set; } = new();
@@ -181,16 +180,6 @@ namespace DocumentTranslation.GUI
             return filterBuilder.ToString();
         }
 
-        internal static int GetIndex(BindingList<AzureRegion> azureRegions, string azureRegion)
-        {
-            for (int i = 0; i < azureRegions.Count; i++)
-            {
-                AzureRegion item = azureRegions[i];
-                if (item.ID == azureRegion) return i;
-            }
-            return -1;
-        }
-
         internal async Task<string> GetGlossaryExtensionsFilter()
         {
             StringBuilder filterBuilder = new();
@@ -205,17 +194,6 @@ namespace DocumentTranslation.GUI
             }
             filterBuilder.Remove(filterBuilder.Length - 1, 1);
             return filterBuilder.ToString();
-        }
-        #endregion
-        #region Credentials
-        public void GetAzureRegions()
-        {
-            if (AzureRegions.Count > 5) return;
-            List<AzureRegion> azureRegions = AzureRegionsList.ReadAzureRegions();
-            AzureRegions.Clear();
-            foreach (var region in azureRegions)
-                AzureRegions.Add(region);
-            return;
         }
         #endregion
         #region Settings.Categories

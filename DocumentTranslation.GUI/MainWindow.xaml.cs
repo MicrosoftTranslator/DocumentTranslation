@@ -154,7 +154,6 @@ namespace DocumentTranslation.GUI
             if (string.IsNullOrEmpty(ViewModel.Settings.ConnectionStrings.StorageConnectionString)) TranslateDocumentsTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureRegion)) TranslateTextTab.IsEnabled = false;
             if (string.IsNullOrEmpty(ViewModel.Settings.AzureResourceName)) TranslateDocumentsTab.IsEnabled = false;
-            region.ItemsSource = ViewModel.AzureRegions;
             if (ViewModel.localSettings.UsingKeyVault)
             {
                 keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
@@ -162,7 +161,7 @@ namespace DocumentTranslation.GUI
             else
             {
                 subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
-                region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
+                region.Text = ViewModel.localSettings.AzureRegion;
                 storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings.StorageConnectionString;
                 resourceName.Text = ViewModel.localSettings.AzureResourceName;
                 textTransEndpoint.Text = ViewModel.localSettings.TextTransEndpoint;
@@ -623,20 +622,7 @@ namespace DocumentTranslation.GUI
             }
             keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
             subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
-            try
-            {
-                ViewModel.GetAzureRegions();
-            }
-            catch (Exception ex)
-            {
-                StatusBarText1.Text = Properties.Resources.msg_Error;
-                StatusBarText2.Text = ex.Message;
-                Task.Delay(10000);
-                StatusBarText1.Text = string.Empty;
-                StatusBarText2.Text = string.Empty;
-            }
-            region.ItemsSource = ViewModel.AzureRegions;
-            region.SelectedIndex = ViewModel.GetIndex(ViewModel.AzureRegions, ViewModel.localSettings.AzureRegion);
+            region.Text = ViewModel.localSettings.AzureRegion;
             region.UpdateLayout();
             storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings?.StorageConnectionString;
             resourceName.Text = ViewModel.localSettings.AzureResourceName;
@@ -649,10 +635,10 @@ namespace DocumentTranslation.GUI
             ViewModel.localSettings.SubscriptionKey = subscriptionKey.Password;
         }
 
-        private void Region_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Region_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ViewModel.localSettings.AzureRegion = (string)region.SelectedValue;
-            if (ViewModel.documentTranslationService is not null) ViewModel.documentTranslationService.AzureRegion = (string)region.SelectedValue;
+            ViewModel.localSettings.AzureRegion = region.Text;
+            if (ViewModel.documentTranslationService is not null) ViewModel.documentTranslationService.AzureRegion = region.Text;
         }
 
         private void ResourceName_TextChanged(object sender, TextChangedEventArgs e)

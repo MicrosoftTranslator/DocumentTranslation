@@ -119,9 +119,6 @@
       <Component Id="Microsoft.Identity.Client.Extensions.Msal.dll" Guid="09A2D7D0-7372-4720-BDEE-B71CD9DE4D38">
         <File Id="Microsoft.Identity.Client.Extensions.Msal.dll" Name="Microsoft.Identity.Client.Extensions.Msal.dll" Source="$(var.doctr_TargetDir)Microsoft.Identity.Client.Extensions.Msal.dll" />
       </Component>
-		<Component Id="AzureRegionsList.tsv" Guid="AF30C0C8-E405-4726-A467-68DB390CFDC2">
-			<File Id="AzureRegionsList.tsv" Name="AzureRegionsList.tsv" Source="$(var.doctr_TargetDir)AzureRegionsList.tsv" />
-		</Component>
 	</ComponentGroup>
   </Fragment>
 </Wix>

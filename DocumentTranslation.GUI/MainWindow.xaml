@@ -178,7 +178,7 @@
                                 <Label Grid.Row="3" Content="{x:Static resx:Resources.label_SubscriptionKey}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <PasswordBox Grid.Row="3" Grid.Column="1" x:Name="subscriptionKey" Height="22" PasswordChanged="SubscriptionKey_PasswordChanged" ToolTip="{x:Static resx:Resources.tooltip_SubscriptionKey}"/>
                                 <Label Grid.Row="4" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
-                                <ComboBox Grid.Row="4" Grid.Column="1" x:Name="region" Height="22" DisplayMemberPath="Name" SelectedValuePath="ID" SelectionChanged="Region_SelectionChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
+                                <TextBox Grid.Row="4" Grid.Column="1" x:Name="region" Height="22" TextChanged="Region_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
                                 <Label Grid.Row="5" Content="{x:Static resx:Resources.label_TextTransEndpoint}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_TextTransEndpoint}"/>
                                 <ComboBox Grid.Row="5" Grid.Column="1" x:Name="textTransEndpoint" IsEditable="True" Height="22" SelectedValuePath="Content" LostFocus="TextTransEndpoint_LostFocus" ToolTip="{x:Static resx:Resources.tooltip_TextTransEndpoint}">
                                     <ComboBoxItem Content="https://api.cognitive.microsofttranslator.com/"/>
