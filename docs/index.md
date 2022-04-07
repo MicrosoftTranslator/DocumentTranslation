@@ -34,7 +34,6 @@ If installation fails, install .Net 6 manually from https://dotnet.microsoft.com
 
 If you prefer to not maintain the acess secrets on your computer, or if your organization manages the
 Azure account for you, you may use Azure Key Vault to manage the credentials.
-Azure key vault not tested on Mac OS X. You can use the direct service credentials on the Mac. 
 
 ##### Azure Key Vault
 
@@ -54,6 +53,7 @@ If you don't have a Translator resource, create one:
 
 ------------------------------
 ![Translator Account](images/translatoraccount.png)
+
 Make sure you pick a pricing tier of S1 or higher. 
 
 ------------------------------
