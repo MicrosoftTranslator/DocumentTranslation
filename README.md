@@ -1,10 +1,10 @@
 # Microsoft Document Translation
 
-Translate local files or network files in many different formats, to more than 90 different languages.
-Supported formats include HTML, PDF, all Office document formats, Markdown and plain text. 
+Translate local files or network files in many different formats, to more than 100 different languages.
+Supported formats include HTML, PDF, all Office document formats, Markdown, MHTML, Outlook .MSG, XLIFF, CSV, TSV and plain text. 
 The complete [list of document formats is here](https://docs.microsoft.com/azure/cognitive-services/translator/document-translation/overview#supported-document-formats).
 
-You can select up to 1000 files and translate them to a different language with a single command.
+You can select up to 1000 files and translate them to one or more different languages with a single command.
 The Windows UI gives you options to comfortably select source files, one or more target languages, and the folder you want to deposit the translations in.
 It comes with a command line utility that does the same thing using a command line interface. 
 Document Translation uses the Azure Translator Service to perform the translations. You need a subscription to Azure, and register
@@ -13,6 +13,10 @@ detailed instructions on how to obtain those.
 
 For the translation you can specify a glossary (custom dictionary) to use. You can also make use of a custom translation system
 you may have built with [Custom Translator](http://customtranslator.ai).
+
+You can manage the credentials for accessing the Azure services in Azure Key Vault - the app will read it from there,
+based on your identity. Good if you want to manage the credentials centrally.
+Of course you can also keep the credentials locally, in the app. 
 
 **Document Translation  UI**
 
