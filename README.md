@@ -17,6 +17,8 @@ you may have built with [Custom Translator](http://customtranslator.ai).
 You can manage the credentials for accessing the Azure services in Azure Key Vault - the app will read it from there,
 based on your identity. Good if you want to manage the credentials centrally.
 
+Works with Azure sovereign clouds. 
+
 **Document Translation  UI**
 
 The main UI provides document translation: Multiple documents to multiple languages.
