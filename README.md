@@ -16,7 +16,8 @@ you may have built with [Custom Translator](http://customtranslator.ai).
 
 You can manage the credentials for accessing the Azure services in Azure Key Vault - the app will read it from there,
 based on your identity. Good if you want to manage the credentials centrally.
-Of course you can also keep the credentials locally, in the app. 
+
+Works with Azure sovereign clouds. 
 
 **Document Translation  UI**
 
@@ -44,15 +45,15 @@ The documentation is stored in the /docs folder of the project.
 ## Implementation
 
 Document Translation is written and compiled for .Net 6. The command line utility should be compatible with other platforms
-running .Net 6, namely MacOS and Linux. Tested on Windows 10, Windows 11 and Mac OS X at this point. Please let us know via an issue if you find problems with
-other platforms running .Net 6. 
+running .Net 6, namely MacOS and Linux. Tested on Windows 10, Windows 11 and Mac OS X at this point. Please let us know via an issue
+if you find problems with other platforms running .Net 6. 
 Signed binaries are provided in the [releases](https://github.com/microsofttranslator/documenttranslation/releases) folder.
 To compile yourself, run Visual Studio 2022 and have the .Net 6 SDK installed.
 You can compile and run the tool in Visual Studio 2022.
 
 This tool makes use of the Azure Document Translation service. The Azure Document Translation service translates
 a set of documents that reside in an Azure storage container, and delivers the translations in another Azure storage
-container. This tool provides a local interface to that service, allowing you to translate a locally residing file
+container. This app provides a local interface to that service, allowing you to translate a locally residing file
 or a folder, and receiving the translation of these documents in a local folder.
 The tool uploads the local documents, invokes the translation, monitors the translation progress,
 downloads the translated documents to your local machine, and then deletes the containers from the service.
@@ -66,8 +67,7 @@ with the Azure service.
 DocumentTranslationBusiness handles the local file operations and business logic.
 Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
 
-Designed for the Azure public cloud. Currently in preview is a version that allows usage of sovereign clouds,
-including Azure Government.
+The app allows you to enter fully qualified service endpoints, so that it works with Azure sovereign clouds. 
 
 ## Issues
 
@@ -81,7 +81,6 @@ quickly - or reject with comments.
 ## Future plans
 
 - Option to extend the set of file formats with format conversions that are processed locally, as a library within this tool.
-- Authentication with Azure Active Directory
 - Upgrade to .Net 6 MAUI when it becomes available
 - A shared storage for the glossary, so that multiple clients can refer to a
 single company-wide glossary. 
