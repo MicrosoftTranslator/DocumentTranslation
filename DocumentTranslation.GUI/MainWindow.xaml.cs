@@ -815,10 +815,9 @@ namespace DocumentTranslation.GUI
         }
         #endregion Settings
 
-        private void TextTransEndpoint_LostFocus(object sender, RoutedEventArgs e)
+        private void TextTransEndpoint_TextChanged(object sender, TextChangedEventArgs e)
         {
             ViewModel.localSettings.TextTransEndpoint = textTransEndpoint.Text;
         }
-
     }
 }

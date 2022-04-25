@@ -180,10 +180,7 @@
                                 <Label Grid.Row="4" Content="{x:Static resx:Resources.label_AzureRegion}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
                                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="region" Height="22" TextChanged="Region_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_AzureRegion}"/>
                                 <Label Grid.Row="5" Content="{x:Static resx:Resources.label_TextTransEndpoint}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_TextTransEndpoint}"/>
-                                <ComboBox Grid.Row="5" Grid.Column="1" x:Name="textTransEndpoint" IsEditable="True" Height="22" SelectedValuePath="Content" LostFocus="TextTransEndpoint_LostFocus" ToolTip="{x:Static resx:Resources.tooltip_TextTransEndpoint}">
-                                    <ComboBoxItem Content="https://api.cognitive.microsofttranslator.com/"/>
-                                    <ComboBoxItem Content="https://api.cognitive.microsofttranslator.us/"/>
-                                </ComboBox>
+                                <TextBox Grid.Row="5" Grid.Column="1" x:Name="textTransEndpoint" Height="22" TextChanged="TextTransEndpoint_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_TextTransEndpoint}"/>
                                 <Label Grid.Row="6" Content="{x:Static resx:Resources.label_DocTransEndpoint}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_DocTransEndpoint}"/>
                                 <TextBox Grid.Row="6" x:Name="resourceName" Grid.Column="1" Height="22" Text="{Binding Settings.AzureResourceName, Mode=TwoWay}"  TextChanged="ResourceName_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_DocTransEndpoint}"/>
                                 <Label Grid.Row="7" Content="{x:Static resx:Resources.label_StorageConnectionString}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
