@@ -94,6 +94,7 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
             documentTranslationService.TextTransUri = Settings.TextTransEndpoint;
+            documentTranslationService.FlightString = Settings.FlightString;
             try
             {
                 _ = this.documentTranslationService.InitializeAsync();

@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thu 04/07/2022 11:26:40.81 
+        ///   Looks up a localized string similar to Mon 04/25/2022 20:36:05.41 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -256,6 +256,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_Experimental {
             get {
                 return ResourceManager.GetString("label_Experimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight:.
+        /// </summary>
+        public static string label_Flight {
+            get {
+                return ResourceManager.GetString("label_Flight", resourceCulture);
             }
         }
         
@@ -814,6 +823,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_DocTransEndpoint {
             get {
                 return ResourceManager.GetString("tooltip_DocTransEndpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you received a code from Microsoft for experimental functionality, enter it here.
+        /// </summary>
+        public static string tooltip_Flight {
+            get {
+                return ResourceManager.GetString("tooltip_Flight", resourceCulture);
             }
         }
         

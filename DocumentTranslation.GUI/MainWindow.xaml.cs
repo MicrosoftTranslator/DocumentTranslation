@@ -623,11 +623,11 @@ namespace DocumentTranslation.GUI
             keyVaultName.Text = ViewModel.localSettings.AzureKeyVaultName;
             subscriptionKey.Password = ViewModel.localSettings.SubscriptionKey;
             region.Text = ViewModel.localSettings.AzureRegion;
-            region.UpdateLayout();
             storageConnectionString.Text = ViewModel.localSettings.ConnectionStrings?.StorageConnectionString;
             resourceName.Text = ViewModel.localSettings.AzureResourceName;
-            experimentalCheckbox.IsChecked = ViewModel.localSettings.ShowExperimental;
             textTransEndpoint.Text = ViewModel.localSettings.TextTransEndpoint;
+            experimentalCheckbox.IsChecked = ViewModel.localSettings.ShowExperimental;
+            flightString.Text = ViewModel.localSettings.FlightString;
         }
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
@@ -813,11 +813,16 @@ namespace DocumentTranslation.GUI
             StatusBarSText1.Text = string.Empty;
             StatusBarSText2.Text = string.Empty;
         }
-        #endregion Settings
 
         private void TextTransEndpoint_TextChanged(object sender, TextChangedEventArgs e)
         {
             ViewModel.localSettings.TextTransEndpoint = textTransEndpoint.Text;
         }
+
+        private void FlightString_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.localSettings.FlightString = flightString.Text;
+        }
+        #endregion Settings
     }
 }

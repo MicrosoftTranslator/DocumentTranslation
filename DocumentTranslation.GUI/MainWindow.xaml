@@ -187,7 +187,11 @@
                                 <TextBox Grid.Row="7" x:Name="storageConnectionString" Grid.Column="1" Height="22" Text="{Binding Settings.ConnectionStrings.StorageConnectionString, Mode=TwoWay}" TextChanged="StorageConnection_TextChanged" ToolTip="{x:Static resx:Resources.tooltip_StorageConnectionString}"/>
                                 <Separator Grid.Row="8" Grid.ColumnSpan="2" Background="Blue" />
                                 <Label Grid.Row="9" Content="{x:Static resx:Resources.label_ShowExperimental}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
-                                <CheckBox Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                <StackPanel Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <CheckBox VerticalAlignment="Center" x:Name="experimentalCheckbox" IsChecked="{Binding Settings.ShowExperimental}" Margin="4" Checked="ExperimentalCheckbox_Checked" Unchecked="ExperimentalCheckbox_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ShowExperimental}"/>
+                                    <Label Content="{x:Static resx:Resources.label_Flight}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_Flight}" Margin="60,0,5,0"/>
+                                    <TextBox x:Name="flightString" Width="120" Height="22" TextChanged="FlightString_TextChanged"/>
+                                </StackPanel>
                                 <StackPanel Grid.Row="10" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                                     <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
                                     <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>

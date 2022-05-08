@@ -397,4 +397,10 @@
   <data name="tooltip_TextTransEndpoint" xml:space="preserve">
     <value>Azure Translator Text Translation Endpoint</value>
   </data>
+  <data name="label_Flight" xml:space="preserve">
+    <value>Flight:</value>
+  </data>
+  <data name="tooltip_Flight" xml:space="preserve">
+    <value>If you received a code from Microsoft for experimental functionality, enter it here</value>
+  </data>
 </root>
