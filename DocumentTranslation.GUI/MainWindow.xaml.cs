@@ -17,7 +17,7 @@ namespace DocumentTranslation.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ViewModel ViewModel;
+        internal readonly ViewModel ViewModel;
         private PerLanguageData perLanguageData = new();
 
         #region Global
@@ -824,5 +824,11 @@ namespace DocumentTranslation.GUI
             ViewModel.localSettings.FlightString = flightString.Text;
         }
         #endregion Settings
+
+        private void TabLanguages_Loaded(object sender, RoutedEventArgs e)
+        {
+            LanguagesDataGrid.AutoGenerateColumns = true;
+            LanguagesDataGrid.ItemsSource = ViewModel.ToLanguageList;
+        }
     }
 }
