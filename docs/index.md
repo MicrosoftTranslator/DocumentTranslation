@@ -136,7 +136,8 @@ Choose a folder to store the translated documents in. You may choose any folder 
 or any network folder that you have create and write permissions to.
 If you are translating to a single language and have translated to this language before,
 the app will suggest using the same folder as last time you translated to this target language.
-For the target folder you may enter a '*' where you want the app to place the langauge code of the target language.
+For the target folder you may enter a '*' where you want the app to place the language code of the target language.
+A table of the language codes with their friendly names is in the Languages tab of the help section ('?').
 
 You may optionally provide a glossary of words or phrases you want to have translated in a specific way. Add only words and phrases that you are sure must
 be translated a certain way, and only those that do not translate naturally as intended. This works best for compound nouns like product names or
