@@ -105,8 +105,7 @@ namespace DocumentTranslation.GUI
                 TranslateDocumentsTab.IsEnabled = false;
                 TranslateTextTab.IsEnabled = false;
                 System.Resources.ResourceManager resx = new("DocumentTranslation.GUI.Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
-                StatusBarSText1.Text = resx.GetString(ex.Message, System.Globalization.CultureInfo.CurrentCulture);
-                StatusBarSText2.Text = ex.InnerException.Message;
+                StatusBarSText2.Text = ex.Message;
             }
             catch (System.AggregateException ex)
             {
@@ -210,7 +209,7 @@ namespace DocumentTranslation.GUI
             {
                 StatusBarText1.Text = Properties.Resources.msg_Error;
                 StatusBarText2.Text= ex.Message;
-                await Task.Delay(5000);
+                await Task.Delay(20000);
                 StatusBarText1.Text = string.Empty;
                 StatusBarText2.Text = string.Empty;
                 return;
