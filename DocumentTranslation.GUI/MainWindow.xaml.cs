@@ -220,7 +220,7 @@ namespace DocumentTranslation.GUI
             FilesListBox.ItemsSource = ViewModel.FilesToTranslate;
             if (ViewModel.FilesToTranslate.Count > 0)
             {
-                if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + ".*";
+                if (string.IsNullOrEmpty(TargetTextBox.Text)) TargetTextBox.Text = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]) + Path.DirectorySeparatorChar + "*";
             }
             SetTranslateDocumentsButtonStatus();
             return;

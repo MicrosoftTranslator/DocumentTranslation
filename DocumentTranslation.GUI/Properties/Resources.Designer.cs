@@ -61,7 +61,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sun 05/08/2022 12:49:20.65 
+        ///   Looks up a localized string similar to Thu 05/12/2022 20:30:13.27 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -755,7 +755,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document Translation uses ISO language codes to refer to a language. This table helps identify where Document Translation placed a file when you use a &apos;*&apos; in the target folder name..
+        ///   Looks up a localized string similar to Document Translation uses ISO language codes to refer to a language. This table helps identify where Document Translation places a file when you use a &apos;*&apos; in the target folder name..
         /// </summary>
         public static string text_LanguageCodes {
             get {

@@ -404,6 +404,6 @@
     <value>If you received a code from Microsoft for experimental functionality, enter it here</value>
   </data>
   <data name="text_LanguageCodes" xml:space="preserve">
-    <value>Document Translation uses ISO language codes to refer to a language. This table helps identify where Document Translation placed a file when you use a '*' in the target folder name.</value>
+    <value>Document Translation uses ISO language codes to refer to a language. This table helps identify where Document Translation places a file when you use a '*' in the target folder name.</value>
   </data>
 </root>
