@@ -46,7 +46,7 @@ If a Key Vault URI is specified, your browser will open and ask you to log in.
 If a Key Vault URI is specified, the other entries on this Settings page have no effect.
 
 
-##### Translator resource key and name
+##### Translator resource key and endpoints
 
 You can use an existing paid Azure Translator resource. Document translation will not work with a free Translator resource.
 If you don't have a Translator resource, create one:
@@ -56,7 +56,6 @@ If you don't have a Translator resource, create one:
 
 Make sure you pick a pricing tier of S1 or higher. 
 
-------------------------------
 Visit the properties of your Translator resource.
 
 -------------------
@@ -72,6 +71,22 @@ Copy the Document Translation endpoint into the "Document Translation" field in 
 Enter the "Azure Region" where your Translator resource is located in the Settings/Authentication tab. 
 
 ![Settings Dialog](images/SettingsDialog.png)
+
+##### Virtual Network/Private Endpoint
+
+When using a virtual network or private endpoint, copy the Text Translation endpoint and Document Translation endpoint
+from the "Virtual Network" tab of the "Keys and Endpoint" section of the Translator resource.
+
+![Private Endpoint](images/AzurePrivateEndpoint.png)
+
+Copy this endpoint into the Document Translation app's Settings page and add
+`translator/text/v3.0`
+to the end of the Text Translation Endpoint URL.
+
+![Private Endpoint](images/AppPrivateEndpoint.png)
+
+The same modification to the Text Translation URL entered into Key Vault is necessary when using Key Vault
+to manage the credentials with Private Endpoints. 
 
 
 ##### Storage connection string
