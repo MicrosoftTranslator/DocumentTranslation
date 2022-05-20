@@ -374,10 +374,17 @@ namespace DocumentTranslation.GUI
             return tolanguages;
         }
 
-        private async void DocumentTranslationBusiness_OnHeartBeat(object sender, EventArgs e)
+        private async void DocumentTranslationBusiness_OnHeartBeat(object sender, int e)
         {
             Heartbeat.Visibility = Visibility.Visible;
-            await Task.Delay(300);
+            if (e != 200)
+            {
+                object save = Heartbeat.Content;
+                Heartbeat.Content = e;
+                await Task.Delay(600);
+                Heartbeat.Content = save;
+            }
+            else await Task.Delay(300);
             Heartbeat.Visibility = Visibility.Hidden;
         }
 
