@@ -204,7 +204,7 @@ namespace DocumentTranslation.CLI
                         }
                         if (region.HasValue())
                         {
-                            if (cat.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureRegion = string.Empty;
+                            if (region.Value().ToLowerInvariant() == "clear") docTransAppSettings.AzureRegion = string.Empty;
                             else docTransAppSettings.AzureRegion = region.Value();
                             Console.WriteLine($"{app.Name}: Azure region set.");
                         }
