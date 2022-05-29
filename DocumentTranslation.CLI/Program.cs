@@ -92,6 +92,7 @@ namespace DocumentTranslation.CLI
                     translationBusiness.OnFilesDiscarded += TranslationBusiness_OnFilesDiscarded;
                     translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
                     translationBusiness.OnFinalResults += TranslationBusiness_OnFinalResults;
+                    translationBusiness.OnThereWereErrors += TranslationBusiness_OnThereWereErrors;
                     Timer timer = new(500) { AutoReset = true, Enabled = true };
                     timer.Elapsed += Timer_Elapsed;
                     Console.WriteLine($"Starting translation of {sourceFiles.Value} to {toLang.Value()}. Press Esc to cancel.");
@@ -357,6 +358,12 @@ namespace DocumentTranslation.CLI
             }
 
             return result;
+        }
+
+        private static void TranslationBusiness_OnThereWereErrors(object sender, string e)
+        {
+            Console.WriteLine(e);
+            System.Environment.Exit(-1);
         }
 
         private static void TranslationBusiness_OnFinalResults(object sender, long e)
