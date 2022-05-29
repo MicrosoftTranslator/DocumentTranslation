@@ -138,7 +138,11 @@ namespace DocumentTranslation.CLI
                     configTestCmd.OnExecuteAsync(async (cancellationToken) =>
                     {
                         DocTransAppSettings docTransAppSettings = AppSettingsSetter.Read(null);
-                        DocumentTranslationService.Core.DocumentTranslationService translationService = new(docTransAppSettings.SubscriptionKey, docTransAppSettings.AzureResourceName, docTransAppSettings.ConnectionStrings.StorageConnectionString);
+                        DocumentTranslationService.Core.DocumentTranslationService translationService = new(docTransAppSettings.SubscriptionKey, docTransAppSettings.AzureResourceName, docTransAppSettings.ConnectionStrings.StorageConnectionString)
+                        {
+                            AzureRegion = docTransAppSettings.AzureRegion,
+                            TextTransUri = docTransAppSettings.TextTransEndpoint
+                        };
                         try { await translationService.TryCredentials(); }
                         catch (DocumentTranslationService.Core.DocumentTranslationService.CredentialsException ex)
                         {
