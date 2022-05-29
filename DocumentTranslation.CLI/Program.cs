@@ -149,7 +149,7 @@ namespace DocumentTranslation.CLI
                             switch (ex.Message.ToLowerInvariant())
                             {
                                 case "key":
-                                    Console.WriteLine("FAIL: Invalid or missing resource key.");
+                                    Console.WriteLine("FAIL: Invalid resource key, or wrong region.");
                                     break;
                                 case "storage":
                                     Console.WriteLine("FAIL: Storage account not present or invalid storage connection string.");
