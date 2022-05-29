@@ -406,4 +406,13 @@
   <data name="text_LanguageCodes" xml:space="preserve">
     <value>Document Translation uses ISO language codes to refer to a language. This table helps identify where Document Translation places a file when you use a '*' in the target folder name.</value>
   </data>
+  <data name="tabTitle_About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="tabTitle_Documentation" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
+  <data name="tabTitle_Languages" xml:space="preserve">
+    <value>Languages</value>
+  </data>
 </root>

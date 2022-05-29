@@ -61,7 +61,8 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thu 05/12/2022 20:30:13.27 
+        ///   Looks up a localized string similar to master
+        ///Sun 05/29/2022  8:40:31.16 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -683,6 +684,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string tabTitle_About {
+            get {
+                return ResourceManager.GetString("tabTitle_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authentication.
         /// </summary>
         public static string tabTitle_Authentication {
@@ -697,6 +707,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tabTitle_Categories {
             get {
                 return ResourceManager.GetString("tabTitle_Categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documentation.
+        /// </summary>
+        public static string tabTitle_Documentation {
+            get {
+                return ResourceManager.GetString("tabTitle_Documentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Languages.
+        /// </summary>
+        public static string tabTitle_Languages {
+            get {
+                return ResourceManager.GetString("tabTitle_Languages", resourceCulture);
             }
         }
         
