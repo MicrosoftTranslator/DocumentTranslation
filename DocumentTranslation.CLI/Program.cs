@@ -241,7 +241,17 @@ namespace DocumentTranslation.CLI
                     langCmd.Description = "List the languages available for translation.";
                     langCmd.OnExecuteAsync(async (cancellationToken) =>
                     {
-                        DocumentTranslationService.Core.DocumentTranslationService translationService = new(null, null, null);
+                        DocTransAppSettings settings = new();
+                        settings = AppSettingsSetter.Read();
+                        string textTransUri;
+                        if (string.IsNullOrEmpty(settings.TextTransEndpoint))
+                            textTransUri = "https://api.cognitive.microsofttranslator.com/";
+                        else
+                            textTransUri = settings.TextTransEndpoint;
+                        DocumentTranslationService.Core.DocumentTranslationService translationService = new(null, null, null)
+                        {
+                            TextTransUri = textTransUri
+                        };
                         await translationService.GetLanguagesAsync();
                         foreach (var language in translationService.Languages.OrderBy(x => x.Key))
                         {
