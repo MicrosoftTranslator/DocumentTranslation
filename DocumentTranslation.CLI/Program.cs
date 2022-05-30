@@ -367,7 +367,7 @@ namespace DocumentTranslation.CLI
         private static void TranslationBusiness_OnThereWereErrors(object sender, string e)
         {
             Console.WriteLine(e);
-            System.Environment.Exit(-1);
+            Environment.Exit(-1);
         }
 
         private static void TranslationBusiness_OnFinalResults(object sender, long e)
@@ -409,7 +409,7 @@ namespace DocumentTranslation.CLI
         {
             if (e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.Failed
                 || e.Status?.Status == Azure.AI.Translation.Document.DocumentTranslationStatus.ValidationFailed
-                || !String.IsNullOrEmpty(e.Message))
+                || !string.IsNullOrEmpty(e.Message))
             {
                 Console.WriteLine($"{Properties.Resources.msg_ServerMessage}{e.Status?.Status}");
                 Console.WriteLine(e.Message);
