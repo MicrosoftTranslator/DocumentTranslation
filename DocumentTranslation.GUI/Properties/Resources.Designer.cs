@@ -62,7 +62,7 @@ namespace DocumentTranslation.GUI.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to master
-        ///Sun 05/29/2022  8:40:31.16 
+        ///Wed 06/01/2022 17:55:37.65 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -810,6 +810,15 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        public static string text_Version {
+            get {
+                return ResourceManager.GetString("text_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Document translation errors.
         /// </summary>
         public static string title_DocumentTranslationErrors {
@@ -941,6 +950,15 @@ namespace DocumentTranslation.GUI.Properties {
         public static string tooltip_TextTransEndpoint {
             get {
                 return ResourceManager.GetString("tooltip_TextTransEndpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.9.3.0.
+        /// </summary>
+        public static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
     }
