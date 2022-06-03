@@ -34,7 +34,8 @@ A simple copy-and-paste text translation interface is present in the Windows UI.
 
 ## Download
 
-Signed binaries are provided in the [releases folder](https://github.com/microsofttranslator/documenttranslation/releases).
+A Windows installer (.MSI) and signed binaries (.ZIP) for manual installation on other OSes are provided in
+the [releases folder](https://github.com/microsofttranslator/documenttranslation/releases).
 
 ## Documentation
 
