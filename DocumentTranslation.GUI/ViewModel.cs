@@ -101,7 +101,7 @@ namespace DocumentTranslation.GUI
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
             documentTranslationService.TextTransUri = Settings.TextTransEndpoint;
-            documentTranslationService.FlightString = Settings.FlightString;
+            documentTranslationService.FlightString = localSettings.FlightString;       //read the flight only from local settings.
             try
             {
                 _ = this.documentTranslationService.InitializeAsync();
