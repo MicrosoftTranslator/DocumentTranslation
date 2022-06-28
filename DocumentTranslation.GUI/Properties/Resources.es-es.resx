@@ -1,0 +1,421 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Version" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Version.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="button_Add" xml:space="preserve">
+    <value>Agregar</value>
+  </data>
+  <data name="button_Browse" xml:space="preserve">
+    <value>Hojear</value>
+  </data>
+  <data name="button_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="button_Clear" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="button_Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="button_Delete" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="button_Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="button_Select" xml:space="preserve">
+    <value>Escoger</value>
+  </data>
+  <data name="button_ShowErrors" xml:space="preserve">
+    <value>Mostrar errores</value>
+  </data>
+  <data name="button_Test" xml:space="preserve">
+    <value>Prueba</value>
+  </data>
+  <data name="button_Translate" xml:space="preserve">
+    <value>Traducir</value>
+  </data>
+  <data name="button_TranslateDocuments" xml:space="preserve">
+    <value>Traducir documentos</value>
+  </data>
+  <data name="label_AutoDetect" xml:space="preserve">
+    <value>Detección automática</value>
+  </data>
+  <data name="label_AzureRegion" xml:space="preserve">
+    <value>Región de Azure:</value>
+  </data>
+  <data name="label_Category" xml:space="preserve">
+    <value>Categoría:</value>
+  </data>
+  <data name="label_CategoryId" xml:space="preserve">
+    <value>ID de categoría de traductor personalizado</value>
+  </data>
+  <data name="label_CategoryName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="label_DocTransEndpoint" xml:space="preserve">
+    <value>Punto de enlace de traducción de documentos:</value>
+  </data>
+  <data name="label_DocumentsToTranslate" xml:space="preserve">
+    <value>Documentos a traducir:</value>
+  </data>
+  <data name="label_DocumentTranslation" xml:space="preserve">
+    <value>Traducción de documentos |</value>
+  </data>
+  <data name="label_Experimental" xml:space="preserve">
+    <value>Experimental</value>
+  </data>
+  <data name="label_Flight" xml:space="preserve">
+    <value>Vuelo:</value>
+  </data>
+  <data name="label_From" xml:space="preserve">
+    <value>De:</value>
+  </data>
+  <data name="label_Glossaries" xml:space="preserve">
+    <value>Glosarios |</value>
+  </data>
+  <data name="label_Glossary" xml:space="preserve">
+    <value>Glosario a utilizar (opcional):</value>
+  </data>
+  <data name="label_Input" xml:space="preserve">
+    <value>Entrada:</value>
+  </data>
+  <data name="label_KeyVaultUri" xml:space="preserve">
+    <value>URI del Almacén de claves de Azure:</value>
+  </data>
+  <data name="label_NewCategoryIDSample" xml:space="preserve">
+    <value>Nuevo ID de categoría</value>
+  </data>
+  <data name="label_NewCategorySample" xml:space="preserve">
+    <value>Nuevo nombre de categoría</value>
+  </data>
+  <data name="label_ShowExperimental" xml:space="preserve">
+    <value>Mostrar lenguajes experimentales:</value>
+  </data>
+  <data name="label_StorageConnectionString" xml:space="preserve">
+    <value>Cadena de conexión de almacenamiento:</value>
+  </data>
+  <data name="label_SubscriptionKey" xml:space="preserve">
+    <value>Clave de recurso:</value>
+  </data>
+  <data name="label_TargetFolder" xml:space="preserve">
+    <value>Carpeta de destino:</value>
+  </data>
+  <data name="Label_Testing" xml:space="preserve">
+    <value>Ensayo...</value>
+  </data>
+  <data name="label_TextTransEndpoint" xml:space="preserve">
+    <value>Extremo de traducción de texto:</value>
+  </data>
+  <data name="label_To" xml:space="preserve">
+    <value>Para:</value>
+  </data>
+  <data name="label_Translation" xml:space="preserve">
+    <value>Traducción:</value>
+  </data>
+  <data name="msg_Bytes" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="msg_Canceled" xml:space="preserve">
+    <value>Cancelado</value>
+  </data>
+  <data name="msg_Canceling" xml:space="preserve">
+    <value>Cancelar...</value>
+  </data>
+  <data name="msg_CategoriesSaved" xml:space="preserve">
+    <value>Categorías guardadas</value>
+  </data>
+  <data name="msg_CharactersCharged" xml:space="preserve">
+    <value>Personajes cargados:</value>
+  </data>
+  <data name="msg_Completed" xml:space="preserve">
+    <value>Completado:</value>
+  </data>
+  <data name="msg_DocumentsTranslated" xml:space="preserve">
+    <value>documento(s) traducido(s)</value>
+  </data>
+  <data name="msg_DocumentsUploaded" xml:space="preserve">
+    <value>Documentos cargados.</value>
+  </data>
+  <data name="msg_DocumentUploadStarted" xml:space="preserve">
+    <value>Carga de documentos ...</value>
+  </data>
+  <data name="msg_Done" xml:space="preserve">
+    <value>Hecho</value>
+  </data>
+  <data name="msg_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="msg_Failed" xml:space="preserve">
+    <value>Fracasado:</value>
+  </data>
+  <data name="msg_files" xml:space="preserve">
+    <value>Archivos</value>
+  </data>
+  <data name="msg_InProgress" xml:space="preserve">
+    <value>En curso:</value>
+  </data>
+  <data name="msg_InvalidCredentials" xml:space="preserve">
+    <value>Credenciales no válidas</value>
+  </data>
+  <data name="msg_InvalidCredentialsTip" xml:space="preserve">
+    <value>Obtenga credenciales válidas e ingrese en Configuración</value>
+  </data>
+  <data name="msg_LanguageSelected" xml:space="preserve">
+    <value>idioma seleccionado</value>
+  </data>
+  <data name="msg_LanguagesSelected" xml:space="preserve">
+    <value>idiomas seleccionados</value>
+  </data>
+  <data name="msg_NotLoggedIn" xml:space="preserve">
+    <value>Inicia sesión con tu cuenta profesional o educativa.</value>
+  </data>
+  <data name="msg_ResourceNameIncorrect" xml:space="preserve">
+    <value>Nombre del recurso incorrecto o no es una suscripción de pago</value>
+  </data>
+  <data name="msg_S1OrHigherTierRequired" xml:space="preserve">
+    <value>Se requiere una suscripción de nivel S1 o superior.</value>
+  </data>
+  <data name="msg_SettingsSaved" xml:space="preserve">
+    <value>Configuración guardada</value>
+  </data>
+  <data name="msg_SignInComplete" xml:space="preserve">
+    <value>Haber iniciado sesión</value>
+  </data>
+  <data name="msg_SigningIn" xml:space="preserve">
+    <value>Iniciar sesión ...</value>
+  </data>
+  <data name="msg_StorageContainerError" xml:space="preserve">
+    <value>Error del contenedor de almacenamiento</value>
+  </data>
+  <data name="msg_TestFailed" xml:space="preserve">
+    <value>Prueba fallida</value>
+  </data>
+  <data name="msg_TestPassed" xml:space="preserve">
+    <value>Prueba superada</value>
+  </data>
+  <data name="msg_TranslateButton_Click_CharactersTranslated" xml:space="preserve">
+    <value>caracteres traducidos</value>
+  </data>
+  <data name="msg_TranslateButton_Click_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="msg_TranslateButton_Click_InvalidCategory" xml:space="preserve">
+    <value>Categoría no válida</value>
+  </data>
+  <data name="msg_Waiting" xml:space="preserve">
+    <value>Espera:</value>
+  </data>
+  <data name="tabTitle_About" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="tabTitle_Authentication" xml:space="preserve">
+    <value>Autenticación</value>
+  </data>
+  <data name="tabTitle_Categories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="tabTitle_Documentation" xml:space="preserve">
+    <value>Documentación</value>
+  </data>
+  <data name="tabTitle_Languages" xml:space="preserve">
+    <value>Idiomas</value>
+  </data>
+  <data name="tabTitle_Settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="tabTitle_TranslateDocuments" xml:space="preserve">
+    <value>Traducir documentos</value>
+  </data>
+  <data name="tabTitle_TranslateText" xml:space="preserve">
+    <value>Traducir texto</value>
+  </data>
+  <data name="text_BuildDate" xml:space="preserve">
+    <value>Fecha de construcción:</value>
+  </data>
+  <data name="text_Categories" xml:space="preserve">
+    <value>Esta lista de nombres de categoría proporciona un fácil acceso a un nombre descriptivo para los sistemas de traducción personalizados que ha creado con Custom Translator. Más información en http://customtranslator.ai. No es necesario usar esto a menos que haya creado un sistema de traducción personalizado.</value>
+  </data>
+  <data name="text_HowToObtainTheServiceCredentials" xml:space="preserve">
+    <value>Cómo obtener las credenciales de servicio.</value>
+  </data>
+  <data name="text_LanguageCodes" xml:space="preserve">
+    <value>La traducción de documentos utiliza códigos de idioma ISO para referirse a un idioma. Esta tabla ayuda a identificar dónde coloca Document Translation un archivo cuando se utiliza un '*' en el nombre de la carpeta de destino.</value>
+  </data>
+  <data name="text_OpenInBrowser" xml:space="preserve">
+    <value>Abrir en el navegador</value>
+  </data>
+  <data name="text_SettingsInstructions" xml:space="preserve">
+    <value>Obtenga la clave de recursos, la región de Azure, los puntos de conexión y la cadena de conexión de almacenamiento del Portal de Azure o del administrador de Azure de su organización. Si tiene un URI del Almacén de claves de Azure, no es necesario rellenar los demás campos.</value>
+  </data>
+  <data name="text_Version" xml:space="preserve">
+    <value>Versión:</value>
+  </data>
+  <data name="title_DocumentTranslationErrors" xml:space="preserve">
+    <value>Errores de traducción de documentos</value>
+  </data>
+  <data name="title_WindowTitle" xml:space="preserve">
+    <value>Traducción de documentos</value>
+  </data>
+  <data name="tooltip_AzureRegion" xml:space="preserve">
+    <value>La región de Azure en la que reside el recurso de Translator.</value>
+  </data>
+  <data name="tooltip_Category" xml:space="preserve">
+    <value>Utilice la pestaña "Configuración", "Categorías" para definir un conjunto de categorías de traductor personalizado que desea utilizar. Deje la selección clara si no está utilizando Custom Translator.</value>
+  </data>
+  <data name="tooltip_CategoryClear" xml:space="preserve">
+    <value>Borra la selección de una categoría. No elimina la categoría de su conjunto de categorías disponibles.</value>
+  </data>
+  <data name="tooltip_DocTransEndpoint" xml:space="preserve">
+    <value>El extremo del servicio de traducción de documentos. Para Azure public https://&lt;resource name&gt;.cognitiveservices.azure.com.</value>
+  </data>
+  <data name="tooltip_Flight" xml:space="preserve">
+    <value>Si recibió un código de Microsoft para la funcionalidad experimental, escríbalo aquí</value>
+  </data>
+  <data name="tooltip_KeyVaultUri" xml:space="preserve">
+    <value>Obtenga el URI del Almacén de claves de Azure del administrador de Azure profesional o educativo. O 'Borrar' para proporcionar la configuración usted mismo.</value>
+  </data>
+  <data name="tooltip_SaveSettings" xml:space="preserve">
+    <value>Guarde la configuración anterior en su dispositivo.</value>
+  </data>
+  <data name="tooltip_ShowExperimental" xml:space="preserve">
+    <value>Si mostrar los idiomas que el servicio Translator considera experimentales. Los idiomas experimentales pueden no estar disponibles en ambas direcciones y la traducción puede fallar. Déjelo sin marcar a menos que necesite experimentar con idiomas no totalmente compatibles.</value>
+  </data>
+  <data name="tooltip_StorageConnectionString" xml:space="preserve">
+    <value>Copie la "Cadena de conexión" de la página Propiedades del recurso Almacenamiento de la suscripción de Azure.</value>
+  </data>
+  <data name="tooltip_SubscriptionKey" xml:space="preserve">
+    <value>Copie la "Clave 1" o la "Clave 2" del recurso Traductor en su suscripción de Azure.</value>
+  </data>
+  <data name="tooltip_TargetFolder" xml:space="preserve">
+    <value>Indique la carpeta de destino. '*' muestra dónde debe ir el ID de idioma.</value>
+  </data>
+  <data name="tooltip_TestSettings" xml:space="preserve">
+    <value>Invoque una prueba de la configuración anterior. Mostrará un resultado aprobado o no aprobado.</value>
+  </data>
+  <data name="tooltip_TextTransEndpoint" xml:space="preserve">
+    <value>Punto de conexión de traducción de texto de Azure Translator</value>
+  </data>
+</root>
