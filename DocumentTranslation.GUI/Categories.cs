@@ -22,12 +22,12 @@ namespace DocumentTranslation.GUI
             Read();
         }
 
-        private void Read(string filename = null)
+        private void Read()
         {
             string categoriesJson;
             try
             {
-                if (string.IsNullOrEmpty(filename)) filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
+                string filename = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + AppName + Path.DirectorySeparatorChar + AppSettingsFileName;
                 categoriesJson = File.ReadAllText(filename);
             }
             catch (Exception ex)
@@ -40,7 +40,15 @@ namespace DocumentTranslation.GUI
                 }
                 throw;
             }
-            MyCategoryList = JsonSerializer.Deserialize<BindingList<MyCategory>>(categoriesJson, new JsonSerializerOptions { IncludeFields = true });
+            try
+            {
+                MyCategoryList = JsonSerializer.Deserialize<BindingList<MyCategory>>(categoriesJson, new JsonSerializerOptions { IncludeFields = true });
+            }
+            catch
+            {
+                MyCategoryList.Add(new MyCategory("Category 1", ""));
+                MyCategoryList.Add(new MyCategory("Category 2", ""));
+            }
         }
 
         public void Write(string filename = null)
