@@ -102,7 +102,7 @@ namespace DocumentTranslation.CLI
                     {
                         string[] langs = new string[1];
                         langs[0] = toLang.Value();
-                        await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values, fromlanguage: fromLang.Value(), tolanguages: langs, glossaryfiles: gls.Values, targetFolder: target);
+                        await translationBusiness.RunAsync(filestotranslate: sourceFiles.Values.ToList<string>(), fromlanguage: fromLang.Value(), tolanguages: langs, glossaryfiles: gls.Values.ToList<string>(), targetFolder: target);
                     }
                     catch (System.IO.FileNotFoundException e)
                     {
