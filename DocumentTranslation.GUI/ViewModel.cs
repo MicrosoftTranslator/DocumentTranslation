@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentTranslationService.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DocumentTranslationService.Core;
 
 namespace DocumentTranslation.GUI
 {
@@ -45,8 +45,8 @@ namespace DocumentTranslation.GUI
         {
             localSettings = AppSettingsSetter.Read();
             UISettings = UISettingsSetter.Read();
-            if (UISettings.PerLanguageFolders is null) UISettings.PerLanguageFolders = new Dictionary<string, PerLanguageData>();
-            if (UISettings.lastToLanguagesDocuments is null) UISettings.lastToLanguagesDocuments = new List<string>();
+            UISettings.PerLanguageFolders ??= new Dictionary<string, PerLanguageData>();
+            UISettings.lastToLanguagesDocuments ??= new List<string>();
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace DocumentTranslation.GUI
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="KeyVaultAccessException"/>
-        public async Task InitializeAsync(bool IsTest=false)
+        public async Task InitializeAsync(bool IsTest = false)
         {
             documentTranslationService.OnLanguagesUpdate += DocumentTranslationService_OnLanguagesUpdate;
             documentTranslationService.ShowExperimental = localSettings.ShowExperimental;
@@ -97,7 +97,7 @@ namespace DocumentTranslation.GUI
             }
 
             documentTranslationService.SubscriptionKey = Settings.SubscriptionKey;
-            documentTranslationService.AzureRegion= Settings.AzureRegion;
+            documentTranslationService.AzureRegion = Settings.AzureRegion;
             documentTranslationService.AzureResourceName = Settings.AzureResourceName;
             documentTranslationService.StorageConnectionString = Settings.ConnectionStrings.StorageConnectionString;
             documentTranslationService.TextTransUri = Settings.TextTransEndpoint;

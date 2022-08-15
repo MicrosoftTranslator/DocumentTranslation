@@ -1,14 +1,14 @@
-﻿using System;
+﻿using DocumentTranslationService.Core;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Controls;
-using System.Windows.Media;
-using DocumentTranslationService.Core;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Media;
 
 namespace DocumentTranslation.GUI
 {
@@ -208,7 +208,7 @@ namespace DocumentTranslation.GUI
             catch (Exception ex)
             {
                 StatusBarText1.Text = Properties.Resources.msg_Error;
-                StatusBarText2.Text= ex.Message;
+                StatusBarText2.Text = ex.Message;
                 await Task.Delay(20000);
                 StatusBarText1.Text = string.Empty;
                 StatusBarText2.Text = string.Empty;
@@ -267,7 +267,7 @@ namespace DocumentTranslation.GUI
         private void TargetOpenButton_Click(object sender, RoutedEventArgs e)
         {
             string targetfolder = ViewModel.TargetFolder;
-            if (targetfolder.Contains('*')) 
+            if (targetfolder.Contains('*'))
                 foreach (Language lang in toLanguageBoxDocuments.Items)
                     if (lang.IsChecked)
                     {
@@ -306,7 +306,7 @@ namespace DocumentTranslation.GUI
             ProgressBar.IsIndeterminate = true;
             ViewModel.TargetFolder = TargetTextBox.Text;
             ViewModel.UISettings.lastDocumentsFolder = Path.GetDirectoryName(ViewModel.FilesToTranslate[0]);
-            if (ViewModel.GlossariesToUse is null) ViewModel.GlossariesToUse = new();
+            ViewModel.GlossariesToUse ??= new();
             ViewModel.GlossariesToUse.Clear();
             foreach (var item in GlossariesListBox.Items) ViewModel.GlossariesToUse.Add(item as string);
             PerLanguageData perLanguageData = new();
@@ -325,7 +325,7 @@ namespace DocumentTranslation.GUI
             ViewModel.UISettings.lastFromLanguageDocuments = fromLanguageBoxDocuments.SelectedValue as string;
             ViewModel.UISettings.lastToLanguagesDocuments.Clear();
             foreach (Language l in toLanguageBoxDocuments.Items)
-                if(l.IsChecked) ViewModel.UISettings.lastToLanguagesDocuments.Add(l.LangCode);
+                if (l.IsChecked) ViewModel.UISettings.lastToLanguagesDocuments.Add(l.LangCode);
             ViewModel.SaveUISettings();
             if (CategoryDocumentsBox.SelectedItem is not null) ViewModel.documentTranslationService.Category = ((MyCategory)CategoryDocumentsBox.SelectedItem).ID;
             else ViewModel.documentTranslationService.Category = null;
@@ -654,7 +654,7 @@ namespace DocumentTranslation.GUI
 
         private void StorageConnection_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel.localSettings.ConnectionStrings is null) ViewModel.localSettings.ConnectionStrings = new Connectionstrings();
+            ViewModel.localSettings.ConnectionStrings ??= new Connectionstrings();
             ViewModel.localSettings.ConnectionStrings.StorageConnectionString = storageConnectionString.Text;
         }
 
