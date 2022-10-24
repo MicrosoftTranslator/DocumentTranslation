@@ -361,6 +361,13 @@ namespace DocumentTranslation.GUI
                 ProgressBar.Value = 0;
                 return;
             }
+            catch (Azure.RequestFailedException ex)
+            {
+                StatusBarText1.Text = Properties.Resources.msg_Error;
+                StatusBarText2.Text = ex.Message;
+                ProgressBar.Value = 0;
+                return;
+            }
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 3;
         }
