@@ -112,7 +112,6 @@ namespace DocumentTranslation.CLI
                     catch (System.ArgumentNullException e)
                     {
                         Console.WriteLine(e.Message);
-                        Console.WriteLine(Properties.Resources.msg_MissingCredentials);
                         return;
                     }
                     catch (System.ArgumentException e)
