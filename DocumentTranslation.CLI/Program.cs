@@ -50,7 +50,7 @@ namespace DocumentTranslation.CLI
                 translateCmd.Description = "Translate a document or all documents in a folder.";
                 var sourceFiles = translateCmd.Argument("source", "Translate this document or folder")
                                               .IsRequired(true, "A source document or folder is required.");
-                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If omitted, target folder is <sourcefolder>.<language>.");
+                var targetFolder = translateCmd.Argument("target", "Translate to this folder. If omitted, target folder is <sourcefolder>\\<language>.");
                 var toLang = translateCmd.Option("-t|--to <LanguageCode>", "The language code of the language to translate to. Use 'doctr languages' to see the available languages.", CommandOptionType.MultipleValue)
                                          .IsRequired(true, "Specification of a language to translate to is required.");
                 var fromLang = translateCmd.Option("-f|--from <LanguageCode>",
@@ -65,6 +65,9 @@ namespace DocumentTranslation.CLI
                 var gls = translateCmd.Option("-g|--glossary",
                                               "Glossary file, files, or folder to use as glossary. Cannot be same as source.",
                                               CommandOptionType.MultipleValue);
+                var recurse = translateCmd.Option("-r|--recurse",
+                                                   "Translate the folder content and the content of all subfolders.",
+                                                   CommandOptionType.NoValue);
                 var nodelete = translateCmd.Option("--nodelete",
                                                    "Do not delete the container in the storage account. For debugging purposes only.",
                                                    CommandOptionType.NoValue);
@@ -85,6 +88,7 @@ namespace DocumentTranslation.CLI
                     DocumentTranslationService.Core.DocumentTranslationService documentTranslationService = new(settings.SubscriptionKey, settings.AzureResourceName, settings.ConnectionStrings.StorageConnectionString);
                     TranslationService = documentTranslationService;
                     DocumentTranslationBusiness translationBusiness = new(documentTranslationService);
+                    if (recurse.HasValue()) translationBusiness.Recurse = true;
                     if (nodelete.HasValue()) translationBusiness.Nodelete = true;
                     if (cat.HasValue()) documentTranslationService.Category = cat.Value();
                     translationBusiness.OnStatusUpdate += TranslationBusiness_OnStatusUpdate;

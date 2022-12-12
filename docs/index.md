@@ -284,8 +284,9 @@ Command	| Function
 --------|----------
 `doctr translate <source folder OR document> [<target folder>] --to <language code>` | Translate a document or the content of a folder to another language.
 
-If provided, the target folder must be a folder, even if the source document is an individual document. If not provided, the translated document will be placed in a folder
-that has the same name as the source folder, plus `.<language code>`.
+If provided, the target folder must be a folder, even if the source document is an individual document. If not provided, the translated document will be placed
+in a `/<language code>` subfolder under the source folder.
+doctr does not translate subfolders under the given source folder unless you specify the `--recurse` parameter.
 
 Optional parameters to the translate command | Function
 ---------------------------------------------|----------
@@ -293,6 +294,7 @@ Optional parameters to the translate command | Function
 `--key <key to the Translator resource>` | This key will override the setting in the appsettings.json file. Use this if you want to avoid storing the key in a settings file. 
 `--category <category ID>` | The custom Translator category ID.
 `--glossary <file or folder>` | The glossaries to use for this run. The glossary contains phrases with a defined translation in a table format.
+`--recurse` | If a folder is given as the source: Translate the subfolders. 
 
 #### Clear
 If a translation run gets interrupted or fails, it may also fail to clean up after itself and leave behind documents in the storage account.
@@ -310,11 +312,11 @@ Command	| Function
 
 ## Running on Mac OS X
 
-At this point point only the command line version runs on the Mac. The GUI version is waiting for .Net 6 MAUI to be released.
+At this point point only the command line version runs on the Mac.
 
 ### Download and install
 
-- Install .Net 6 runtime for Mac from https://dotnet.microsoft.com/. You do not need the SDK, just the runtime.
+- Install .Net 6 runtime for Mac from https://dotnet.microsoft.com/. You do not need the SDK, you only need the runtime.
 Download and install the .Net 6 runtim for the appropriate processor platform of your Mac.
 
 - Download the zip file in the releases folder and expand to a suitable directory on the Mac HD.

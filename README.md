@@ -57,7 +57,7 @@ a set of documents that reside in an Azure storage container, and delivers the t
 container. This app provides a local interface to that service, allowing you to translate a locally residing file
 or a folder, and receiving the translation of these documents in a local folder.
 The tool uploads the local documents, invokes the translation, monitors the translation progress,
-downloads the translated documents to your local machine, and then deletes the containers from the service.
+downloads the translated documents to your local machine, and then deletes the containers from Azure Storage.
 Each run is independent of each other by giving the containers it uses a unique name within the common storage account.
 Multiple people may run translations concurrently, using the same credentials and the same storage account.
 
@@ -68,7 +68,7 @@ with the Azure service.
 DocumentTranslationBusiness handles the local file operations and business logic.
 Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
 
-The app allows you to enter fully qualified service endpoints, so that it works with Azure sovereign clouds. 
+The app allows you to enter fully qualified service endpoints. It works with Azure sovereign clouds. 
 
 ## Issues
 
