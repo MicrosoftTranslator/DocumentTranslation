@@ -7,6 +7,10 @@
     "TranslateWGlossary": {
       "commandName": "Project",
       "commandLineArgs": "translate d:\\TestDocsSmall --to de --glossary d:\\testdocs\\glossary.tsv"
+    },
+    "TranslateOneDrive": {
+      "commandName": "Project",
+      "commandLineArgs": "translate C:\\Users\\wendt\\OneDrive\\Test --to de "
     }
   }
 }
