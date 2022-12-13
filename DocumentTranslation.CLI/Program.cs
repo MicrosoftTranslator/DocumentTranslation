@@ -93,6 +93,7 @@ namespace DocumentTranslation.CLI
                     translationBusiness.OnUploadComplete += TranslationBusiness_OnUploadComplete;
                     translationBusiness.OnFinalResults += TranslationBusiness_OnFinalResults;
                     translationBusiness.OnThereWereErrors += TranslationBusiness_OnThereWereErrors;
+                    translationBusiness.OnGlossariesDiscarded += TranslationBusiness_OnGlossariesDiscarded;
                     Timer timer = new(500) { AutoReset = true, Enabled = true };
                     timer.Elapsed += Timer_Elapsed;
                     Console.WriteLine($"Starting translation of {sourceFiles.Value} to {toLang.Value()}. Press Esc to cancel.");
@@ -361,6 +362,12 @@ namespace DocumentTranslation.CLI
             }
 
             return result;
+        }
+
+        private static void TranslationBusiness_OnGlossariesDiscarded(object sender, System.Collections.Generic.List<string> discardedGlossaries)
+        {
+            Console.WriteLine("Following glossaries were ignored:");
+            foreach (string filename in discardedGlossaries) Console.WriteLine(filename);
         }
 
         private static void TranslationBusiness_OnThereWereErrors(object sender, string e)

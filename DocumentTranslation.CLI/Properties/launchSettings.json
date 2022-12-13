@@ -3,6 +3,10 @@
     "TestDocumentTranslation": {
       "commandName": "Project",
       "commandLineArgs": "config test"
+    },
+    "TranslateWGlossary": {
+      "commandName": "Project",
+      "commandLineArgs": "translate d:\\TestDocsSmall --to de --glossary d:\\testdocs\\glossary.tsv"
     }
   }
 }
