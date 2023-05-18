@@ -421,4 +421,19 @@
   <data name="Version" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Version.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="tooltip_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Set this property to true when requests should be authenticated against a proxy server using the credentials of the currently logged on user.</value>
+  </data>
+  <data name="label_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Use Default Credentials (Proxy)</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProxyAddress" xml:space="preserve">
+    <value>Proxy Address</value>
+  </data>
+  <data name="tooltip_ProxyAddress" xml:space="preserve">
+    <value>Address to be used for proxying http requests</value>
+  </data>
 </root>

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
-        Title="{x:Static resx:Resources.title_WindowTitle}" Height="550" Width="850">
+        Title="{x:Static resx:Resources.title_WindowTitle}" Height="614" Width="850">
     <Grid>
         <TabControl>
             <TabItem Header="{x:Static resx:Resources.tabTitle_TranslateDocuments}" Width="200" x:Name="TranslateDocumentsTab">
@@ -141,13 +141,15 @@
                 <Grid>
                     <TabControl>
                         <TabItem Header="{x:Static resx:Resources.tabTitle_Authentication}" Width="140" Loaded="TabItemAuthentication_Loaded">
-                            <Grid Margin="20" Height="390">
+                            <Grid Margin="20" Height="450">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition MinHeight="70"/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
@@ -192,7 +194,14 @@
                                     <Label Content="{x:Static resx:Resources.label_Flight}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_Flight}" Margin="60,0,5,0"/>
                                     <TextBox x:Name="flightString" Width="120" Height="22" TextChanged="FlightString_TextChanged"/>
                                 </StackPanel>
-                                <StackPanel Grid.Row="10" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                                <Separator Grid.Row="10" Grid.ColumnSpan="2" Background="Blue" />
+                                <Label Grid.Row="11" Content="{x:Static resx:Resources.label_ProxyUseDefaultCredentials}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ProxyUseDefaultCredentials}"/>
+                                <StackPanel Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <CheckBox VerticalAlignment="Center" x:Name="proxyUseDefaultCredentials" IsChecked="{Binding Settings.ProxyUseDefaultCredentials}" Margin="4" Checked="ProxyUseDefaultCredentials_Checked" Unchecked="ProxyUseDefaultCredentials_Unchecked" ToolTip="{x:Static resx:Resources.tooltip_ProxyUseDefaultCredentials}"/>
+                                    <Label Content="{x:Static resx:Resources.label_ProxyAddress}" VerticalContentAlignment="Center" ToolTip="{x:Static resx:Resources.tooltip_ProxyAddress}" Margin="60,0,5,0"/>
+                                    <TextBox x:Name="proxyAddress" Width="250" Height="22" TextChanged="ProxyAddress_TextChanged"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="12" Orientation="Horizontal" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                                     <Button x:Name="TestSettingsButton" Content="{x:Static resx:Resources.button_Test}" Margin="5" Padding="2" Width="100" Click="TestSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_TestSettings}"/>
                                     <Button x:Name="SaveSettingsButton" Content="{x:Static resx:Resources.button_Save}" Margin="5" Padding="2" Width="100" Click="SaveSettingsButton_Click" ToolTip="{x:Static resx:Resources.tooltip_SaveSettings}"/>
                                 </StackPanel>

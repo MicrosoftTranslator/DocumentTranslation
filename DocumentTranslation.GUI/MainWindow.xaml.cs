@@ -641,6 +641,8 @@ namespace DocumentTranslation.GUI
             textTransEndpoint.Text = ViewModel.localSettings.TextTransEndpoint;
             experimentalCheckbox.IsChecked = ViewModel.localSettings.ShowExperimental;
             flightString.Text = ViewModel.localSettings.FlightString;
+            proxyAddress.Text = ViewModel.localSettings.ProxyAddress;
+            proxyUseDefaultCredentials.IsChecked = ViewModel.localSettings.ProxyUseDefaultCredentials;
         }
 
         private void SubscriptionKey_PasswordChanged(object sender, RoutedEventArgs e)
@@ -701,7 +703,7 @@ namespace DocumentTranslation.GUI
             catch (System.Net.Http.HttpRequestException ex)
             {
                 StatusBarSText1.Text = Properties.Resources.msg_TestFailed;
-                StatusBarSText2.Text = ex.InnerException.Message;
+                StatusBarSText2.Text = $"{ex.InnerException?.Message}. {ex.Message}";
             }
             await Task.Delay(10000);
             StatusBarSText1.Text = string.Empty;
@@ -842,6 +844,21 @@ namespace DocumentTranslation.GUI
         {
             LanguagesDataGrid.AutoGenerateColumns = true;
             LanguagesDataGrid.ItemsSource = ViewModel.ToLanguageList;
+        }
+
+        private void ProxyUseDefaultCredentials_Checked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.ProxyUseDefaultCredentials = proxyUseDefaultCredentials.IsChecked.Value;
+        }
+
+        private void ProxyUseDefaultCredentials_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.ProxyUseDefaultCredentials = proxyUseDefaultCredentials.IsChecked.Value;
+        }
+
+        private void ProxyAddress_TextChanged(object sender, RoutedEventArgs e)
+        {
+            ViewModel.localSettings.ProxyAddress = proxyAddress.Text;
         }
     }
 }
