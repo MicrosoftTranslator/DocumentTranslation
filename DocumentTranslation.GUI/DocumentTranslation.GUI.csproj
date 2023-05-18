@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DocumentTranslationService\DocumentTranslationService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -44,10 +48,6 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DocumentTranslationService\DocumentTranslationService.csproj" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
