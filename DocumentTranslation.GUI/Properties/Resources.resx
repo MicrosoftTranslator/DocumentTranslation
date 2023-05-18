@@ -431,6 +431,6 @@
     <value>Proxy Address</value>
   </data>
   <data name="tooltip_ProxyAddress" xml:space="preserve">
-    <value>Address to be used for proxying http requests</value>
+    <value>Address to be used for proxying http requests.</value>
   </data>
 </root>

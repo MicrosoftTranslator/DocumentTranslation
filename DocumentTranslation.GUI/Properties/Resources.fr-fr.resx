@@ -419,6 +419,15 @@
     <value>Point de terminaison de traduction de texte Azure Translator</value>
   </data>
   <data name="tooltip_ProxyUseDefaultCredentials" xml:space="preserve">
-    <value />
+    <value>Définissez cette propriété sur true lorsque les demandes doivent être authentifiées auprès d'un serveur proxy à l'aide des informations d'identification de l'utilisateur actuellement connecté.</value>
+  </data>
+  <data name="label_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Utiliser les informations d'identification par défaut (proxy)</value>
+  </data>
+  <data name="label_ProxyAddress" xml:space="preserve">
+    <value>Adresse proxy</value>
+  </data>
+  <data name="tooltip_ProxyAddress" xml:space="preserve">
+    <value>Adresse à utiliser pour les requêtes http par proxy.</value>
   </data>
 </root>

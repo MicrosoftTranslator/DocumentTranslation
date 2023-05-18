@@ -419,6 +419,15 @@
     <value>Endpoint di traduzione del testo di Azure Translator</value>
   </data>
   <data name="tooltip_ProxyUseDefaultCredentials" xml:space="preserve">
-    <value />
+    <value>Impostare questa proprietà su true quando le richieste devono essere autenticate su un server proxy utilizzando le credenziali dell'utente attualmente connesso.</value>
+  </data>
+  <data name="label_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Usa credenziali predefinite (proxy)</value>
+  </data>
+  <data name="label_ProxyAddress" xml:space="preserve">
+    <value>Indirizzo proxy</value>
+  </data>
+  <data name="tooltip_ProxyAddress" xml:space="preserve">
+    <value>Indirizzo da utilizzare per l'inoltro delle richieste http.</value>
   </data>
 </root>
