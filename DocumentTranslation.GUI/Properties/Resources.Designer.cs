@@ -61,8 +61,8 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to master
-        ///18/05/2023  8:46:44.82 
+        ///   Looks up a localized string similar to proxy-support
+        ///18/05/2023  9:28:23.26 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -698,15 +698,6 @@ namespace DocumentTranslation.GUI.Properties {
         public static string msg_Waiting {
             get {
                 return ResourceManager.GetString("msg_Waiting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         
