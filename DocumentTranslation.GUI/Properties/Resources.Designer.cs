@@ -61,8 +61,8 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to master
-        ///Wed 06/01/2022 17:55:37.65 
+        ///   Looks up a localized string similar to proxy-support
+        ///18/05/2023  9:28:23.26 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -329,6 +329,24 @@ namespace DocumentTranslation.GUI.Properties {
         public static string label_NewCategorySample {
             get {
                 return ResourceManager.GetString("label_NewCategorySample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy Address.
+        /// </summary>
+        public static string label_ProxyAddress {
+            get {
+                return ResourceManager.GetString("label_ProxyAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Default Credentials (Proxy).
+        /// </summary>
+        public static string label_ProxyUseDefaultCredentials {
+            get {
+                return ResourceManager.GetString("label_ProxyUseDefaultCredentials", resourceCulture);
             }
         }
         
@@ -891,6 +909,24 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address to be used for proxying http requests.
+        /// </summary>
+        public static string tooltip_ProxyAddress {
+            get {
+                return ResourceManager.GetString("tooltip_ProxyAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set this property to true when requests should be authenticated against a proxy server using the credentials of the currently logged on user..
+        /// </summary>
+        public static string tooltip_ProxyUseDefaultCredentials {
+            get {
+                return ResourceManager.GetString("tooltip_ProxyUseDefaultCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save the above settings on your device..
         /// </summary>
         public static string tooltip_SaveSettings {
@@ -954,7 +990,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.9.3.0.
+        ///   Looks up a localized string similar to 1.0.0.1.
         /// </summary>
         public static string Version {
             get {

@@ -418,4 +418,16 @@
   <data name="tooltip_TextTransEndpoint" xml:space="preserve">
     <value>Azure Translator-Textübersetzungsendpunkt</value>
   </data>
+  <data name="tooltip_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Legen Sie diese Eigenschaft auf true fest, wenn Anforderungen mit den Anmeldeinformationen des aktuell angemeldeten Benutzers bei einem Proxyserver authentifiziert werden sollen.</value>
+  </data>
+  <data name="label_ProxyUseDefaultCredentials" xml:space="preserve">
+    <value>Standardanmeldeinformationen verwenden (Proxy)</value>
+  </data>
+  <data name="label_ProxyAddress" xml:space="preserve">
+    <value>Proxy-Adresse</value>
+  </data>
+  <data name="tooltip_ProxyAddress" xml:space="preserve">
+    <value>Adresse, die für das Proxying von HTTP-Anforderungen verwendet werden soll.</value>
+  </data>
 </root>
