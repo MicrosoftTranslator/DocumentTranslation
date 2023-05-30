@@ -61,8 +61,8 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to proxy-support
-        ///18/05/2023  9:28:23.26 
+        ///   Looks up a localized string similar to master
+        ///Mon 05/29/2023 20:13:37.85 
         ///.
         /// </summary>
         public static string BuildDate {
@@ -333,7 +333,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proxy Address.
+        ///   Looks up a localized string similar to Proxy Address:.
         /// </summary>
         public static string label_ProxyAddress {
             get {
@@ -342,7 +342,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Default Credentials (Proxy).
+        ///   Looks up a localized string similar to Use Default Credentials (Proxy):.
         /// </summary>
         public static string label_ProxyUseDefaultCredentials {
             get {
@@ -909,7 +909,7 @@ namespace DocumentTranslation.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Address to be used for proxying http requests.
+        ///   Looks up a localized string similar to Address to be used for proxying http requests..
         /// </summary>
         public static string tooltip_ProxyAddress {
             get {
