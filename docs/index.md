@@ -35,6 +35,17 @@ If installation fails, install .Net 6 manually from https://dotnet.microsoft.com
 If you prefer to not maintain the acess secrets on your computer, or if your organization manages the
 Azure account for you, you may use Azure Key Vault to manage the credentials.
 
+#### Application settings file, appsettings.json
+
+The configuration settings described below are stored in the file appsettings.json, in the user's roaming app settings folder, typically 
+C:\Users\<Username>\AppData\Roaming\Document Translation
+
+Alternatively (on Windows) appsettings.json can be placed in the application installation folder, typically:
+c:\Program Files (x86)\Document Translation
+
+If appsettings.json exists in the application folder, this will be used - otherwise the application will default to using appsettings from the AppData folder (and create it if it does not already).
+
+
 ##### Azure Key Vault
 
 If your organization manages the Azure subscription for you, ask your Azure administrator for the name of
