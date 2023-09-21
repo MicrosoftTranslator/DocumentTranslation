@@ -68,7 +68,44 @@ with the Azure service.
 DocumentTranslationBusiness handles the local file operations and business logic.
 Class 'Glossary' handles the upload of the glossary, when a glossary is specified.
 
-The app allows you to enter fully qualified service endpoints, so that it works with Azure sovereign clouds. 
+Works with Azure sovereign clouds. The app accepts fully qualified service endpoints.
+
+## Privacy and Security
+
+This client side app is a lightweight frontend to the Azure Document Translation service. 
+The Azure Document Translation service uses Azure Blob Storage to read the documents to be translated from and it 
+deposits the translated documents into Azure Blob Storage. All processing and storage is within the user-provided
+accounts. This app does not have its own Azure credentials; user supplies the identities and authentication for Azure services.
+In a successful run, the app uploads the user-suplied local documents to Azure Blob Storage in user's Azure account,
+initiates the translation, waits for completion, downloads the translated documents to the user-specified location,
+and then deletes all original and translated copies of the documents from Azure Blob Storage.
+In an unsuccessful run the deletion may be skipped, leaving abandoned storage containers behind. On average every 10th run of the app 
+will automatically delete any left-behind storage containers that are older than one week. 
+The command line command `doctr clear` forces a deletion of storage containers older than one week. For a faster deletion of
+storage containers, user will have to perform the deletion manually within the Azure storage account. A faster deletion has the
+chance to disrupt the translation runs of other users using the same Azure credentials.
+ 
+The Azure privacy statement applies.
+
+The app stores the Azure credentials in a settings file in JSON format, unencrypted, in the user's app settings folder:
+`C:\Users\<user>\AppData\Roaming\Document Translation` as `appsettings.json` on Windows, and in the `/usr/` folder on MacOS
+and other Unix flavors.  
+To avoid storing any Azure credentials on the client, please use the Azure Key Vault. In this case only the URL to the customer's
+Key Vault is stored in the user's settings file. Other Azure credentials are stored in the user's key vault. See the Key Vault section
+in the Document Translator documentation.
+The app stores UI settings (not credentials) in the `uisettings.json` file in the user settings folder. It stores a log of the last
+run in `docTrLog.txt` in the same folder. It stores references to custom translation systems in `CustomCategories.json`,
+also in the same folder.
+
+The app does not create any local copies of the original or translated documents, not even temporary,
+EXCEPT in the case of document formats that are locally supplied. As of September 2023 the locally supplied formats
+are SubRIP (SRT) and WebVTT (VTT) formats. The app will create a temporary file in the user's temp folder, storing
+the content of the file to be translated in MarkDown format. It will create a temporary file in the MarkDown format in
+the target folder for translated documents. A successful run of the translation will delete the temporary files. 
+While converting between the local format and MarkDown, the app processes the content of the file in memory. 
+
+The app does not include any telemetry or instrumentation. It does not report usage to any service. 
+
 
 ## Issues
 
@@ -82,7 +119,7 @@ quickly - or reject with comments.
 ## Future plans
 
 - Option to extend the set of file formats with format conversions that are processed locally, as a library within this tool.
-- Upgrade to .Net 6 MAUI when it becomes available
+- Web interface with .Net 6 MAUI
 - A shared storage for the glossary, so that multiple clients can refer to a
 single company-wide glossary. 
 
