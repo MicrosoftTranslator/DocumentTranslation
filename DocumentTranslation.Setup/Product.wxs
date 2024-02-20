@@ -110,7 +110,10 @@
       <Component Id="Azure.Identity.dll" Guid="258F35F5-C1BF-41BB-93A8-8B861AA196B4">
         <File Id="Azure.Identity.dll" Name="Azure.Identity.dll" Source="$(var.doctr_TargetDir)Azure.Identity.dll" />
       </Component>
-      <Component Id="Azure.Security.KeyVault.Secrets.dll" Guid="EBA82DCE-8D41-4EC0-A5D0-0B4E60E5D4BD">
+		<Component Id="System.IO.Hashing.dll" Guid="B29F9D14-AD5C-4C92-B72F-89E9F947F3C2">
+			<File Id="System.IO.Hashing.dll" Name="System.IO.Hashing.dll" Source="$(var.doctr_TargetDir)System.IO.Hashing.dll" />
+		</Component>
+		<Component Id="Azure.Security.KeyVault.Secrets.dll" Guid="EBA82DCE-8D41-4EC0-A5D0-0B4E60E5D4BD">
         <File Id="Azure.Security.KeyVault.Secrets.dll" Name="Azure.Security.KeyVault.Secrets.dll" Source="$(var.doctr_TargetDir)Azure.Security.KeyVault.Secrets.dll" />
       </Component>
       <Component Id="Microsoft.Identity.Client.dll" Guid="6B722BAB-BD76-4265-88EE-68B5B8D7A910">
