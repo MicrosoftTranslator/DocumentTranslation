@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C0EB30
 		docs\images\translatorkey.png = docs\images\translatorkey.png
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "..\DocumentTranslationService\DocumentTranslationService.csproj", "{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentTranslationService", "DocumentTranslationService\DocumentTranslationService.csproj", "{AABFD3BB-CC1E-4AA7-B792-72A1BC83A155}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
