@@ -131,6 +131,8 @@ and the Key Vault resource should look like this:
 
 In the Access control (IAM) section add the users to the **Key Vault Secrets User** role assignment.
 
+![Grant Access to Azure Key Vault](images/AzureKeyVaultPermissions.png)
+
 Provide the users with the **URI** of the Key Vault. In the example the URI is "https://eus2kv.vault.azure.net/". 
 
 ![Key Vault URI](images/AzureKeyVaultOverview.png)
