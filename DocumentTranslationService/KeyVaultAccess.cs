@@ -25,13 +25,32 @@ namespace DocumentTranslationService.Core
         public async Task<DocTransAppSettings> GetKVCredentialsAsync()
         {
             string VaultUri;
-            if (KeyVaultName.Contains('.')) VaultUri = KeyVaultName;
-            else VaultUri = "https://" + KeyVaultName + ".vault.azure.net/";
-            SecretClient client = new(new Uri(VaultUri), new InteractiveBrowserCredential());
+            if (KeyVaultName.Contains('.'))
+                VaultUri = KeyVaultName;
+            else
+                VaultUri = KeyVaultName.EndsWith(".vault.azure.cn")
+                    ? $"https://{KeyVaultName}.vault.azure.cn/"
+                    : $"https://{KeyVaultName}.vault.azure.net/";
+
+            // Configure the authority host for Azure China
+            var options = new InteractiveBrowserCredentialOptions();
+            if (VaultUri.ToLowerInvariant().EndsWith(".vault.azure.cn") || KeyVaultName.ToLowerInvariant().Contains("azure.cn")) // Check if the Key Vault is in Azure China
+            {
+                options.AuthorityHost = AzureAuthorityHosts.AzureChina;
+            }
+            else // Default to Azure Public Cloud
+            {
+                options.AuthorityHost = AzureAuthorityHosts.AzurePublicCloud;
+            }
+
+            SecretClient client = new(new Uri(VaultUri), new InteractiveBrowserCredential(options));
             List<string> secretNames = new() { "AzureRegion", "DocTransEndpoint", "StorageConnectionString", "ResourceKey", "TextTransEndpoint" };
             List<Task<Azure.Response<KeyVaultSecret>>> tasks = new();
             Azure.Response<KeyVaultSecret>[] kvSecrets;
-            foreach (string secret in secretNames) tasks.Add(client.GetSecretAsync(secret));
+
+            foreach (string secret in secretNames)
+                tasks.Add(client.GetSecretAsync(secret));
+
             try
             {
                 kvSecrets = await Task.WhenAll(tasks);
@@ -51,6 +70,7 @@ namespace DocumentTranslationService.Core
                 Debug.WriteLine($"Azure Key Vault: {ex.Message}");
                 throw new KeyVaultAccessException("msg_KeyVaultRequestFailed", ex);
             }
+
             DocTransAppSettings settings = new();
             foreach (var kvSecret in kvSecrets)
             {
