@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace DocumentTranslationService.Core
 {
-    public class KeyVaultAccess
+    public class KeyVaultAccess(string keyVaultName)
     {
-        public string KeyVaultName { get; init; }
-
-        public KeyVaultAccess(string keyVaultName)
-        {
-            KeyVaultName = keyVaultName;
-        }
+        public string KeyVaultName { get; init; } = keyVaultName;
 
         /// <summary>
         /// Retrieve the Translator credentials from the key vault
@@ -33,19 +28,14 @@ namespace DocumentTranslationService.Core
                     : $"https://{KeyVaultName}.vault.azure.net/";
 
             // Configure the authority host for Azure China
-            var options = new InteractiveBrowserCredentialOptions();
-            if (VaultUri.ToLowerInvariant().EndsWith(".vault.azure.cn") || KeyVaultName.ToLowerInvariant().Contains("azure.cn")) // Check if the Key Vault is in Azure China
+            var options = new InteractiveBrowserCredentialOptions
             {
-                options.AuthorityHost = AzureAuthorityHosts.AzureChina;
-            }
-            else // Default to Azure Public Cloud
-            {
-                options.AuthorityHost = AzureAuthorityHosts.AzurePublicCloud;
-            }
+                AuthorityHost = DetermineAuthorityHost(VaultUri, KeyVaultName)
+            };
 
             SecretClient client = new(new Uri(VaultUri), new InteractiveBrowserCredential(options));
-            List<string> secretNames = new() { "AzureRegion", "DocTransEndpoint", "StorageConnectionString", "ResourceKey", "TextTransEndpoint" };
-            List<Task<Azure.Response<KeyVaultSecret>>> tasks = new();
+            List<string> secretNames = ["AzureRegion", "DocTransEndpoint", "StorageConnectionString", "ResourceKey", "TextTransEndpoint"];
+            List<Task<Azure.Response<KeyVaultSecret>>> tasks = [];
             Azure.Response<KeyVaultSecret>[] kvSecrets;
 
             foreach (string secret in secretNames)
@@ -98,6 +88,29 @@ namespace DocumentTranslationService.Core
             }
             settings.AzureKeyVaultName = KeyVaultName;
             return settings;
+        }
+
+        private static Uri DetermineAuthorityHost(string vaultUri, string keyVaultName)
+        {
+            if (vaultUri.EndsWith(".vault.azure.cn", StringComparison.OrdinalIgnoreCase) || 
+                keyVaultName.Contains("azure.cn", StringComparison.OrdinalIgnoreCase))
+            {
+                return AzureAuthorityHosts.AzureChina;
+            }
+            else if (vaultUri.EndsWith(".vault.azure.us", StringComparison.OrdinalIgnoreCase) || 
+                     keyVaultName.Contains("azure.us", StringComparison.OrdinalIgnoreCase))
+            {
+                return AzureAuthorityHosts.AzureGovernment;
+            }
+            else if (vaultUri.EndsWith(".vault.microsoftazure.de", StringComparison.OrdinalIgnoreCase) || 
+                     keyVaultName.Contains("azure.de", StringComparison.OrdinalIgnoreCase))
+            {
+                return AzureAuthorityHosts.AzureGermany;
+            }
+            else
+            {
+                return AzureAuthorityHosts.AzurePublicCloud;
+            }
         }
     }
 }
