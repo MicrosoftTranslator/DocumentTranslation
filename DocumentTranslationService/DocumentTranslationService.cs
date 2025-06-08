@@ -48,7 +48,7 @@ namespace DocumentTranslationService.Core
         public string FlightString { get; set; } = string.Empty;
 
         internal BlobContainerClient ContainerClientSource { get; set; }
-        internal Dictionary<string, BlobContainerClient> ContainerClientTargets { get; set; } = new();
+        internal Dictionary<string, BlobContainerClient> ContainerClientTargets { get; set; } = [];
 
         /// <summary>
         /// Holds the Azure Http Status to check during the run of the translation 
@@ -110,14 +110,9 @@ namespace DocumentTranslationService.Core
             var options = new DocumentTranslationClientOptions();
             if (!string.IsNullOrEmpty(FlightString)) options.AddPolicy(new FlightPolicy(FlightString.Trim()), Azure.Core.HttpPipelinePosition.PerCall);
             documentTranslationClient = new(new Uri(DocTransEndpoint), new Azure.AzureKeyCredential(SubscriptionKey), options);
-            List<Task> tasks = new()
-            {
-                GetDocumentFormatsAsync(),
-                GetGlossaryFormatsAsync()
-            };
             try
             {
-                await Task.WhenAll(tasks);
+                await GetDocumentFormatsAsync();
                 await GetLanguagesAsync();
             }
             catch (CredentialsException ex)
@@ -193,7 +188,7 @@ namespace DocumentTranslationService.Core
 
         public async Task<List<DocumentStatusResult>> GetFinalResultsAsync()
         {
-            List<DocumentStatusResult> documentStatuses = new();
+            List<DocumentStatusResult> documentStatuses = [];
             Debug.WriteLine("Final results:");
             await foreach (DocumentStatusResult document in documentTranslationOperation.GetValuesAsync(cancellationToken))
             {
