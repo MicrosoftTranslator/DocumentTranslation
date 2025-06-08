@@ -102,11 +102,6 @@ namespace DocumentTranslationService.Core
             {
                 return AzureAuthorityHosts.AzureGovernment;
             }
-            else if (vaultUri.EndsWith(".vault.microsoftazure.de", StringComparison.OrdinalIgnoreCase) || 
-                     keyVaultName.Contains("azure.de", StringComparison.OrdinalIgnoreCase))
-            {
-                return AzureAuthorityHosts.AzureGermany;
-            }
             else
             {
                 return AzureAuthorityHosts.AzurePublicCloud;
