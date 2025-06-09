@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define doctr_TargetDir=$(var.doctr.TargetDir)?>
-  <?define DocumentTranslationService_TargetDir=$(var.DocumentTranslationService.TargetDir)?>
   <?define DocumentTranslation.GUI_TargetDir=$(var.DocumentTranslation.GUI.TargetDir)?>
   <Product Id="*" Name="Document Translation" Language="1033" Version="1.0.3.0" Manufacturer="Microsoft" UpgradeCode="cc63954a-c510-49da-af5f-dc82af6502e1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
@@ -65,7 +64,7 @@
         <File Id="DocumentTranslation.GUI.runtimeconfig.json" Name="DocumentTranslation.GUI.runtimeconfig.json" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.runtimeconfig.json" />
       </Component>
       <Component Id="DocumentTranslationService.dll" Guid="54e6bc61-8bb8-4d5e-89d4-a73128f9a3d1">
-        <File Id="DocumentTranslationService.dll" Name="DocumentTranslationService.dll" Source="$(var.DocumentTranslationService_TargetDir)DocumentTranslationService.dll" />
+        <File Id="DocumentTranslationService.dll" Name="DocumentTranslationService.dll" Source="$(var.DocumentTranslationService.TargetDir)DocumentTranslationService.dll" />
       </Component>
       <Component Id="DocumentTranslation.GUI.dll" Guid="c3d60c1e-3c17-4f28-9aa5-6d36d07659f6">
         <File Id="DocumentTranslation.GUI.dll" Name="DocumentTranslation.GUI.dll" Source="$(var.DocumentTranslation.GUI_TargetDir)DocumentTranslation.GUI.dll" />

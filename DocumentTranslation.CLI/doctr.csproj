@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DocumentTranslationService\DocumentTranslationService.csproj" />
+    <ProjectReference Include="..\DocumentTranslationService\DocumentTranslationService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,7 +55,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Release &quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe&quot; sign /fd SHA256 /i Sectigo $(OutDir)\doctr.dll&#xD;&#xA;if $(ConfigurationName) == Release &quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe&quot; sign /fd SHA256 /i Sectigo $(OutDir)\doctr.exe&#xD;&#xA;" />
+    <Exec Command="if $(ConfigurationName) == Relslip &quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe&quot; sign /fd SHA256 /i Sectigo $(OutDir)\doctr.dll&#xD;&#xA;if $(ConfigurationName) == Relskip &quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe&quot; sign /fd SHA256 /i Sectigo $(OutDir)\doctr.exe&#xD;&#xA;" />
   </Target>
 
 </Project>
