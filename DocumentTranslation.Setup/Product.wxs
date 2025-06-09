@@ -121,6 +121,12 @@
       <Component Id="Microsoft.Identity.Client.Extensions.Msal.dll" Guid="09A2D7D0-7372-4720-BDEE-B71CD9DE4D38">
         <File Id="Microsoft.Identity.Client.Extensions.Msal.dll" Name="Microsoft.Identity.Client.Extensions.Msal.dll" Source="$(var.doctr_TargetDir)Microsoft.Identity.Client.Extensions.Msal.dll" />
       </Component>
+		<Component Id="Microsoft.IdentityModel.Abstractions.dll" Guid="2258A6CE-2CC5-4FFD-84C6-DCA56CC7C11A">
+			<File Id="Microsoft.IdentityModel.Abstractions.dll" Name="Microsoft.IdentityModel.Abstractions.dll" Source="$(var.doctr_TargetDir)Microsoft.IdentityModel.Abstractions.dll" />
+		</Component>
+		<Component Id="System.ClientModel.dll" Guid="C3DB43C1-F0AD-41F3-99D6-67317FD49392">
+			<File Id="System.ClientModel.dll" Name="System.ClientModel.dll" Source="$(var.doctr_TargetDir)System.ClientModel.dll" />
+		</Component>
 	</ComponentGroup>
   </Fragment>
 </Wix>
