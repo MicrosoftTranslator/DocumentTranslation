@@ -287,9 +287,12 @@ class DocumentTranslationApp {
                 <h6><i class="fas fa-check-circle me-2"></i>Document Translation Completed</h6>
                 <p class="mb-2"><strong>Original File:</strong> ${result.originalFileName}</p>
                 <p class="mb-2"><strong>Languages:</strong> ${result.fromLanguage} → ${result.toLanguage}</p>
-                <a href="${result.translatedDocumentUrl}" class="btn btn-success btn-sm" download>
+                <a href="${result.translatedDocumentUrl}" class="btn btn-success btn-sm" download="${result.originalFileName}" target="_blank">
                     <i class="fas fa-download me-2"></i>Download Translated Document
                 </a>
+                <p class="mt-2 text-muted small">
+                    <i class="fas fa-clock me-1"></i>Download link expires in 5 minutes
+                </p>
             </div>
         `;
         

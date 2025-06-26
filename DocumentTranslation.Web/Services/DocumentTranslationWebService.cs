@@ -3,6 +3,7 @@ using DocumentTranslationService.LocalFormats;
 using Azure.AI.Translation.Document;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using Microsoft.Extensions.Options;
 
 namespace DocumentTranslation.Web.Services
@@ -16,6 +17,7 @@ namespace DocumentTranslation.Web.Services
         Task<DocumentTranslationOperation> StartBatchTranslationAsync(List<IFormFile> files, string fromLanguage, string toLanguage, string? category = null);
         Task<StatusResponse> GetTranslationStatusAsync(string operationId);
         Task<(Stream fileStream, string fileName, string contentType)> DownloadTranslatedDocumentAsync(string documentId);
+        Task<string> GenerateDocumentSasUrlAsync(string documentId, int expirationMinutes = 5);
     }
 
     public class DocumentTranslationWebService : IDocumentTranslationWebService
@@ -444,6 +446,63 @@ namespace DocumentTranslation.Web.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to download document {DocumentId}", documentId);
+                throw;
+            }
+        }
+
+        public async Task<string> GenerateDocumentSasUrlAsync(string documentId, int expirationMinutes = 5)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(documentId))
+                    throw new ArgumentException("Document ID is required");
+
+                if (_blobServiceClient == null)
+                    throw new InvalidOperationException("Blob service client is not initialized");
+
+                _logger.LogInformation("Generating SAS URL for document {DocumentId} with {ExpirationMinutes} minutes expiration", 
+                    documentId, expirationMinutes);
+
+                if (!_documentStore.TryGetValue(documentId, out var documentInfo))
+                {
+                    _logger.LogWarning("Document with ID {DocumentId} not found in document store", documentId);
+                    throw new FileNotFoundException($"Document with ID {documentId} not found in document store");
+                }
+
+                var containerClient = _blobServiceClient.GetBlobContainerClient(TranslatedContainerName);
+                var blobClient = containerClient.GetBlobClient(documentInfo.blobName);
+
+                // Check if the blob exists
+                var blobExists = await blobClient.ExistsAsync();
+                if (!blobExists.Value)
+                {
+                    _logger.LogWarning("Blob {BlobName} does not exist for document {DocumentId}", documentInfo.blobName, documentId);
+                    throw new FileNotFoundException($"Blob {documentInfo.blobName} does not exist");
+                }
+
+                // Generate SAS token with read permissions
+                var sasBuilder = new BlobSasBuilder
+                {
+                    BlobContainerName = TranslatedContainerName,
+                    BlobName = documentInfo.blobName,
+                    Resource = "b", // blob
+                    ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(expirationMinutes)
+                };
+
+                // Set permissions for the SAS token
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+                // Generate the SAS URL
+                var sasUrl = blobClient.GenerateSasUri(sasBuilder).ToString();
+
+                _logger.LogInformation("Generated SAS URL for document {DocumentId}, expires at {ExpiresOn}", 
+                    documentId, sasBuilder.ExpiresOn);
+
+                return sasUrl;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to generate SAS URL for document {DocumentId}", documentId);
                 throw;
             }
         }

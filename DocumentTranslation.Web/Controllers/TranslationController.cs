@@ -99,9 +99,12 @@ namespace DocumentTranslation.Web.Controllers
                     request.ToLanguage,
                     request.Category);
 
+                // Generate SAS URL for direct download
+                var sasUrl = await _translationService.GenerateDocumentSasUrlAsync(result, 5); // 5 minutes expiration
+
                 return Ok(new DocumentTranslationResponse
                 {
-                    TranslatedDocumentUrl = result,
+                    TranslatedDocumentUrl = sasUrl,
                     OriginalFileName = request.File.FileName,
                     FromLanguage = request.FromLanguage,
                     ToLanguage = request.ToLanguage
@@ -166,6 +169,42 @@ namespace DocumentTranslation.Web.Controllers
             {
                 _logger.LogError(ex, "Error getting translation status for operation {OperationId}", operationId);
                 return StatusCode(500, new { error = "Failed to get translation status" });
+            }
+        }
+
+        [HttpGet("sas/{documentId}")]
+        public async Task<ActionResult<object>> GenerateDocumentSasUrl(string documentId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(documentId))
+                {
+                    _logger.LogWarning("SAS URL request with empty document ID");
+                    return BadRequest(new { error = "Document ID is required" });
+                }
+
+                _logger.LogInformation("SAS URL request for document ID: {DocumentId}", documentId);
+
+                var sasUrl = await _translationService.GenerateDocumentSasUrlAsync(documentId, 5); // 5 minutes expiration
+
+                _logger.LogInformation("Generated SAS URL for document {DocumentId}", documentId);
+
+                return Ok(new { sasUrl = sasUrl, expiresInMinutes = 5 });
+            }
+            catch (FileNotFoundException ex)
+            {
+                _logger.LogWarning("Document not found for SAS generation: {DocumentId} - {Message}", documentId, ex.Message);
+                return NotFound(new { error = "Document not found", documentId = documentId });
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning("Invalid document ID for SAS generation: {DocumentId} - {Message}", documentId, ex.Message);
+                return BadRequest(new { error = ex.Message, documentId = documentId });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating SAS URL for document {DocumentId}", documentId);
+                return StatusCode(500, new { error = "Failed to generate SAS URL", documentId = documentId });
             }
         }
     }
