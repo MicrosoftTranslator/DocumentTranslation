@@ -90,10 +90,16 @@ namespace DocumentTranslation.Web.Services
                 if (file == null || file.Length == 0)
                     throw new ArgumentException("File is required");
 
+                // If no category is provided, use the default from settings
+                if (string.IsNullOrEmpty(category))
+                {
+                    category = string.IsNullOrEmpty(_settings.Category) ? _settings.Category : "general"; // Use default category if not provided
+                }
+
                 // Create a temporary file to process
                 var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempDir);
-                
+
                 var fileName = Path.GetFileName(file.FileName);
                 var sourceFile = Path.Combine(tempDir, fileName);
 
@@ -113,10 +119,10 @@ namespace DocumentTranslation.Web.Services
                 Directory.CreateDirectory(targetFolder);
 
                 await _translationBusiness.RunAsync(
-                    new List<string> { sourceFile }, 
-                    fromLanguage, 
-                    new string[] { toLanguage }, 
-                    null, 
+                    new List<string> { sourceFile },
+                    fromLanguage,
+                    new string[] { toLanguage },
+                    null,
                     targetFolder);
 
                 // Find the translated file
@@ -125,7 +131,7 @@ namespace DocumentTranslation.Web.Services
                 {
                     var translatedFile = translatedFiles[0];
                     var content = await File.ReadAllBytesAsync(translatedFile);
-                    
+
                     // In a real implementation, you'd upload this to blob storage and return the URL
                     // For now, we'll return the file path
                     return translatedFile;
@@ -180,12 +186,12 @@ namespace DocumentTranslation.Web.Services
                 {
                     var fileName = Path.GetFileName(file.FileName);
                     var filePath = Path.Combine(tempDir, fileName);
-                    
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
-                    
+
                     filePaths.Add(filePath);
                 }
 
@@ -200,10 +206,10 @@ namespace DocumentTranslation.Web.Services
                 Directory.CreateDirectory(targetFolder);
 
                 await _translationBusiness.RunAsync(
-                    filePaths, 
-                    fromLanguage, 
-                    new string[] { toLanguage }, 
-                    null, 
+                    filePaths,
+                    fromLanguage,
+                    new string[] { toLanguage },
+                    null,
                     targetFolder);
 
                 // Since the original RunAsync is synchronous and doesn't return an operation,
@@ -214,7 +220,7 @@ namespace DocumentTranslation.Web.Services
                     _logger.LogWarning("No DocumentTranslationOperation found after running batch translation");
                     throw new InvalidOperationException("No translation operation was created");
                 }
-                
+
                 return operation;
             }
             catch (Exception ex)
