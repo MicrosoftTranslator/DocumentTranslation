@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Docker .NET Launch",
+      "type": "docker",
+      "request": "launch",
+      "preLaunchTask": "docker-run: debug",
+      "netCore": {
+        "appProject": "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj"
+      }
+    },
+    {
+      "name": "Launch .NET Core (Web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/DocumentTranslation.Web/bin/Debug/net9.0/DocumentTranslation.Web.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/DocumentTranslation.Web",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    }
+  ]
+}

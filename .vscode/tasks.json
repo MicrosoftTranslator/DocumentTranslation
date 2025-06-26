@@ -1,0 +1,117 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "docker-build",
+      "label": "docker-build: debug",
+      "dependsOn": [
+        "build"
+      ],
+      "dockerBuild": {
+        "tag": "documenttranslationweb:dev",
+        "target": "base",
+        "dockerfile": "${workspaceFolder}/Dockerfile",
+        "context": "${workspaceFolder}",
+        "pull": true
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj"
+      }
+    },
+    {
+      "type": "docker-run",
+      "label": "docker-run: debug",
+      "dependsOn": [
+        "docker-build: debug"
+      ],
+      "dockerRun": {
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ASPNETCORE_URLS": "http://+:80"
+        },
+        "ports": [
+          {
+            "containerPort": 80,
+            "hostPort": 5000
+          },
+          {
+            "containerPort": 443,
+            "hostPort": 5001
+          }
+        ],
+        "volumes": [
+          {
+            "localPath": "${workspaceFolder}/DocumentTranslation.Web",
+            "containerPath": "/app",
+            "permissions": "rw"
+          }
+        ]
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj",
+        "enableDebugging": true,
+        "debuggerPath": "/remote_debugger/vsdbg"
+      }
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/DocumentTranslation.Web/DocumentTranslation.Web.csproj"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$msCompile",
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    }
+  ]
+}

@@ -59,7 +59,8 @@ namespace DocumentTranslation.Web.Services
             try
             {
                 await _translationService.InitializeAsync();
-                return _translationService.Languages.Select(kvp => kvp.Value).ToList();
+                var languagesOptions = _translationService.Languages.Select(kvp => kvp.Value).ToList();
+                return languagesOptions;
             }
             catch (Exception ex)
             {

@@ -62,8 +62,8 @@ class DocumentTranslationApp {
                 // Add language options
                 this.languages.forEach(lang => {
                     const option = document.createElement('option');
-                    option.value = lang.code;
-                    option.textContent = `${lang.name} (${lang.code})`;
+                    option.value = lang.langCode;
+                    option.textContent = `${lang.name} (${lang.langCode})`;
                     select.appendChild(option);
                 });
             }
