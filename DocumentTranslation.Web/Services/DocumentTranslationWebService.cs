@@ -1,6 +1,8 @@
 using DocumentTranslationService.Core;
 using DocumentTranslationService.LocalFormats;
 using Azure.AI.Translation.Document;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 
 namespace DocumentTranslation.Web.Services
@@ -13,6 +15,7 @@ namespace DocumentTranslation.Web.Services
         Task<string> TranslateTextAsync(string text, string fromLanguage, string toLanguage, string? category = null);
         Task<DocumentTranslationOperation> StartBatchTranslationAsync(List<IFormFile> files, string fromLanguage, string toLanguage, string? category = null);
         Task<StatusResponse> GetTranslationStatusAsync(string operationId);
+        Task<(Stream fileStream, string fileName, string contentType)> DownloadTranslatedDocumentAsync(string documentId);
     }
 
     public class DocumentTranslationWebService : IDocumentTranslationWebService
@@ -21,6 +24,9 @@ namespace DocumentTranslation.Web.Services
         private readonly DocumentTranslationBusiness _translationBusiness;
         private readonly ILogger<DocumentTranslationWebService> _logger;
         private readonly DocumentTranslationSettings _settings;
+        private readonly BlobServiceClient? _blobServiceClient;
+        private readonly Dictionary<string, (string blobName, string originalFileName)> _documentStore;
+        private const string TranslatedContainerName = "translated";
 
         public DocumentTranslationWebService(
             IOptions<DocumentTranslationSettings> settings,
@@ -28,9 +34,17 @@ namespace DocumentTranslation.Web.Services
         {
             _settings = settings.Value;
             _logger = logger;
+            _documentStore = new Dictionary<string, (string blobName, string originalFileName)>();
 
             try
             {
+                // Initialize Azure Blob Storage client
+                if (!string.IsNullOrEmpty(_settings.StorageConnectionString))
+                {
+                    _blobServiceClient = new BlobServiceClient(_settings.StorageConnectionString);
+                    _ = Task.Run(async () => await EnsureContainerExistsAsync());
+                }
+
                 // Initialize the core translation service
                 _translationService = new DocumentTranslationService.Core.DocumentTranslationService(
                     _settings.SubscriptionKey,
@@ -51,6 +65,23 @@ namespace DocumentTranslation.Web.Services
             {
                 _logger.LogError(ex, "Failed to initialize Document Translation Web Service");
                 throw;
+            }
+        }
+
+        private async Task EnsureContainerExistsAsync()
+        {
+            try
+            {
+                if (_blobServiceClient != null)
+                {
+                    var containerClient = _blobServiceClient.GetBlobContainerClient(TranslatedContainerName);
+                    await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
+                    _logger.LogInformation("Blob container '{ContainerName}' ensured to exist", TranslatedContainerName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to ensure blob container exists. Will fall back to local storage.");
             }
         }
 
@@ -123,18 +154,59 @@ namespace DocumentTranslation.Web.Services
                     fromLanguage,
                     new string[] { toLanguage },
                     null,
-                    targetFolder);
-
-                // Find the translated file
+                    targetFolder);                // Find the translated file
                 var translatedFiles = Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories);
                 if (translatedFiles.Length > 0)
                 {
                     var translatedFile = translatedFiles[0];
-                    var content = await File.ReadAllBytesAsync(translatedFile);
-
-                    // In a real implementation, you'd upload this to blob storage and return the URL
-                    // For now, we'll return the file path
-                    return translatedFile;
+                    
+                    // Generate a unique document ID for tracking
+                    var documentId = Guid.NewGuid().ToString();
+                    var originalFileName = Path.GetFileName(file.FileName);
+                    var translatedFileName = Path.GetFileName(translatedFile);
+                    
+                    // Upload to Azure Blob Storage
+                    if (_blobServiceClient != null)
+                    {
+                        try
+                        {
+                            var blobName = await UploadToBlobStorageAsync(translatedFile, documentId, translatedFileName);
+                            
+                            // Store the blob name and original filename for later retrieval
+                            _documentStore[documentId] = (blobName, translatedFileName);
+                            
+                            _logger.LogInformation("Document translated and uploaded to blob storage. DocumentId: {DocumentId}, BlobName: {BlobName}", 
+                                documentId, blobName);
+                                
+                            // Clean up temp files
+                            try
+                            {
+                                Directory.Delete(tempDir, true);
+                            }
+                            catch (Exception cleanupEx)
+                            {
+                                _logger.LogWarning(cleanupEx, "Failed to clean up temp directory: {TempDir}", tempDir);
+                            }
+                            
+                            return documentId;
+                        }
+                        catch (Exception blobEx)
+                        {
+                            _logger.LogWarning(blobEx, "Failed to upload to blob storage, falling back to local storage");
+                            
+                            // Fallback to returning local file path if blob storage fails
+                            _documentStore[documentId] = (translatedFile, translatedFileName);
+                            return documentId;
+                        }
+                    }
+                    else
+                    {
+                        // No blob storage configured, store locally
+                        _documentStore[documentId] = (translatedFile, translatedFileName);
+                        _logger.LogInformation("Document translated (local storage). DocumentId: {DocumentId}, FilePath: {FilePath}", 
+                            documentId, translatedFile);
+                        return documentId;
+                    }
                 }
 
                 throw new Exception("No translated file was generated");
@@ -241,6 +313,137 @@ namespace DocumentTranslation.Web.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to get translation status for operation {OperationId}", operationId);
+                throw;
+            }
+        }
+
+        private async Task<string> UploadToBlobStorageAsync(string filePath, string documentId, string fileName)
+        {
+            try
+            {
+                if (_blobServiceClient == null)
+                    throw new InvalidOperationException("Blob service client is not initialized");
+                    
+                var containerClient = _blobServiceClient.GetBlobContainerClient(TranslatedContainerName);
+                
+                // Create a unique blob name using the document ID and timestamp
+                var fileExtension = Path.GetExtension(fileName);
+                var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+                var blobName = $"{documentId}_{timestamp}_{fileName}";
+                
+                var blobClient = containerClient.GetBlobClient(blobName);
+                
+                // Set appropriate content type and headers
+                var blobHttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = GetContentType(fileName),
+                    ContentDisposition = $"attachment; filename=\"{fileName}\""
+                };
+                
+                // Upload the file to blob storage with retry logic
+                using (var fileStream = File.OpenRead(filePath))
+                {
+                    await blobClient.UploadAsync(fileStream, new BlobUploadOptions
+                    {
+                        HttpHeaders = blobHttpHeaders,
+                        Conditions = null, // Allow overwrite
+                        AccessTier = AccessTier.Hot // Use Hot tier for frequently accessed files
+                    });
+                }
+                
+                _logger.LogInformation("File successfully uploaded to blob storage: {BlobName}", blobName);
+                return blobName;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to upload file to blob storage for document {DocumentId}", documentId);
+                throw;
+            }
+        }
+
+        private string GetContentType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            return extension switch
+            {
+                ".pdf" => "application/pdf",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".doc" => "application/msword",
+                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ".xls" => "application/vnd.ms-excel",
+                ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                ".ppt" => "application/vnd.ms-powerpoint",
+                ".txt" => "text/plain",
+                ".html" => "text/html",
+                ".htm" => "text/html",
+                ".rtf" => "application/rtf",
+                ".odt" => "application/vnd.oasis.opendocument.text",
+                ".ods" => "application/vnd.oasis.opendocument.spreadsheet",
+                ".odp" => "application/vnd.oasis.opendocument.presentation",
+                _ => "application/octet-stream"
+            };
+        }
+
+        public async Task<(Stream fileStream, string fileName, string contentType)> DownloadTranslatedDocumentAsync(string documentId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(documentId))
+                    throw new ArgumentException("Document ID is required");
+
+                if (!_documentStore.TryGetValue(documentId, out var documentInfo))
+                    throw new FileNotFoundException($"Document with ID {documentId} not found");
+
+                Stream fileStream;
+                var fileName = documentInfo.originalFileName;
+                var contentType = GetContentType(fileName);
+
+                // Try to download from Blob Storage first
+                if (_blobServiceClient != null && !Path.IsPathRooted(documentInfo.blobName))
+                {
+                    try
+                    {
+                        var containerClient = _blobServiceClient.GetBlobContainerClient(TranslatedContainerName);
+                        var blobClient = containerClient.GetBlobClient(documentInfo.blobName);
+                        
+                        var blobDownloadInfo = await blobClient.DownloadAsync();
+                        fileStream = blobDownloadInfo.Value.Content;
+                        
+                        _logger.LogInformation("Document downloaded from blob storage. DocumentId: {DocumentId}, BlobName: {BlobName}", 
+                            documentId, documentInfo.blobName);
+                    }
+                    catch (Exception blobEx)
+                    {
+                        _logger.LogWarning(blobEx, "Failed to download from blob storage, trying local fallback for DocumentId: {DocumentId}", documentId);
+                        
+                        // Fallback to local file if blob storage fails
+                        if (File.Exists(documentInfo.blobName))
+                        {
+                            fileStream = new FileStream(documentInfo.blobName, FileMode.Open, FileAccess.Read);
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException($"Document file not found in both blob storage and local storage: {documentId}");
+                        }
+                    }
+                }
+                else
+                {
+                    // Local file fallback (when blobName is actually a file path)
+                    if (!File.Exists(documentInfo.blobName))
+                        throw new FileNotFoundException($"Document file not found: {documentInfo.blobName}");
+
+                    fileStream = new FileStream(documentInfo.blobName, FileMode.Open, FileAccess.Read);
+                    
+                    _logger.LogInformation("Document downloaded from local storage. DocumentId: {DocumentId}, FileName: {FileName}", 
+                        documentId, fileName);
+                }
+
+                return (fileStream, fileName, contentType);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to download document {DocumentId}", documentId);
                 throw;
             }
         }
