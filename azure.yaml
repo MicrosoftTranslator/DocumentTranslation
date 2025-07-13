@@ -1,0 +1,12 @@
+# Azure yaml file for Document Translation Web Application
+# Learn more about azure.yaml: https://docs.microsoft.com/en-us/azure/developer/azure-developer-cli/azd-schema
+
+name: document-translation
+metadata:
+  template: document-translation@0.0.1-beta
+
+services:
+  DocumentTranslationWeb:
+    project: ./DocumentTranslation.Web
+    language: dotnet
+    host: containerapp

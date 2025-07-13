@@ -1,0 +1,58 @@
+# Debug Dockerfile for Document Translation Web Application
+# This Dockerfile is optimized for debugging with VS Code
+
+# Use the official ASP.NET Core runtime as the base image for debugging
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+# Install debugger tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the debugger
+RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /remote_debugger
+
+# Use the SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Debug
+WORKDIR /src
+
+# Copy project files
+COPY ["DocumentTranslation.Web/DocumentTranslation.Web.csproj", "DocumentTranslation.Web/"]
+COPY ["DocumentTranslationService/DocumentTranslationService.csproj", "DocumentTranslationService/"]
+
+# Restore dependencies
+RUN dotnet restore "DocumentTranslation.Web/DocumentTranslation.Web.csproj"
+
+# Copy all source files
+COPY . .
+
+# Build the application in Debug mode
+WORKDIR "/src/DocumentTranslation.Web"
+RUN dotnet build "DocumentTranslation.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Publish the application in Debug mode
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Debug
+RUN dotnet publish "DocumentTranslation.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Create the final debug image
+FROM base AS final
+WORKDIR /app
+
+# Copy the published application
+COPY --from=publish /app/publish .
+
+# Set environment variables for development
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+
+# Don't create a non-root user for debugging (easier debugging as root)
+# USER appuser
+
+ENTRYPOINT ["dotnet", "DocumentTranslation.Web.dll"]

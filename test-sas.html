@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SAS URL Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .code {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>SAS URL Generation Test</h1>
+    
+    <div class="test-container">
+        <h3>Test SAS URL Generation</h3>
+        <p>This page helps test the SAS URL generation functionality for the Document Translation app.</p>
+        
+        <div>
+            <label for="documentId">Document ID:</label><br>
+            <input type="text" id="documentId" placeholder="Enter document ID from translation" style="width: 300px; margin: 5px 0;">
+        </div>
+        
+        <button onclick="generateSasUrl()">Generate SAS URL</button>
+        <button onclick="testDirectDownload()">Test Direct Download</button>
+        
+        <div id="status"></div>
+        <div id="sasUrlDisplay"></div>
+    </div>
+
+    <script>
+        let currentSasUrl = null;
+
+        async function generateSasUrl() {
+            const documentId = document.getElementById('documentId').value;
+            const statusDiv = document.getElementById('status');
+            const sasUrlDiv = document.getElementById('sasUrlDisplay');
+            
+            if (!documentId) {
+                showStatus('Please enter a document ID', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Generating SAS URL...', 'info');
+                
+                const response = await fetch(`/api/translation/sas/${documentId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `Failed to generate SAS URL: ${response.status}`);
+                }
+
+                const result = await response.json();
+                currentSasUrl = result.sasUrl;
+                
+                showStatus(`SAS URL generated successfully! Expires in ${result.expiresInMinutes} minutes.`, 'success');
+                
+                sasUrlDiv.innerHTML = `
+                    <h4>Generated SAS URL:</h4>
+                    <div class="code">${result.sasUrl}</div>
+                    <p><strong>Expires:</strong> ${new Date(Date.now() + result.expiresInMinutes * 60000).toLocaleString()}</p>
+                `;
+                
+            } catch (error) {
+                console.error('SAS generation error:', error);
+                showStatus(`Failed to generate SAS URL: ${error.message}`, 'error');
+                sasUrlDiv.innerHTML = '';
+                currentSasUrl = null;
+            }
+        }
+        
+        async function testDirectDownload() {
+            if (!currentSasUrl) {
+                showStatus('Please generate a SAS URL first', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Testing direct download...', 'info');
+                
+                // Create a temporary link and trigger download
+                const link = document.createElement('a');
+                link.href = currentSasUrl;
+                link.download = 'translated_document';
+                link.target = '_blank';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showStatus('Download initiated! Check your downloads folder.', 'success');
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                showStatus(`Failed to download: ${error.message}`, 'error');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
